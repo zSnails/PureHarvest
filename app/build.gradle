@@ -10,7 +10,6 @@ android {
 
     buildFeatures {
         viewBinding = true
-        dataBinding = true
     }
 
     defaultConfig {
@@ -37,6 +36,8 @@ android {
 
 dependencies {
     implementation libs.hilt.android
+    implementation libs.constraintlayout
+    implementation libs.navigation.fragment
     annotationProcessor libs.hilt.compiler
 
     implementation platform(libs.firebase.bom)
