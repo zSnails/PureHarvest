@@ -5,4 +5,9 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_account">Account</string>
     <string name="title_activity_example">ExampleActivity</string>
+    <string name="title_shopping_cart">Shopping Cart</string>
+    <string name="placeholder_item_title">[PLACEHOLDER]</string>
+    <string name="cart_price_title">Price</string>
+    <string name="placeholder_item_price">[¢0.000]</string>
+    <string name="placeholder_item_amount">[1]</string>
 </resources>
