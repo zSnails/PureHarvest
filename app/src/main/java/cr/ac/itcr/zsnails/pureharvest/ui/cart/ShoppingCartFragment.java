@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentShoppingCartBinding;
 import cr.ac.itcr.zsnails.pureharvest.decoration.MarginItemDecoration;
 import cr.ac.itcr.zsnails.pureharvest.ui.cart.adapter.ShoppingCartAdapter;
@@ -21,22 +22,24 @@ public final class ShoppingCartFragment extends Fragment {
     private ShoppingCartViewModel shoppingCart;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        shoppingCart = new ViewModelProvider(this).get(ShoppingCartViewModel.class);
-        binding = FragmentShoppingCartBinding.inflate(inflater, container, false);
-        // TODO: remove hard coded margin size, this must also use a resource, for the time being I'll use this POS
-        binding.shoppingCartRecyclerView.addItemDecoration(new MarginItemDecoration(2));
-        binding.shoppingCartRecyclerView.setAdapter(new ShoppingCartAdapter());
-        binding.shoppingCartRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        binding.shoppingCartRecyclerView.setVisibility(View.VISIBLE);
-        return binding.getRoot();
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
+        this.shoppingCart = new ViewModelProvider(this).get(ShoppingCartViewModel.class);
+        this.binding = FragmentShoppingCartBinding.inflate(inflater, container, false);
+        ShoppingCartAdapter adapter = new ShoppingCartAdapter();
+        this.binding.shoppingCartRecyclerView.setAdapter(adapter);
+        this.binding.shoppingCartRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        this.binding.shoppingCartRecyclerView.addItemDecoration(new MarginItemDecoration(
+                (int) getResources().getDimension(R.dimen.list_item_margin)));
+        return this.binding.getRoot();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
+        this.binding = null;
     }
 
 }
