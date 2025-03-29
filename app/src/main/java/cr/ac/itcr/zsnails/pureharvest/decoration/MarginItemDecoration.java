@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView.ItemDecoration;
 
 public class MarginItemDecoration extends ItemDecoration {
     private int space = 0;
+
     public MarginItemDecoration(int size) {
         super();
         this.space = size;
