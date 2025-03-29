@@ -11,4 +11,5 @@
     <dimen name="small_rectangle_button_horizontal_padding">10sp</dimen>
     <dimen name="shopping_cart_amount_horizontal_padding">20sp</dimen>
     <dimen name="shopping_cart_amount_vertical_padding">7sp</dimen>
+    <dimen name="list_item_margin">10sp</dimen>
 </resources>
