@@ -1,29 +1,38 @@
 package cr.ac.itcr.zsnails.pureharvest.ui.cart.adapter;
 
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
-import cr.ac.itcr.zsnails.pureharvest.R;
 
-public final class ShoppingCartAdapter extends Adapter<CartItemViewHolder> {
+public final class ShoppingCartAdapter extends Adapter<Card> {
+    public ShoppingCartAdapter() {
+        // NOTE: future self, I can use the item ids for some operations, I'll take a look at this
+        // setHasStableIds(true);
+    }
 
     @NonNull
     @Override
-    public CartItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return CartItemViewHolder.from(parent);
+    public Card onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Card card = Card.from(parent);
+        return card;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CartItemViewHolder holder, int position) {
-
+    public void onBindViewHolder(@NonNull Card holder, int position) {
+        // TODO: show shopping cart data, the user does not yet have shopping cart information here
     }
 
     @Override
     public int getItemCount() {
         return 10;
     }
+
+    @Override
+    public void onViewRecycled(@NonNull Card holder) {
+        super.onViewRecycled(holder);
+        holder.setState(new CardClosedState(holder));
+    }
 }
+
