@@ -9,9 +9,27 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/shopping_cart_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="0dp"
+        app:layout_constraintBottom_toTopOf="@id/shopping_cart_checkout_button"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        tools:itemCount="100"
         tools:listitem="@layout/shopping_cart_expandable_element" />
+
+    <Button
+        android:id="@+id/shopping_cart_checkout_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/activity_small_horizontal_margin"
+        android:backgroundTint="@color/leaf_green"
+        android:drawableEnd="@drawable/round_arrow_forward_24"
+        android:drawableTint="@color/white"
+        android:paddingVertical="@dimen/activity_vertical_margin"
+        android:text="@string/checkout_total"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
