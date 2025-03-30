@@ -12,4 +12,6 @@
     <string name="placeholder_item_amount">[1]</string>
     <string name="checkout_total">Total ₡%1$f</string>
     <string name="colones">₡%1$f</string>
+    <string name="title_shopping_cart_clear">Clear Cart</string>
+    <string name="shopping_cart_clear_confirmation_dialog_message">Are you sure you want to clear your shopping cart?</string>
 </resources>

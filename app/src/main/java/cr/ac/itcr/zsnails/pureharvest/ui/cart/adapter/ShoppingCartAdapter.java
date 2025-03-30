@@ -16,7 +16,6 @@ public final class ShoppingCartAdapter extends Adapter<Card> {
     private List<CartItem> items = new ArrayList<>();
 
     public ShoppingCartAdapter() {
-        // NOTE: future self, I can use the item ids for some operations, I'll take a look at this
         setHasStableIds(true);
     }
 
@@ -38,10 +37,21 @@ public final class ShoppingCartAdapter extends Adapter<Card> {
         return card;
     }
 
+    public void removeAt(Integer idx) {
+        CartItem item = items.get(idx);
+        items.remove(item);
+        notifyItemRemoved(idx);
+    }
+
     @Override
     public void onBindViewHolder(@NonNull Card holder, int position) {
         // TODO: show shopping cart data, the user does not yet have shopping cart information here
-        holder.binding.productName.setText(items.get(position).productId);
+        // here I won't be using this, but the actual bind method I defined in the Card view holder
+        CartItem current = items.get(position);
+        holder.binding.productName.setText(current.productId);
+        if (current.amount != null) {
+            holder.binding.cartItemAmount.setText(current.amount.toString());
+        }
     }
 
     @Override

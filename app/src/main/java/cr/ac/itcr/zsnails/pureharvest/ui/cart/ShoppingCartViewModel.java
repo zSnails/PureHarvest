@@ -11,48 +11,69 @@ import java.util.concurrent.ExecutorService;
 
 import javax.inject.Inject;
 
-import cr.ac.itcr.zsnails.pureharvest.domain.LocalCartDatabase;
+import cr.ac.itcr.zsnails.pureharvest.domain.repository.ShoppingCartRepository;
 import cr.ac.itcr.zsnails.pureharvest.entities.CartItem;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
 @HiltViewModel
 public class ShoppingCartViewModel extends ViewModel {
-    private final LocalCartDatabase db;
-    private final ExecutorService databaseExecutor;
+
+    private final ShoppingCartRepository repo;
+    private final ExecutorService executor;
     private final ArrayList<CartItem> seedData = new ArrayList<>(Arrays.asList(
-            new CartItem("aaa"),
-            new CartItem("aab"),
-            new CartItem("aac"),
-            new CartItem("aad"),
-            new CartItem("aae")
+            new CartItem("aaa", 1),
+            new CartItem("aab", 2),
+            new CartItem("aac", 3),
+            new CartItem("aad", 4),
+            new CartItem("aae", 5)
     ));
 
     public MutableLiveData<List<CartItem>> items = new MutableLiveData<>();
 
     @Inject
     public ShoppingCartViewModel(
-            @NonNull final LocalCartDatabase db,
-            @NonNull final ExecutorService databaseExecutor) {
-        this.db = db;
-        this.databaseExecutor = databaseExecutor;
-
+            @NonNull final ShoppingCartRepository repo,
+            @NonNull final ExecutorService executor
+    ) {
+        this.repo = repo;
+        this.executor = executor;
     }
 
     public void loadAllItems() {
-        databaseExecutor.execute(() -> {
-            items.postValue(db.cartDao().getAll());
+        executor.execute(() -> {
+            items.postValue(repo.all());
+        });
+    }
+
+    public void removeAllItems(OnCompleteCallback cb) {
+        executor.execute(() -> {
+            repo.deleteAll();
+            cb.onComplete();
         });
     }
 
     public void insertItem(CartItem item) {
-        db.cartDao().insertAll(item);
+        repo.insert(item);
     }
 
-    public void seedDatabase() {
-        databaseExecutor.execute(() -> {
+    public void seedDatabase(OnCompleteCallback cb) {
+        executor.execute(() -> {
             for (CartItem seedDatum : seedData) {
                 insertItem(seedDatum);
             }
+            cb.onComplete();
         });
     }
+
+    public void deleteById(Integer id) {
+        executor.execute(() -> {
+            repo.deleteById(id);
+        });
+    }
+
+    @FunctionalInterface
+    public interface OnCompleteCallback {
+        void onComplete();
+    }
+
 }
