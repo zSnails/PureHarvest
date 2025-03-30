@@ -10,7 +10,7 @@ import cr.ac.itcr.zsnails.pureharvest.entities.CartItem;
 
 @Dao
 public interface CartDao {
-    @Query("SELECT * FROM CartItem")
+    @Query("SELECT * FROM cart")
     List<CartItem> getAll();
 
     @Insert
