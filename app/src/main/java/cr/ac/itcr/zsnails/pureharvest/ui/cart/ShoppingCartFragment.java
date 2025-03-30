@@ -33,7 +33,17 @@ public final class ShoppingCartFragment extends Fragment {
         this.binding.shoppingCartRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         this.binding.shoppingCartRecyclerView.addItemDecoration(new MarginItemDecoration(
                 (int) getResources().getDimension(R.dimen.list_item_margin)));
+        this.binding.seedDataButton.setOnClickListener(this::onSeedClick);
+
+        shoppingCart.loadAllItems();
+        shoppingCart.items.observe(getViewLifecycleOwner(), adapter::setItems);
+
         return this.binding.getRoot();
+
+    }
+
+    public void onSeedClick(View view) {
+        shoppingCart.seedDatabase();
     }
 
     @Override
