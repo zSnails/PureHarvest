@@ -40,7 +40,6 @@ public final class Card extends ViewHolder implements OnClickListener, Stateful<
         this.binding.productName.setText(item.getName());
         this.binding.productTypeDetail.setText(item.getType());
         this.binding.productPriceDetail.setText(ctx.getString(R.string.colones, item.getPrice()));
-        this.binding.cartItemAmount.setText(item.getAmount());
     }
 
     public CardState getState() {

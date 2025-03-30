@@ -6,8 +6,4 @@ public interface Item {
     Double getPrice();
 
     String getType();
-
-    Integer getAmount();
-
-    void setAmount(Integer newValue);
 }
