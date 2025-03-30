@@ -15,10 +15,13 @@ import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentShoppingCartBinding;
 import cr.ac.itcr.zsnails.pureharvest.decoration.MarginItemDecoration;
 import cr.ac.itcr.zsnails.pureharvest.ui.cart.adapter.ShoppingCartAdapter;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public final class ShoppingCartFragment extends Fragment {
 
     private FragmentShoppingCartBinding binding;
+
     private ShoppingCartViewModel shoppingCart;
 
     @Override
