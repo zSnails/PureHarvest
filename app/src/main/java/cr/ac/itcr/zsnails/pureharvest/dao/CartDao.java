@@ -13,6 +13,12 @@ public interface CartDao {
     @Query("SELECT * FROM cart")
     List<CartItem> getAll();
 
+    @Query("DELETE FROM cart")
+    void deleteAll();
+
+    @Query("DELETE FROM cart WHERE id = :id")
+    void deleteById(Integer id);
+
     @Insert
     void insertAll(CartItem... items);
 }
