@@ -32,4 +32,37 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/seed_data_button"
+        android:layout_width="wrap_content"
+        android:backgroundTint="@color/leaf_green"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:clickable="true"
+        android:focusable="true"
+        android:importantForAccessibility="no"
+        android:src="@drawable/baseline_add_24"
+        app:layout_constraintBottom_toTopOf="@id/shopping_cart_checkout_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:layout_editor_absoluteX="301dp"
+        tools:layout_editor_absoluteY="315dp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/reset_data_button"
+        android:layout_width="wrap_content"
+        android:backgroundTint="@color/material_on_surface_stroke"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:clickable="true"
+        android:focusable="true"
+        android:importantForAccessibility="no"
+        android:src="@drawable/baseline_remove_24"
+        app:layout_constraintBottom_toTopOf="@id/seed_data_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:layout_editor_absoluteX="301dp"
+        tools:layout_editor_absoluteY="315dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
