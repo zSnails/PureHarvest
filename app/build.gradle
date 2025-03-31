@@ -12,6 +12,10 @@ android {
         viewBinding = true
     }
 
+    viewBinding {
+        enabled = true
+    }
+
     defaultConfig {
         applicationId "cr.ac.itcr.zsnails.pureharvest"
         minSdk 24
@@ -50,4 +54,9 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
+
+    implementation libs.glide
+    annotationProcessor libs.compiler
+    implementation libs.androidx.lifecycle.viewmodel
+    implementation libs.androidx.lifecycle.livedata
 }
