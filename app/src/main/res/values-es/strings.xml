@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Pure Harvest</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_home">Inicio</string>
+    <string name="title_dashboard">Tablero</string>
+    <string name="title_account">Cuenta</string>
+    <string name="title_activity_example">ExampleActivity</string>
+    <string name="settingsButton">Ajustes</string>
+    <string name="languageTV">Cambiar idioma</string>
+</resources>
