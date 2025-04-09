@@ -44,13 +44,10 @@ dependencies {
 
     // Firestore
     implementation libs.firebase.firestore
-
     // Firebase Storage
     implementation libs.firebase.storage
-
     // Firebase Auth
     implementation libs.firebase.auth
-
     implementation platform(libs.firebase.bom)
     implementation libs.firebase.analytics
 
@@ -59,6 +56,7 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
+
     implementation libs.glide
     annotationProcessor libs.compiler
 }
