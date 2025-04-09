@@ -26,7 +26,7 @@ public class ShoppingCartRepository {
         dao.deleteAll();
     }
 
-    public void deleteById(Integer id) {
+    public void deleteById(Long id) {
         dao.deleteById(id);
     }
 
