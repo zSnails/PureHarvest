@@ -23,11 +23,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentShoppingCartBinding;
 import cr.ac.itcr.zsnails.pureharvest.decoration.MarginItemDecoration;
+import cr.ac.itcr.zsnails.pureharvest.ui.cart.adapter.Card;
 import cr.ac.itcr.zsnails.pureharvest.ui.cart.adapter.ShoppingCartAdapter;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public final class ShoppingCartFragment extends Fragment implements MenuProvider {
+public final class ShoppingCartFragment extends Fragment
+        implements MenuProvider, Card.AmountTapListener,
+        UpdateItemAmountDialog.ItemAmountAcceptListener {
 
     private FragmentShoppingCartBinding binding;
 
@@ -42,7 +45,8 @@ public final class ShoppingCartFragment extends Fragment implements MenuProvider
             @Nullable Bundle savedInstanceState) {
         this.shoppingCart = new ViewModelProvider(this).get(ShoppingCartViewModel.class);
         this.binding = FragmentShoppingCartBinding.inflate(inflater, container, false);
-        this.adapter = new ShoppingCartAdapter();
+        this.adapter = new ShoppingCartAdapter(this);
+        this.shoppingCart.addItemOperationEventListener(adapter);
         this.binding.shoppingCartRecyclerView.setAdapter(adapter);
         this.binding.shoppingCartRecyclerView.setLayoutManager(
                 new LinearLayoutManager(requireContext()));
@@ -112,5 +116,29 @@ public final class ShoppingCartFragment extends Fragment implements MenuProvider
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onAmountTap(Item item, int position) {
+        var dialog = new UpdateItemAmountDialog();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("item", item);
+        bundle.putInt("position", position);
+        dialog.setArguments(bundle);
+        dialog.setItemAmountAcceptListener(this);
+        dialog.show(requireActivity().getSupportFragmentManager(), "ITEM_UPDATER");
+    }
+
+    @Override
+    public void onAmountAccepted(Item item, int position, int amount) {
+        item.setAmount(amount);
+        shoppingCart.updateItem(item);
+        updateCheckoutTotal();
+    }
+
+    private void updateCheckoutTotal() {
+        Double total = shoppingCart.items.getValue().stream().map(
+                item -> item.getPrice() * item.getAmount()).mapToDouble(it -> it).sum();
+        this.binding.shoppingCartCheckoutButton.setText(getString(R.string.checkout_total, total));
     }
 }
