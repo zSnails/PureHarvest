@@ -6,8 +6,10 @@ import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -27,8 +29,9 @@ public class ShoppingCartViewModel extends ViewModel {
             new CartItem("aad", 4),
             new CartItem("aae", 5)
     ));
-
-    public MutableLiveData<List<CartItem>> items = new MutableLiveData<>();
+    private final List<ItemOperationEventListener> operationListeners = new LinkedList<>();
+    public MutableLiveData<List<Item>> items = new MutableLiveData<>();
+    public MutableLiveData<Double> subtotal = new MutableLiveData<>(0.0);
 
     @Inject
     public ShoppingCartViewModel(
@@ -39,36 +42,90 @@ public class ShoppingCartViewModel extends ViewModel {
         this.executor = executor;
     }
 
+    public void addItemOperationEventListener(ItemOperationEventListener cb) {
+        this.operationListeners.add(cb);
+    }
+
     public void loadAllItems() {
         executor.execute(() -> {
-            items.postValue(repo.all());
+            var it = repo.all().stream().map(a -> (Item) a).collect(Collectors.toList());
+            items.postValue(it);
+            computeSubTotal(it);
         });
+    }
+
+
+    private void computeSubTotal(List<Item> it) {
+        Double total = it.stream().mapToDouble(i -> i.getPrice() * i.getAmount()).sum();
+        subtotal.postValue(total);
+    }
+
+    private void computeSubTotal() {
+        var it = items.getValue();
+        if (it == null) return;
+        Double total = it.stream().mapToDouble(i -> i.getPrice() * i.getAmount()).sum();
+        subtotal.postValue(total);
     }
 
     public void removeAllItems(OnCompleteCallback cb) {
         executor.execute(() -> {
             repo.deleteAll();
+            computeSubTotal();
             cb.onComplete();
         });
     }
 
     public void insertItem(CartItem item) {
         repo.insert(item);
+        for (ItemOperationEventListener operationListener : operationListeners) {
+            operationListener.onItemCreated(item);
+        }
     }
 
     public void seedDatabase(OnCompleteCallback cb) {
         executor.execute(() -> {
             for (CartItem seedDatum : seedData) {
-                insertItem(seedDatum);
+                repo.insert(seedDatum);
             }
             cb.onComplete();
         });
     }
 
-    public void deleteById(Integer id) {
+    public void updateItem(Item item) {
+        if (item.getAmount() < 0)
+            throw new IllegalStateException("an item's amount cannot be negative");
+        executor.execute(() -> {
+            repo.updateAmount(item);
+        });
+        int idx = items.getValue().indexOf(item);
+        items.getValue().set(idx, item);
+        for (ItemOperationEventListener operationListener : operationListeners) {
+            operationListener.onItemUpdated(item);
+        }
+        computeSubTotal();
+    }
+
+    public void removeById(Long id) {
         executor.execute(() -> {
             repo.deleteById(id);
         });
+        Item item = items.getValue()
+                .stream()
+                .filter((it) -> it.getId().equals(id)).collect(Collectors.toList()).get(0);
+        int idx = items.getValue().indexOf(item);
+        subtotal.postValue(subtotal.getValue() - item.getPrice() * item.getAmount());
+        items.getValue().remove(item);
+        for (ItemOperationEventListener operationListener : operationListeners) {
+            operationListener.onItemRemoved(item, idx);
+        }
+    }
+
+    public interface ItemOperationEventListener {
+        void onItemCreated(Item item);
+
+        void onItemRemoved(Item item, int position);
+
+        void onItemUpdated(Item item);
     }
 
     @FunctionalInterface

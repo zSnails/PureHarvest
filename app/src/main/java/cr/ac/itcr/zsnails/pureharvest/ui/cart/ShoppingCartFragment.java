@@ -67,7 +67,9 @@ public final class ShoppingCartFragment extends Fragment
         shoppingCart.loadAllItems();
         shoppingCart.items.observe(getViewLifecycleOwner(), (it) -> {
             adapter.setItems(it);
-            updateCheckoutTotal();
+        });
+        shoppingCart.subtotal.observe(getViewLifecycleOwner(), (total) -> {
+            this.binding.shoppingCartCheckoutButton.setText(getString(R.string.checkout_total, total));
         });
         requireActivity().addMenuProvider(this, getViewLifecycleOwner(), RESUMED);
         setupSwipeHandler();
@@ -86,7 +88,6 @@ public final class ShoppingCartFragment extends Fragment
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 long itemId = viewHolder.getItemId();
                 shoppingCart.removeById(itemId);
-                updateCheckoutTotal();
             }
         };
         new ItemTouchHelper(swipeHandler).attachToRecyclerView(this.binding.shoppingCartRecyclerView);
@@ -135,12 +136,5 @@ public final class ShoppingCartFragment extends Fragment
     public void onAmountAccepted(Item item, int position, int amount) {
         item.setAmount(amount);
         shoppingCart.updateItem(item);
-        updateCheckoutTotal();
-    }
-
-    private void updateCheckoutTotal() {
-        Double total = shoppingCart.items.getValue().stream().map(
-                item -> item.getPrice() * item.getAmount()).mapToDouble(it -> it).sum();
-        this.binding.shoppingCartCheckoutButton.setText(getString(R.string.checkout_total, total));
     }
 }
