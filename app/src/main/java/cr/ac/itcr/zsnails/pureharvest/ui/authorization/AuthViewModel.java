@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnFailureListener;  
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -49,7 +49,7 @@ public class AuthViewModel extends ViewModel {
     public void login(final String email, final String password) {
         Single.create(new SingleOnSubscribe<Boolean>() {
             @Override
-            public void subscribe(final SingleEmitter<Boolean> emitter) throws Exception {
+            public void subscribe(final SingleEmitter<Boolean> emitter) {
                 FirebaseAuth.getInstance()
                         .signInWithEmailAndPassword(email, password)
                         .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
@@ -58,12 +58,7 @@ public class AuthViewModel extends ViewModel {
                                 emitter.onSuccess(true);
                             }
                         })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(Exception e) {
-                                emitter.onError(e);
-                            }
-                        });
+                        .addOnFailureListener(e -> emitter.onError(e));
             }
         })
         .subscribeOn(Schedulers.io())
@@ -75,8 +70,8 @@ public class AuthViewModel extends ViewModel {
             }
 
             @Override
-            public void onSuccess(Boolean aBoolean) {
-                loginResult.setValue(aBoolean);
+            public void onSuccess(Boolean success) {
+                loginResult.setValue(success);
             }
 
             @Override
@@ -84,4 +79,64 @@ public class AuthViewModel extends ViewModel {
                 errorMessage.setValue("Error autenticando: " + e.getMessage());
             }
         });
-    }}
+    }
+
+    /**
+     * Realiza el registro de usuario con Firebase Auth y guarda datos adicionales en Firestore.
+     */
+    public void register(final String fullName, final String email, final String phone, final String password) {
+        Single.create(new SingleOnSubscribe<Boolean>() {
+            @Override
+            public void subscribe(final SingleEmitter<Boolean> emitter) {
+                FirebaseAuth.getInstance()
+                        .createUserWithEmailAndPassword(email, password)
+                        .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                            @Override
+                            public void onSuccess(AuthResult authResult) {
+                                String uid = (authResult.getUser() != null) ? authResult.getUser().getUid() : null;
+                                if (uid == null || uid.isEmpty()) {
+                                    emitter.onError(new Exception("Error al obtener UID"));
+                                    return;
+                                }
+                                Map<String, Object> userMap = new HashMap<>();
+                                userMap.put("fullName", fullName);
+                                userMap.put("email", email);
+                                userMap.put("phone", phone);
+
+                                FirebaseFirestore.getInstance()
+                                        .collection("users")
+                                        .document(uid)
+                                        .set(userMap)
+                                        .addOnSuccessListener(aVoid -> emitter.onSuccess(true))
+                                        .addOnFailureListener(e -> emitter.onError(e));
+                            }
+                        })
+                        .addOnFailureListener(e -> emitter.onError(e));
+            }
+        })
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new SingleObserver<Boolean>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                compositeDisposable.add(d);
+            }
+
+            @Override
+            public void onSuccess(Boolean success) {
+                registerResult.setValue(success);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                errorMessage.setValue("Error registrando usuario: " + e.getMessage());
+            }
+        });
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        compositeDisposable.clear();
+    }
+}
