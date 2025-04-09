@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import cr.ac.itcr.zsnails.pureharvest.dao.CartDao;
 import cr.ac.itcr.zsnails.pureharvest.domain.LocalCartDatabase;
 import cr.ac.itcr.zsnails.pureharvest.entities.CartItem;
+import cr.ac.itcr.zsnails.pureharvest.ui.cart.Item;
 
 public class ShoppingCartRepository {
 
@@ -38,4 +39,7 @@ public class ShoppingCartRepository {
     }
 
 
+    public void updateAmount(Item item) {
+        dao.updateAmount(item.getId(), item.getAmount());
+    }
 }

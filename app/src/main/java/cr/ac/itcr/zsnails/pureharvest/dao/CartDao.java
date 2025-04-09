@@ -17,8 +17,11 @@ public interface CartDao {
     void deleteAll();
 
     @Query("DELETE FROM cart WHERE id = :id")
-    void deleteById(Integer id);
+    void deleteById(Long id);
 
     @Insert
     void insertAll(CartItem... items);
+
+    @Query("UPDATE cart SET amount = :amt WHERE id = :id AND :amt >= 0")
+    void updateAmount(Long id, Integer amt);
 }
