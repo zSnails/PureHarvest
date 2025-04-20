@@ -5,88 +5,185 @@
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
     tools:context=".ui.Profile.ProfileFragment">
 
+    <!-- Profile Image Area -->
+    <ImageView
+        android:id="@+id/profileImagePlaceholder"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="24dp"
+        android:background="#CCCCCC"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Photo Buttons -->
+    <Button
+        android:id="@+id/addPhotoBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="4dp"
+        android:text="Change Photo"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toStartOf="@+id/deletePhotoBtn"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileImagePlaceholder"
+        app:layout_constraintWidth_percent="0.4" />
+
+    <Button
+        android:id="@+id/deletePhotoBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="Delete Photo"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/addPhotoBtn"
+        app:layout_constraintTop_toTopOf="@+id/addPhotoBtn"
+        app:layout_constraintWidth_percent="0.4" />
+
+    <!-- Profile Info -->
     <TextView
         android:id="@+id/NameT"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="96dp"
+        android:layout_marginTop="24dp"
         android:textColor="@color/colorAccent"
+        android:textSize="22sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.469"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/addPhotoBtn"
+        tools:text="Coffee" />
 
     <TextView
         android:id="@+id/sloganT"
-        android:layout_width="260dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="100dp"
-        android:layout_marginBottom="420dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
         android:textColor="@color/textGray"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:textStyle="italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/NameT"
+        app:layout_constraintWidth_percent="0.8"
+        tools:text="Professional Slogan Here" />
 
+    <!-- Contact Section - Simplified -->
     <TextView
         android:id="@+id/contactT"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        android:text="Contact information"
+        android:layout_marginTop="32dp"
+        android:text="Contact Information"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.453"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sloganT" />
 
+    <!-- Phone -->
     <TextView
-        android:id="@+id/phoneT"
-        android:layout_width="132dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="28dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.143"
+        android:id="@+id/phoneLabelT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Phone:"
+        android:layout_marginStart="40dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/contactT" />
+
+    <TextView
+        android:id="@+id/phoneT"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="40dp"
+        app:layout_constraintBottom_toBottomOf="@+id/phoneLabelT"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/phoneLabelT"
+        app:layout_constraintTop_toTopOf="@+id/phoneLabelT"
+        tools:text="8888 8888" />
+
+    <!-- Email -->
+    <TextView
+        android:id="@+id/emailLabelT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Email:"
+        app:layout_constraintStart_toStartOf="@+id/phoneLabelT"
+        app:layout_constraintTop_toBottomOf="@+id/phoneLabelT" />
 
     <TextView
         android:id="@+id/emailT"
-        android:layout_width="151dp"
-        android:layout_height="41dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="28dp"
-        app:layout_constraintStart_toEndOf="@+id/phoneT"
-        app:layout_constraintTop_toBottomOf="@+id/contactT" />
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="40dp"
+        app:layout_constraintBottom_toBottomOf="@+id/emailLabelT"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/emailLabelT"
+        app:layout_constraintTop_toTopOf="@+id/emailLabelT"
+        tools:text="company@example.com" />
+
+    <!-- Address -->
+    <TextView
+        android:id="@+id/addressLabelT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Address:"
+        app:layout_constraintStart_toStartOf="@+id/emailLabelT"
+        app:layout_constraintTop_toBottomOf="@+id/emailLabelT" />
 
     <TextView
         android:id="@+id/adressT"
-        android:layout_width="330dp"
-        android:layout_height="58dp"
-        android:layout_marginTop="28dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="40dp"
+        app:layout_constraintBottom_toBottomOf="@+id/addressLabelT"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/phoneT" />
+        app:layout_constraintStart_toEndOf="@+id/addressLabelT"
+        app:layout_constraintTop_toTopOf="@+id/addressLabelT"
+        tools:text="Santa Clara, San Carlos" />
 
-    <Button
-        android:id="@+id/editProfileBtn"
-        android:layout_width="244dp"
-        android:layout_height="42dp"
-        android:layout_marginTop="28dp"
-        android:text="Edit profile"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mapAdressT" />
+    <!-- Map -->
+    <TextView
+        android:id="@+id/mapLabelT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Map:"
+        app:layout_constraintStart_toStartOf="@+id/addressLabelT"
+        app:layout_constraintTop_toBottomOf="@+id/addressLabelT" />
 
     <TextView
         android:id="@+id/mapAdressT"
-        android:layout_width="326dp"
-        android:layout_height="29dp"
-        android:layout_marginTop="24dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/mapLabelT"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.47"
+        app:layout_constraintStart_toEndOf="@+id/mapLabelT"
+        app:layout_constraintTop_toTopOf="@+id/mapLabelT"
+        android:layout_marginEnd="40dp"
+        tools:text="View on Map" />
+
+    <Button
+        android:id="@+id/editProfileBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Edit Profile"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/adressT" />
+        app:layout_constraintTop_toBottomOf="@+id/mapAdressT"
+        app:layout_constraintWidth_percent="0.8" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
