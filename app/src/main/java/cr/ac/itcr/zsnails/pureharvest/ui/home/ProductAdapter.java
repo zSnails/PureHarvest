@@ -56,8 +56,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
         public void bind(Product product) {
             productName.setText(product.getName());
-            productPrice.setText("$" + product.getPrice());
-            Glide.with(productImage.getContext()).load(product.getImageUrl()).into(productImage);
+            productPrice.setText("₡" + (int) product.getPrice()); // Costa Rican Colón
+            Glide.with(productImage.getContext()).load(product.getFirstImageUrl()).into(productImage);
         }
     }
 }

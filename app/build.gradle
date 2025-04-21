@@ -46,6 +46,9 @@ dependencies {
     implementation libs.navigation.ui
     annotationProcessor libs.hilt.compiler
 
+    implementation libs.firebase.firestore
+    implementation libs.firebase.storage
+    implementation libs.firebase.auth
     implementation platform(libs.firebase.bom)
     implementation libs.firebase.analytics
 
@@ -59,4 +62,5 @@ dependencies {
     annotationProcessor libs.compiler
     implementation libs.androidx.lifecycle.viewmodel
     implementation libs.androidx.lifecycle.livedata
+
 }

@@ -1,31 +1,50 @@
 package cr.ac.itcr.zsnails.pureharvest.ui.home;
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import java.util.List;
+
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import java.util.ArrayList;
+import java.util.List;
+
 import cr.ac.itcr.zsnails.pureharvest.data.model.Product;
 
 public class HomeViewModel extends ViewModel {
 
     private MutableLiveData<List<Product>> products = new MutableLiveData<>();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public HomeViewModel() {
-        loadProducts();
+        loadProductsFromFireBase();
     }
 
     public LiveData<List<Product>> getProducts() {
         return products;
     }
 
-    private void loadProducts() {
-        // Simulate fetching products (replace with repository call later)
-        List<Product> productList = new ArrayList<>();
-        productList.add(new Product("1", "Organic Coffee", 12.99, "https://example.com/coffee.jpg"));
-        productList.add(new Product("2", "Honey Jar", 9.99, "https://example.com/honey.jpg"));
-        productList.add(new Product("3", "Green Tea", 7.99, "https://example.com/tea.jpg"));
-        productList.add(new Product("4", "Almond Milk", 5.99, "https://example.com/milk.jpg"));
+    private void loadProductsFromFireBase() {
+        db.collection("products")
+                .get()
+                .addOnSuccessListener(result -> {
+                    List<Product> productList = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : result) {
+                        Product product = document.toObject(Product.class);
+                        productList.add(product);
+                    }
+                    products.setValue(productList);
+                })
+                .addOnFailureListener(e -> {
+                    // Log the error for developers
+                    Log.e("HomeViewModel", "Failed to load products from database", e);
 
-        products.setValue(productList);
+                    // You could set an empty list to avoid app crashing or display a placeholder
+                    products.setValue(new ArrayList<>());
+
+                    // Optional: Show user-friendly message (e.g., using LiveData and Toast in Fragment)
+                });
     }
 }

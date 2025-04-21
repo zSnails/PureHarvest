@@ -1,17 +1,16 @@
 package cr.ac.itcr.zsnails.pureharvest.data.model;
 
+import java.util.List;
+
 public class Product {
 
     private String id;
     private String name;
     private double price;
-    private String imageUrl;
+    private List<String> imageUrls; // Firestore returns an array
 
-    public Product(String id, String name, double price, String imageUrl) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.imageUrl = imageUrl;
+    public Product() {
+        // Required empty constructor for Firebase
     }
 
     public String getId() {
@@ -38,11 +37,11 @@ public class Product {
         this.price = price;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
+    public List<String> getImageUrls() { return imageUrls; }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setImageUrls(List<String> imageUrls) { this.imageUrls = imageUrls; }
+
+    public String getFirstImageUrl() {
+        return (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
     }
 }
