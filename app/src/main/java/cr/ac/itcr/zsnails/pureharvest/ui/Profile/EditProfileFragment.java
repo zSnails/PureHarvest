@@ -54,29 +54,20 @@ public class EditProfileFragment extends Fragment {
                     }
                 });
 
-
-
         saveChangesBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                String name = nameInput.getText().toString();
-                String slogan = sloganInput.getText().toString();
-                String number = numberInput.getText().toString();
-                String email = emailInput.getText().toString();
-                String adress = adressInput.getText().toString();
-                String mapAdress = mapAdressInput.getText().toString();
-
                 Map<String, Object> companyData = new HashMap<>();
 
-                companyData.put("name", name);
-                companyData.put("slogan", slogan);
-                companyData.put("number", number);
-                companyData.put("email", email);
-                companyData.put("adress", adress);
-                companyData.put("mapAdress", mapAdress);
+                companyData.put("name", nameInput.getText().toString());
+                companyData.put("slogan", sloganInput.getText().toString());
+                companyData.put("number", numberInput.getText().toString());
+                companyData.put("email", emailInput.getText().toString());
+                companyData.put("adress", mapAdressInput.getText().toString());
+                companyData.put("mapAdress", mapAdressInput.getText().toString());
 
-                db.collection("Company").document("1").set(companyData);
+                db.collection("Company").document("1").update(companyData);
 
             }
         });
