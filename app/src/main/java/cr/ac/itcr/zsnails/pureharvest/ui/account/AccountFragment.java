@@ -27,14 +27,19 @@ public class AccountFragment extends Fragment {
         binding = FragmentAccountBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textNotifications;
-        notificationsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        //final TextView textView = binding.textNotifications;
+        //notificationsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
         Button profileBtn = root.findViewById(R.id.profileBtn);
+
+        Button ProductsBtn = root.findViewById(R.id.ProductsBtn);
 
         profileBtn.setOnClickListener(v ->
                 Navigation.findNavController(v).navigate(R.id.action_navigation_account_to_profileFragment)
         );
+
+        ProductsBtn.setOnClickListener(v->
+                Navigation.findNavController(v).navigate(R.id.action_navigation_account_to_CompanyProductsFragment));
 
         return root;
     }
