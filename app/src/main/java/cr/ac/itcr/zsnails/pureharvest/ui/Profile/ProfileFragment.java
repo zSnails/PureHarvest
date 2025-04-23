@@ -63,7 +63,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void uploadImageToFirebase(Uri uri) {
-        String fileName = "1"; // Unique filename
+        String fileName = "1.jpg"; // Unique filename
         StorageReference fileRef = storageReference.child("companyImages/" + fileName);
 
         fileRef.putFile(uri)
@@ -80,7 +80,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void loadImageFromFirebase() {
-        String fileName = "1"; // Same name you used during upload
+        String fileName = "1.jpg"; // Same name you used during upload
         StorageReference fileRef = storageReference.child("companyImages/" + fileName);
 
         fileRef.getDownloadUrl()
@@ -95,7 +95,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void deleteImageFromFirebase() {
-        String fileName = "1"; // Same file ID used when uploading
+        String fileName = "1.jpg"; // Same file ID used when uploading
         StorageReference fileRef = storageReference.child("companyImages/" + fileName);
 
         fileRef.delete()
