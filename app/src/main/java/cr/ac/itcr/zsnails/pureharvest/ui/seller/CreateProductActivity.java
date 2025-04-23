@@ -57,7 +57,12 @@ public class CreateProductActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedType = typeSpinner.getSelectedItem().toString();
-                coffeeExtrasContainer.setVisibility(selectedType.equalsIgnoreCase("Café") ? View.VISIBLE : View.GONE);
+
+                if (selectedType.equalsIgnoreCase("Café")) {
+                    coffeeExtrasContainer.setVisibility(View.VISIBLE);
+                } else {
+                    coffeeExtrasContainer.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -70,6 +75,11 @@ public class CreateProductActivity extends AppCompatActivity {
             String ratingStr = ratingEditText.getText().toString().trim();
             String priceStr = priceEditText.getText().toString().trim();
             String description = descriptionEditText.getText().toString().trim();
+
+            if (type.equals("Seleccione un tipo de producto")) {
+                Toast.makeText(this, "Debe seleccionar un tipo de producto", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             if (name.isEmpty() || ratingStr.isEmpty() || priceStr.isEmpty()) {
                 Toast.makeText(this, "Nombre, puntuación y precio son obligatorios", Toast.LENGTH_SHORT).show();
@@ -150,8 +160,17 @@ public class CreateProductActivity extends AppCompatActivity {
     }
 
     private void setupSpinner() {
-        String[] productTypes = {"Café", "Miel", "Hortaliza", "Especialidad", "Gourmet", "Base/Normal", "Orgánico"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, productTypes);
+        String[] productTypes = {
+                "Seleccione un tipo de producto",
+                "Café", "Miel", "Hortaliza", "Especialidad", "Gourmet", "Base/Normal", "Orgánico"
+        };
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_dropdown_item,
+                productTypes
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         typeSpinner.setAdapter(adapter);
     }
 
