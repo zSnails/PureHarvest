@@ -1,33 +1,57 @@
 package cr.ac.itcr.zsnails.pureharvest.firebase;
 
 import android.content.Context;
+import android.net.Uri;
 import android.widget.Toast;
 
-import com.google.firebase.firestore.FirebaseFirestore;
+import androidx.annotation.NonNull;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import cr.ac.itcr.zsnails.pureharvest.model.Product;
 
 public class ProductUploader {
 
     private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+    private final StorageReference storageRef = FirebaseStorage.getInstance().getReference("product_images");
 
     public interface UploadCallback {
         void onSuccess();
         void onFailure(Exception e);
     }
 
-    public void uploadProduct(Context context, Product product, List<android.net.Uri> imageUris, UploadCallback callback) {
-        // TODO: Replace simulation with real image upload to Firebase Storage (ask negrini)
-        Toast.makeText(context, "Simulation mode: images will not be uploaded", Toast.LENGTH_SHORT).show();
+    public void uploadProduct(Context context, Product product, List<Uri> imageUris, UploadCallback callback) {
+        if (imageUris.isEmpty()) {
+            Toast.makeText(context, "Debe seleccionar al menos una imagen", Toast.LENGTH_SHORT).show();
+            callback.onFailure(new Exception("No se seleccionaron imágenes"));
+            return;
+        }
 
-        // Simulate empty image URLs
-        product.imageUrls = Collections.emptyList();
+        List<String> uploadedImageUrls = new ArrayList<>();
+        AtomicInteger uploadCount = new AtomicInteger(0);
 
-        saveProduct(product, callback);
+        for (Uri imageUri : imageUris) {
+            String imageName = UUID.randomUUID().toString();
+            StorageReference imageRef = storageRef.child(imageName);
+
+            imageRef.putFile(imageUri)
+                    .addOnSuccessListener(taskSnapshot -> {
+                        imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                            uploadedImageUrls.add(uri.toString());
+
+                            if (uploadCount.incrementAndGet() == imageUris.size()) { // If all have already been uploaded, we save the product
+                                product.imageUrls = uploadedImageUrls;
+                                saveProduct(product, callback);
+                            }
+                        });
+                    })
+                    .addOnFailureListener(callback::onFailure);
+        }
     }
 
     private void saveProduct(Product product, UploadCallback callback) {
