@@ -1,209 +1,132 @@
-<!-- res/layout/fragment_login.xml -->
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/loginScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp"
-    android:background="@android:color/white">
+    android:padding="24dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal">
+        android:orientation="vertical">
 
-        <!-- Login Title -->
-        <TextView
-            android:id="@+id/tvLoginTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Iniciar sesión"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginTop="24dp" />
-
-        <TextView
-            android:id="@+id/tvLoginSubtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Bienvenido de nuevo"
-            android:layout_marginBottom="24dp" />
-
-        <!-- Login Fields -->
-        <EditText
-            android:id="@+id/etEmailLogin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Correo electrónico"
-            android:inputType="textEmailAddress" />
-
-        <EditText
-            android:id="@+id/etPasswordLogin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Contraseña"
-            android:inputType="textPassword"
-            android:layout_marginTop="8dp" />
-
-        <TextView
-            android:id="@+id/tvForgotPassword"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="¿Olvidaste tu contraseña?"
-            android:textColor="@android:color/holo_blue_dark"
-            android:layout_marginTop="8dp" />
-
-        <Button
-            android:id="@+id/btnSignIn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Iniciar sesión"
-            android:layout_marginTop="16dp" />
-
-        <TextView
-            android:id="@+id/tvRegisterLink"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="¿No tienes cuenta? Regístrate"
-            android:textColor="@android:color/holo_blue_dark"
-            android:layout_marginTop="12dp" />
-
-        <TextView
-            android:id="@+id/tvOrContinueWithLogin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="O continúa con"
-            android:layout_marginTop="24dp" />
-
+        <!-- Login Section -->
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="12dp">
+            android:id="@+id/loginSection"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/etEmailLogin"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:paddingVertical="12dp" />
+
+            <EditText
+                android:id="@+id/etPasswordLogin"
+                android:hint="Contraseña"
+                android:inputType="textPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:paddingVertical="12dp" />
+
+            <Button
+                android:id="@+id/btnSignIn"
+                android:text="Iniciar sesión"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <Button
                 android:id="@+id/btnGoogleLogin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Google" />
+                android:text="Iniciar con Google"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <Button
                 android:id="@+id/btnFacebookLogin"
+                android:text="Iniciar con Facebook"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tvRegisterLink"
+                android:text="¿No tienes cuenta? Regístrate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Facebook"
-                android:layout_marginStart="8dp" />
+                android:paddingTop="12dp" />
         </LinearLayout>
 
-        <!-- Register Title -->
-        <TextView
-            android:id="@+id/tvRegisterTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Crear cuenta"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginTop="32dp"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/tvRegisterSubtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Completa tus datos"
-            android:layout_marginBottom="24dp"
-            android:visibility="gone" />
-
-        <!-- Registro Fields -->
-        <EditText
-            android:id="@+id/etFullNameRegister"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Nombre completo"
-            android:visibility="gone" />
-
-        <EditText
-            android:id="@+id/etEmailRegister"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Correo electrónico"
-            android:inputType="textEmailAddress"
-            android:visibility="gone"
-            android:layout_marginTop="8dp" />
-
-        <EditText
-            android:id="@+id/etPhoneRegister"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Teléfono"
-            android:inputType="phone"
-            android:visibility="gone"
-            android:layout_marginTop="8dp" />
-
-        <EditText
-            android:id="@+id/etPasswordRegister"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Contraseña"
-            android:inputType="textPassword"
-            android:visibility="gone"
-            android:layout_marginTop="8dp" />
-
-        <EditText
-            android:id="@+id/etConfirmPasswordRegister"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Confirmar contraseña"
-            android:inputType="textPassword"
-            android:visibility="gone"
-            android:layout_marginTop="8dp" />
-
-        <Button
-            android:id="@+id/btnSignUp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Registrarse"
-            android:layout_marginTop="16dp"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/tvHaveAccount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="¿Ya tienes cuenta? Inicia sesión"
-            android:textColor="@android:color/holo_blue_dark"
-            android:layout_marginTop="12dp"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/tvOrContinueWithRegister"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="O regístrate con"
-            android:layout_marginTop="24dp"
-            android:visibility="gone" />
-
+        <!-- Register Section -->
         <LinearLayout
-            android:id="@+id/llRegisterSocials"
-            android:layout_width="wrap_content"
+            android:id="@+id/registerSection"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="12dp"
             android:visibility="gone">
+
+            <EditText
+                android:id="@+id/etFullNameRegister"
+                android:hint="Nombre completo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/etEmailRegister"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/etPhoneRegister"
+                android:hint="Teléfono"
+                android:inputType="phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/etPasswordRegister"
+                android:hint="Contraseña"
+                android:inputType="textPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/etConfirmPasswordRegister"
+                android:hint="Confirmar contraseña"
+                android:inputType="textPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/btnSignUp"
+                android:text="Registrarse"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <Button
                 android:id="@+id/btnGoogleRegister"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Google" />
+                android:text="Registrarse con Google"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <Button
                 android:id="@+id/btnFacebookRegister"
+                android:text="Registrarse con Facebook"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tvHaveAccount"
+                android:text="¿Ya tienes cuenta? Inicia sesión"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Facebook"
-                android:layout_marginStart="8dp" />
+                android:paddingTop="12dp" />
         </LinearLayout>
 
     </LinearLayout>
