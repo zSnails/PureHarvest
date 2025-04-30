@@ -96,15 +96,15 @@ public class ShoppingCartViewModel extends ViewModel {
     public void updateItem(Item item) {
         if (item.getAmount() < 0)
             throw new IllegalStateException("an item's amount cannot be negative");
-        executor.execute(() -> {
-            repo.updateAmount(item);
-        });
         int idx = items.getValue().indexOf(item);
         items.getValue().set(idx, item);
         for (ItemOperationEventListener operationListener : operationListeners) {
             operationListener.onItemUpdated(item);
         }
-        computeSubTotal();
+        executor.execute(() -> {
+            repo.updateAmount(item);
+            computeSubTotal();
+        });
     }
 
     public void removeById(Long id) {
