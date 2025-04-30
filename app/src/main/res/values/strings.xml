@@ -2,6 +2,7 @@
     <string name="app_name">Pure Harvest</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_home">Home</string>
+    <string name="products_list_home">Discover New Products</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_account">Account</string>
     <string name="title_activity_example">ExampleActivity</string>
