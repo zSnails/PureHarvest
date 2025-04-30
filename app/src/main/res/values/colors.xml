@@ -8,6 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="colorPrimary">#FFFFFF</color>
-    <color name="colorAccent">#4CAF50</color>
     <color name="textGray">#757575</color>
+    <color name="leaf_green">#47A878</color>
+    <color name="transparent">#00000000</color>
 </resources>
