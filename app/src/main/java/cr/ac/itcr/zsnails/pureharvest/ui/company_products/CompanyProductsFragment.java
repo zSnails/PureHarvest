@@ -53,7 +53,7 @@ public class CompanyProductsFragment extends Fragment {
             String description = productDescription.getText().toString();
 
 
-            Product product = new Product(name, type, price, acidity, description);
+            ProductM product = new ProductM(name, type, price, acidity, description);
 
 
             addProductToFirestore(product);
@@ -62,7 +62,7 @@ public class CompanyProductsFragment extends Fragment {
         return root;
     }
 
-    private void addProductToFirestore(Product product) {
+    private void addProductToFirestore(ProductM product) {
         CollectionReference productsRef = db.collection("products");
 
 

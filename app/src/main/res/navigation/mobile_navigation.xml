@@ -26,8 +26,8 @@
             android:id="@+id/action_navigation_account_to_profileFragment"
             app:destination="@id/profileFragment" />
         <action
-            android:id="@+id/action_navigation_account_to_CompanyProductsFragment"
-            app:destination="@id/CompanyProductsFragment" />
+            android:id="@+id/action_navigation_account_to_productsOptionsFragment"
+            app:destination="@id/productsOptionsFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -49,4 +49,21 @@
         android:label="Products"
         tools:layout="@layout/products"
         />
+    <fragment
+        android:id="@+id/companyProductsListFragment"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.company_products.CompanyProductsListFragment"
+        android:label="fragment_compnay_products_list"
+        tools:layout="@layout/fragment_compnay_products_list" />
+    <fragment
+        android:id="@+id/productsOptionsFragment"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.company_products.ProductsOptionsFragment"
+        android:label="fragment_products_options"
+        tools:layout="@layout/fragment_products_options" >
+        <action
+            android:id="@+id/action_productsOptionsFragment_to_CompanyProductsFragment"
+            app:destination="@id/CompanyProductsFragment" />
+        <action
+            android:id="@+id/action_productsOptionsFragment_to_companyProductsListFragment"
+            app:destination="@id/companyProductsListFragment" />
+    </fragment>
 </navigation>

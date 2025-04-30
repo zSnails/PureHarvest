@@ -39,7 +39,7 @@ public class AccountFragment extends Fragment {
         );
 
         ProductsBtn.setOnClickListener(v->
-                Navigation.findNavController(v).navigate(R.id.action_navigation_account_to_CompanyProductsFragment));
+                Navigation.findNavController(v).navigate(R.id.action_navigation_account_to_productsOptionsFragment));
 
         return root;
     }
