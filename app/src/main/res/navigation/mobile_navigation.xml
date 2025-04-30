@@ -53,7 +53,11 @@
         android:id="@+id/companyProductsListFragment"
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.company_products.CompanyProductsListFragment"
         android:label="fragment_compnay_products_list"
-        tools:layout="@layout/fragment_compnay_products_list" />
+        tools:layout="@layout/fragment_compnay_products_list" >
+        <action
+            android:id="@+id/action_companyProductsListFragment_to_editProductFragment"
+            app:destination="@id/editProductFragment" />
+    </fragment>
     <fragment
         android:id="@+id/productsOptionsFragment"
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.company_products.ProductsOptionsFragment"
@@ -66,4 +70,9 @@
             android:id="@+id/action_productsOptionsFragment_to_companyProductsListFragment"
             app:destination="@id/companyProductsListFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/editProductFragment"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.company_products.EditProductFragment"
+        android:label="fragment_edit_product"
+        tools:layout="@layout/fragment_edit_product" />
 </navigation>

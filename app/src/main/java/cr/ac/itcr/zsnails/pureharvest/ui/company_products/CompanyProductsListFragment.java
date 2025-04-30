@@ -76,12 +76,14 @@ public class CompanyProductsListFragment extends Fragment {
 
                         int price = priceLong.intValue();
 
+                        // Aquí es donde debes asegurarte de que el ID se pase correctamente al constructor de Product
                         StorageReference imageRef = storage.getReference()
                                 .child("product_images/" + id + ".jpg");
 
                         imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                             String imageUrl = uri.toString();
-                            Product product = new Product(name, price, imageUrl);
+                            // Aquí el constructor de Product debe recibir ID, nombre, precio y URL de la imagen
+                            Product product = new Product(id, name, price, imageUrl);
                             productList.add(product);
 
                             // Solo actualizar una vez todos estén listos
@@ -90,7 +92,7 @@ public class CompanyProductsListFragment extends Fragment {
                             }
                         }).addOnFailureListener(e -> {
                             // Si no hay imagen, igual mostrar producto con imagen por defecto (opcional)
-                            Product product = new Product(name, price, null); // o una imagen por defecto
+                            Product product = new Product(id, name, price, null); // o una imagen por defecto
                             productList.add(product);
 
                             if (productList.size() == total) {
@@ -100,6 +102,7 @@ public class CompanyProductsListFragment extends Fragment {
                     }
                 });
     }
+
 
 
 }
