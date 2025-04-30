@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:text="$0.00"
             android:textSize="14sp"
-            android:textColor="@android:color/holo_green_dark"
+            android:textColor="@color/leaf_green"
             android:paddingTop="4dp" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>
