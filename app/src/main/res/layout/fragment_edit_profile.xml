@@ -149,17 +149,31 @@
             android:layout_marginTop="8dp" />
 
         <!-- Save Button -->
+
         <Button
             android:id="@+id/saveChangesBtn"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Save Changes"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="8dp"
             android:backgroundTint="@color/leaf_green"
+            android:text="Save Changes"
             app:layout_constraintTop_toBottomOf="@+id/mapAdressInput"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="32dp"
-            android:layout_marginBottom="24dp" />
+            app:layout_constraintEnd_toStartOf="@+id/cancelBtn" />
+
+        <Button
+            android:id="@+id/cancelBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:layout_marginStart="8dp"
+            android:backgroundTint="@color/leaf_green"
+            android:text="Cancel"
+            app:layout_constraintTop_toBottomOf="@+id/mapAdressInput"
+            app:layout_constraintStart_toEndOf="@+id/saveChangesBtn"
+            app:layout_constraintEnd_toEndOf="parent" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

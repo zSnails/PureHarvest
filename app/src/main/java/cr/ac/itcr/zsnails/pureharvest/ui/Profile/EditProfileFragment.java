@@ -3,6 +3,7 @@ package cr.ac.itcr.zsnails.pureharvest.ui.Profile;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +41,7 @@ public class EditProfileFragment extends Fragment {
         EditText adressInput = root.findViewById(R.id.adressInput);
         EditText mapAdressInput = root.findViewById(R.id.mapAdressInput);
         Button saveChangesBtn = root.findViewById(R.id.saveChangesBtn);
+        Button cancelBtn = root.findViewById(R.id.cancelBtn);
 
 
         db.collection("Company").document("1").get()
@@ -71,6 +73,8 @@ public class EditProfileFragment extends Fragment {
 
             }
         });
+
+        cancelBtn.setOnClickListener(v-> Navigation.findNavController(v).navigate(R.id.action_editProfileFragment_to_profileFragment));
 
         return root;
     }
