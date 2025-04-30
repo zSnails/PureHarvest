@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.Source;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,7 @@ public class HomeViewModel extends ViewModel {
 
     private void loadProductsFromFireBase() {
         db.collection("products")
-                .get()
+                .get(Source.SERVER)
                 .addOnSuccessListener(result -> {
                     List<Product> productList = new ArrayList<>();
                     for (QueryDocumentSnapshot document : result) {
