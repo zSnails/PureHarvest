@@ -61,7 +61,7 @@ public final class ShoppingCartFragment extends Fragment
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setPositiveButton(android.R.string.yes,
                         (dialogInterface, i) ->
-                                shoppingCart.removeAllItems(shoppingCart::loadAllItems))
+                                shoppingCart.removeAllItems())
                 .setNegativeButton(android.R.string.no, null)
                 .create();
         shoppingCart.loadAllItems();
@@ -94,7 +94,7 @@ public final class ShoppingCartFragment extends Fragment
     }
 
     public void onResetDatabaseClick(View view) {
-        shoppingCart.removeAllItems(shoppingCart::loadAllItems);
+        shoppingCart.removeAllItems();
     }
 
     public void onSeedClick(View view) {

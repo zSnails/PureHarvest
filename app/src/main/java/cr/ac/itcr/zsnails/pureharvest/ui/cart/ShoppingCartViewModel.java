@@ -63,15 +63,17 @@ public class ShoppingCartViewModel extends ViewModel {
     private void computeSubTotal() {
         var it = items.getValue();
         if (it == null) return;
-        Double total = it.stream().mapToDouble(i -> i.getPrice() * i.getAmount()).sum();
-        subtotal.postValue(total);
+        double total = it.stream().mapToDouble(i -> i.getPrice() * i.getAmount()).sum();
+        subtotal.postValue(Double.max(total, 0.0));
     }
 
-    public void removeAllItems(OnCompleteCallback cb) {
+    public void removeAllItems() {
         executor.execute(() -> {
             repo.deleteAll();
+            var value = items.getValue();
+            value.clear();
+            items.postValue(value);
             computeSubTotal();
-            cb.onComplete();
         });
     }
 
