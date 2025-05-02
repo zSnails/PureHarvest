@@ -1,4 +1,7 @@
-// AuthViewModel.java
+
+/* ============================
+   AuthViewModel.java
+   ============================ */
 package cr.ac.itcr.zsnails.pureharvest;
 
 import androidx.lifecycle.LiveData;
@@ -7,7 +10,6 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;

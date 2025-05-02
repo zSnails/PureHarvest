@@ -1,3 +1,6 @@
+/* ============================
+   LoginActivity.java
+   ============================ */
 package cr.ac.itcr.zsnails.pureharvest;
 
 import android.content.Intent;
@@ -80,6 +83,7 @@ public class LoginActivity extends AppCompatActivity {
 
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
+        // Configurar Google Sign-In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(
                 GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -95,12 +99,14 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
+        // Email/Password login
         binding.btnSignIn.setOnClickListener(v -> {
             String email = binding.etEmailLogin.getText().toString();
             String pass  = binding.etPasswordLogin.getText().toString();
             authViewModel.login(email, pass);
         });
 
+        // Email/Password registration
         binding.btnSignUp.setOnClickListener(v -> {
             String name     = binding.etFullNameRegister.getText().toString();
             String email    = binding.etEmailRegister.getText().toString();
@@ -114,26 +120,26 @@ public class LoginActivity extends AppCompatActivity {
             authViewModel.register(name, email, phone, pass);
         });
 
+        // Google Sign-In
         binding.btnGoogleLogin.setOnClickListener(v -> {
             Intent intent = googleSignInClient.getSignInIntent();
             googleLauncher.launch(intent);
         });
-
         binding.btnGoogleRegister.setOnClickListener(v -> binding.btnGoogleLogin.performClick());
 
+        // Facebook Login
         binding.btnFacebookLogin.setOnClickListener(v -> {
             LoginManager.getInstance()
                     .logInWithReadPermissions(this, Arrays.asList("email","public_profile"));
             LoginManager.getInstance().registerCallback(
                     callbackManager,
                     new FacebookCallback<LoginResult>() {
-                        @Override
-                        public void onSuccess(LoginResult result) {
+                        @Override public void onSuccess(LoginResult result) {
                             AuthCredential cred = FacebookAuthProvider
                                     .getCredential(result.getAccessToken().getToken());
                             authViewModel.loginWithCredential(cred);
                         }
-                        @Override public void onCancel() { }
+                        @Override public void onCancel() {}
                         @Override public void onError(FacebookException error) {
                             Toast.makeText(LoginActivity.this,
                                     "FB error: " + error.getMessage(),
@@ -142,7 +148,6 @@ public class LoginActivity extends AppCompatActivity {
                     }
             );
         });
-
         binding.btnFacebookRegister.setOnClickListener(v -> binding.btnFacebookLogin.performClick());
 
         binding.tvRegisterLink.setOnClickListener(v -> showRegister());

@@ -1,26 +1,44 @@
 {
   "project_info": {
-    "project_number": "621037403632",
-    "project_id": "pure-harvest-1d286",
-    "storage_bucket": "pure-harvest-1d286.firebasestorage.app"
+    "project_number": "1010691427014",
+    "project_id": "pureharvest-44df8",
+    "storage_bucket": "pureharvest-44df8.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:621037403632:android:b3894ceb2ea3813990f135",
+        "mobilesdk_app_id": "1:1010691427014:android:b4607b339bedb4b57765c7",
         "android_client_info": {
           "package_name": "cr.ac.itcr.zsnails.pureharvest"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1010691427014-drl8n6dpoius89e3a1g6c30qefigivch.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "cr.ac.itcr.zsnails.pureharvest",
+            "certificate_hash": "4a90e1afd02120e889e1ea80d7f05f58b076f06d"
+          }
+        },
+        {
+          "client_id": "1010691427014-oj3bad1htq6le1taq5vtjkl1mccml62h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyBr72pnWgSQOB8o69mU6KmRmBsHNzafOqo"
+          "current_key": "AIzaSyBqHkGYGF_N5QW3z9eIa3-TwCkx2q9xa_o"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1010691427014-oj3bad1htq6le1taq5vtjkl1mccml62h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
