@@ -7,7 +7,8 @@
     android:background="@android:color/white"
     android:padding="8dp"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+     >
 
     <!-- Image with shadow using CardView -->
     <androidx.cardview.widget.CardView
@@ -35,7 +36,7 @@
         android:id="@+id/productName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Product Name"
+        android:text="@string/product_name"
         android:textSize="14sp"
         android:textColor="@color/black"
         android:maxLines="2"
@@ -50,19 +51,19 @@
         android:id="@+id/productPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="₡0.0"
-        android:textSize="16sp"
+        android:text="@string/colones"
+        android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="@color/leaf_green"
         app:layout_constraintTop_toBottomOf="@id/productName"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="4dp" />
+        android:layout_marginTop="16dp" />
 
     <!-- Shopping cart icon button -->
     <ImageView
         android:id="@+id/addToCartButton"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:src="@drawable/baseline_add_shopping_cart_24"
         android:contentDescription="@string/add_to_cart"
         android:clickable="true"
