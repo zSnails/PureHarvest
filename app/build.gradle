@@ -20,6 +20,11 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        javaCompileOptions {
+            it.annotationProcessorOptions {
+                it.arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
 
     buildTypes {
@@ -40,6 +45,12 @@ dependencies {
     implementation libs.navigation.fragment
     implementation libs.activity
     implementation libs.navigation.ui
+    implementation libs.legacy.support.v4
+    implementation libs.lifecycle.livedata.ktx
+    implementation libs.lifecycle.viewmodel.ktx
+    implementation libs.room.runtime
+
+    annotationProcessor libs.room.compiler
     annotationProcessor libs.hilt.compiler
 
     implementation platform(libs.firebase.bom)
