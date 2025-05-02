@@ -13,4 +13,5 @@
     <dimen name="shopping_cart_amount_vertical_padding">7sp</dimen>
     <dimen name="list_item_margin">10sp</dimen>
     <dimen name="small_rectangle_button_height">30dp</dimen>
+    <dimen name="random_item_list_margin">16dp</dimen>
 </resources>

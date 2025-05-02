@@ -2,6 +2,7 @@
     <string name="app_name">Pure Harvest</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_home">Home</string>
+    <string name="products_list_home">Discover New Products</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_account">Account</string>
     <string name="title_activity_example">ExampleActivity</string>
@@ -14,4 +15,8 @@
     <string name="colones">₡%1$.2f</string>
     <string name="title_shopping_cart_clear">Clear Cart</string>
     <string name="shopping_cart_clear_confirmation_dialog_message">Are you sure you want to clear your shopping cart?</string>
+    <string name="product_image">Product image</string>
+    <string name="product_name">[]</string>
+    <string name="add_to_cart">Add to cart</string>
+    <string name="colones">₡%1$.2f</string>
 </resources>

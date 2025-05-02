@@ -12,6 +12,10 @@ android {
         viewBinding = true
     }
 
+    viewBinding {
+        enabled = true
+    }
+
     defaultConfig {
         applicationId "cr.ac.itcr.zsnails.pureharvest"
         minSdk 24
@@ -53,6 +57,9 @@ dependencies {
     annotationProcessor libs.room.compiler
     annotationProcessor libs.hilt.compiler
 
+    implementation libs.firebase.firestore
+    implementation libs.firebase.storage
+    implementation libs.firebase.auth
     implementation platform(libs.firebase.bom)
     implementation libs.firebase.analytics
 
@@ -61,4 +68,10 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
+
+    implementation libs.glide
+    annotationProcessor libs.compiler
+    implementation libs.androidx.lifecycle.viewmodel
+    implementation libs.androidx.lifecycle.livedata
+
 }
