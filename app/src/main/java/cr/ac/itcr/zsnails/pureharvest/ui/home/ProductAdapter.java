@@ -1,5 +1,6 @@
 package cr.ac.itcr.zsnails.pureharvest.ui.home;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import cr.ac.itcr.zsnails.pureharvest.R;
 import java.util.List;
 
 import cr.ac.itcr.zsnails.pureharvest.data.model.Product;
+import cr.ac.itcr.zsnails.pureharvest.databinding.ItemProductBinding;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
 
@@ -51,9 +53,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         private ImageView productImage;
         private TextView productName;
         private TextView productPrice;
+        private Context ctx;
+        private ItemProductBinding itemProductBinding;
 
         public ProductViewHolder(View itemView) {
             super(itemView);
+            this.ctx = itemView.getContext();
             productImage = itemView.findViewById(R.id.productImage);
             productName = itemView.findViewById(R.id.productName);
             productPrice = itemView.findViewById(R.id.productPrice);
@@ -70,7 +75,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
         public void bind(Product product) {
             productName.setText(product.getName());
-            productPrice.setText("₡" + product.getPrice());
+            productPrice.setText(this.ctx.getString(R.string.colones, product.getPrice()));
             Glide.with(productImage.getContext()).load(product.getFirstImageUrl()).into(productImage);
         }
     }

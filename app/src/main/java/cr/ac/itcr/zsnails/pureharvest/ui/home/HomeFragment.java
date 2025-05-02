@@ -10,7 +10,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import java.util.ArrayList;
 
+import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentHomeBinding;
+import cr.ac.itcr.zsnails.pureharvest.decoration.MarginItemDecoration;
 
 public class HomeFragment extends Fragment {
 
@@ -30,6 +32,9 @@ public class HomeFragment extends Fragment {
         viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
 
         final ProductAdapter adapter = new ProductAdapter(new ArrayList<>());
+        this.binding.recyclerView.addItemDecoration(
+                new MarginItemDecoration(
+                        (int) getResources().getDimension(R.dimen.random_item_list_margin)));
         binding.recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         binding.recyclerView.setAdapter(adapter);
 
