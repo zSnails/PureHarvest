@@ -1,4 +1,3 @@
-
 /* ============================
    AuthViewModel.java
    ============================ */
@@ -45,9 +44,11 @@ public class AuthViewModel extends ViewModel {
                         loginResult.setValue(true);
                     } else {
                         loginResult.setValue(false);
-                        errorMessage.setValue(task.getException() != null
-                                ? task.getException().getMessage()
-                                : "Error al autenticar");
+                        errorMessage.setValue(
+                                task.getException() != null
+                                        ? task.getException().getMessage()
+                                        : "Error al autenticar"
+                        );
                     }
                 });
     }
@@ -74,9 +75,11 @@ public class AuthViewModel extends ViewModel {
                                 });
                     } else {
                         registerResult.setValue(false);
-                        errorMessage.setValue(task.getException() != null
-                                ? task.getException().getMessage()
-                                : "Error al registrar usuario");
+                        errorMessage.setValue(
+                                task.getException() != null
+                                        ? task.getException().getMessage()
+                                        : "Error al registrar usuario"
+                        );
                     }
                 });
     }
@@ -91,9 +94,11 @@ public class AuthViewModel extends ViewModel {
                         loginResult.setValue(true);
                     } else {
                         loginResult.setValue(false);
-                        errorMessage.setValue(task.getException() != null
-                                ? task.getException().getMessage()
-                                : "Error con credencial externa");
+                        errorMessage.setValue(
+                                task.getException() != null
+                                        ? task.getException().getMessage()
+                                        : "Error con credencial externa"
+                        );
                     }
                 });
     }

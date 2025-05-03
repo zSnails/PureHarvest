@@ -27,6 +27,8 @@
             android:label="@string/title_activity_login"
             android:theme="@style/Theme.PureHarvest" />
 
+        <activity android:name=".RegisterActivity"
+            android:exported="false"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
