@@ -34,9 +34,6 @@ public class AccountFragment extends Fragment {
         settingsBtn.setOnClickListener(v ->
                 Navigation.findNavController(v).navigate(R.id.action_navigation_account_to_settingsFragment));
 
-        final TextView textView = binding.textNotifications;
-        notificationsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-
         return root;
     }
 
