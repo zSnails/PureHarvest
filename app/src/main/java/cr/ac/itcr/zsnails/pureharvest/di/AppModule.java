@@ -5,6 +5,8 @@ import android.content.Context;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.room.Room;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -38,5 +40,11 @@ public class AppModule {
     @Singleton
     public ShoppingCartRepository provideShoppingCartRepository(final LocalCartDatabase db) {
         return new ShoppingCartRepository(db);
+    }
+
+    @Provides
+    @Singleton
+    public FirebaseFirestore provideFirebaseFirestore() {
+        return FirebaseFirestore.getInstance();
     }
 }
