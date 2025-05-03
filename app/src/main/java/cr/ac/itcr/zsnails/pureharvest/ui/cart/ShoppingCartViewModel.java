@@ -48,22 +48,38 @@ public class ShoppingCartViewModel extends ViewModel {
 
     public void loadAllItems() {
         executor.execute(() -> {
-            var it = repo.all().stream().map(a -> (Item) a).collect(Collectors.toList());
-            items.postValue(it);
-            computeSubTotal(it);
+            HashMap<String, Item> items = new HashMap<>();
+            var it = repo.all().stream().map(a -> {
+                items.put(a.getProductId(), a);
+                return (Item) a;
+            }).collect(Collectors.toList());
+
+            Log.d("items:size", String.format("%d", it.size()));
+            if (it.isEmpty()) return;
+            db.collection("products")
+                    .whereIn("id",
+                            it.stream().map(Item::getProductId).collect(Collectors.toList()))
+                    .addSnapshotListener((snapshot, err) -> {
+                        if (snapshot.isEmpty()) return;
+                        var res = snapshot.toObjects(Product.class).stream().map(p -> {
+                            var ci = new CartItem();
+                            ci.id = items.get(p.getId()).getId();
+                            ci.productId = p.getId();
+                            ci.amount = items.get(p.getId()).getAmount();
+                            ci.setProduct(p);
+                            return (Item) ci;
+                        }).collect(Collectors.toList());
+                        this.items.postValue(res);
+                        computeSubTotal();
+                    });
         });
-    }
-
-
-    private void computeSubTotal(List<Item> it) {
-        Double total = it.stream().mapToDouble(i -> i.getPrice() * i.getAmount()).sum();
-        subtotal.postValue(total);
     }
 
     private void computeSubTotal() {
         var it = items.getValue();
         if (it == null) return;
         double total = it.stream().mapToDouble(i -> i.getPrice() * i.getAmount()).sum();
+        Log.d("subtotal", String.format("%f", total));
         subtotal.postValue(Double.max(total, 0.0));
     }
 
