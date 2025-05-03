@@ -16,6 +16,6 @@
     <string name="title_shopping_cart_clear">Clear Cart</string>
     <string name="shopping_cart_clear_confirmation_dialog_message">Are you sure you want to clear your shopping cart?</string>
     <string name="product_image">Product image</string>
-    <string name="product_name">[]</string>
+    <string name="product_name">[NAME]</string>
     <string name="add_to_cart">Add to cart</string>
 </resources>
