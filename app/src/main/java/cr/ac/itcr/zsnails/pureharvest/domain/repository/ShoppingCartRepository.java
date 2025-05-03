@@ -30,8 +30,8 @@ public class ShoppingCartRepository {
         dao.deleteById(id);
     }
 
-    public void insert(CartItem... items) {
-        dao.insertAll(items);
+    public long insert(CartItem items) {
+        return dao.insertAll(items);
     }
 
     public List<CartItem> all() {
