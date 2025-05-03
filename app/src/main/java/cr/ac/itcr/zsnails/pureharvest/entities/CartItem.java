@@ -4,10 +4,12 @@ package cr.ac.itcr.zsnails.pureharvest.entities;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
 
+import cr.ac.itcr.zsnails.pureharvest.data.model.Product;
 import cr.ac.itcr.zsnails.pureharvest.ui.cart.Item;
 
 @Entity(tableName = "cart")
@@ -21,12 +23,10 @@ public class CartItem implements Item, Serializable {
     @ColumnInfo(name = "amount")
     public Integer amount;
 
-    public CartItem() {
-    }
-
-    public CartItem(@NonNull final String productId, final Integer amount) {
-        this.productId = productId;
-        this.amount = amount;
+    @Ignore
+    public Product product;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     @Override
@@ -41,17 +41,19 @@ public class CartItem implements Item, Serializable {
 
     @Override
     public String getName() {
-        return "mock name";
+        if (product == null) return "null product";
+        return product.getName();
     }
 
     @Override
     public Double getPrice() {
-        return 16.53;
+        if (product == null) return -1.0d;
+        return product.getPrice();
     }
 
     @Override
     public String getType() {
-        return "mock type";
+        return "TODO: add product type";
     }
 
     @Override
