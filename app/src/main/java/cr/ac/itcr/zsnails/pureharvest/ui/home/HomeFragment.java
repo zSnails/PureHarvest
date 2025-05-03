@@ -30,8 +30,9 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+        shoppingCart = new ViewModelProvider(requireActivity()).get(ShoppingCartViewModel.class);
 
-        final ProductAdapter adapter = new ProductAdapter(new ArrayList<>());
+        final ProductAdapter adapter = new ProductAdapter(new ArrayList<>(), this);
         this.binding.recyclerView.addItemDecoration(
                 new MarginItemDecoration(
                         (int) getResources().getDimension(R.dimen.random_item_list_margin)));

@@ -43,7 +43,7 @@ public final class ShoppingCartFragment extends Fragment
             @NonNull LayoutInflater inflater,
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
-        this.shoppingCart = new ViewModelProvider(this).get(ShoppingCartViewModel.class);
+        this.shoppingCart = new ViewModelProvider(requireActivity()).get(ShoppingCartViewModel.class);
         this.binding = FragmentShoppingCartBinding.inflate(inflater, container, false);
         this.adapter = new ShoppingCartAdapter(this);
         this.shoppingCart.addItemOperationEventListener(adapter);
@@ -64,7 +64,6 @@ public final class ShoppingCartFragment extends Fragment
                                 shoppingCart.removeAllItems())
                 .setNegativeButton(android.R.string.no, null)
                 .create();
-        shoppingCart.loadAllItems();
         shoppingCart.items.observe(getViewLifecycleOwner(), (it) -> {
             adapter.setItems(it);
         });
