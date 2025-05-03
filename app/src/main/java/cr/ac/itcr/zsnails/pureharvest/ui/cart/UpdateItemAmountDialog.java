@@ -14,6 +14,7 @@ import androidx.fragment.app.DialogFragment;
 import java.util.Locale;
 
 import cr.ac.itcr.zsnails.pureharvest.R;
+import cr.ac.itcr.zsnails.pureharvest.entities.CartDisplayItem;
 
 public final class UpdateItemAmountDialog extends DialogFragment {
 
@@ -25,7 +26,7 @@ public final class UpdateItemAmountDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         int position = getArguments().getInt("position");
         var inflater = getLayoutInflater();
-        final Item item = getBundleItem();
+        final CartDisplayItem item = getBundleItem();
         View inflated = inflater.inflate(R.layout.cart_item_amount_edit_dialog, null);
         AppCompatEditText edit = inflated.findViewById(R.id.cart_item_amount_edit);
         edit.setText(String.format(Locale.getDefault(), "%d", item.getAmount()));
@@ -39,11 +40,11 @@ public final class UpdateItemAmountDialog extends DialogFragment {
         return builder.create();
     }
 
-    private Item getBundleItem() {
+    private CartDisplayItem getBundleItem() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            return getArguments().getSerializable("item", Item.class);
+            return getArguments().getSerializable("item", CartDisplayItem.class);
         } else {
-            return (Item) getArguments().getSerializable("item");
+            return (CartDisplayItem) getArguments().getSerializable("item");
         }
     }
 
@@ -52,6 +53,6 @@ public final class UpdateItemAmountDialog extends DialogFragment {
     }
 
     public interface ItemAmountAcceptListener {
-        void onAmountAccepted(Item item, int position, int amount);
+        void onAmountAccepted(CartDisplayItem item, int position, int amount);
     }
 }

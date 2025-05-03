@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModel;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -17,8 +16,8 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
-import cr.ac.itcr.zsnails.pureharvest.data.model.Product;
 import cr.ac.itcr.zsnails.pureharvest.domain.repository.ShoppingCartRepository;
+import cr.ac.itcr.zsnails.pureharvest.entities.CartDisplayItem;
 import cr.ac.itcr.zsnails.pureharvest.entities.CartItem;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
@@ -30,7 +29,7 @@ public class ShoppingCartViewModel extends ViewModel {
     private final FirebaseFirestore db;
     private final ArrayList<CartItem> seedData = new ArrayList<>(List.of());
     private final List<ItemOperationEventListener> operationListeners = new LinkedList<>();
-    public MutableLiveData<List<Item>> items = new MutableLiveData<>(new ArrayList<>());
+    public MutableLiveData<List<CartDisplayItem>> items;
     public MutableLiveData<Double> subtotal = new MutableLiveData<>(0.0);
 
     @Inject
@@ -42,47 +41,24 @@ public class ShoppingCartViewModel extends ViewModel {
         this.repo = repo;
         this.executor = executor;
         this.db = db;
-        loadAllItems();
+        getCartDisplayItems();
+        items.observeForever(cartDisplayItems -> {
+            computeSubTotal();
+        });
     }
 
     public void addItemOperationEventListener(ItemOperationEventListener cb) {
         this.operationListeners.add(cb);
     }
 
-    public void loadAllItems() {
-        executor.execute(() -> {
-            HashMap<String, Item> items = new HashMap<>();
-            var it = repo.all().stream().map(a -> {
-                items.put(a.getProductId(), a);
-                return (Item) a;
-            }).collect(Collectors.toList());
-
-            Log.d("items:size", String.format("%d", it.size()));
-            if (it.isEmpty()) return;
-            db.collection("products")
-                    .whereIn("id",
-                            it.stream().map(Item::getProductId).collect(Collectors.toList()))
-                    .addSnapshotListener((snapshot, err) -> {
-                        if (snapshot.isEmpty()) return;
-                        var res = snapshot.toObjects(Product.class).stream().map(p -> {
-                            var ci = new CartItem();
-                            ci.id = items.get(p.getId()).getId();
-                            ci.productId = p.getId();
-                            ci.amount = items.get(p.getId()).getAmount();
-                            ci.setProduct(p);
-                            return (Item) ci;
-                        }).collect(Collectors.toList());
-                        this.items.postValue(res);
-                        computeSubTotal();
-                    });
-        });
+    public void getCartDisplayItems() {
+        if (this.items == null) this.items = repo.getCartDisplayItems();
     }
 
     private void computeSubTotal() {
         var it = items.getValue();
         if (it == null) return;
         double total = it.stream().mapToDouble(i -> i.getPrice() * i.getAmount()).sum();
-        Log.d("subtotal", String.format("%f", total));
         subtotal.postValue(Double.max(total, 0.0));
     }
 
@@ -100,13 +76,7 @@ public class ShoppingCartViewModel extends ViewModel {
 
     public void insertItem(CartItem item) {
         executor.execute(() -> {
-            long id = repo.insert(item);
-            for (ItemOperationEventListener operationListener : operationListeners) {
-                operationListener.onItemCreated(item);
-            }
-            item.id = id;
-            items.getValue().add(item);
-            items.postValue(items.getValue());
+            repo.insert(item);
             computeSubTotal();
         });
     }
@@ -120,7 +90,7 @@ public class ShoppingCartViewModel extends ViewModel {
         });
     }
 
-    public void updateItem(Item item) {
+    public void updateItem(CartDisplayItem item) {
         if (item.getAmount() < 0)
             throw new IllegalStateException("an item's amount cannot be negative");
         int idx = items.getValue().indexOf(item);
@@ -142,11 +112,11 @@ public class ShoppingCartViewModel extends ViewModel {
                 .stream()
                 .filter((it) -> it.getId().equals(id)).collect(Collectors.toList()).get(0);
         int idx = items.getValue().indexOf(item);
-        subtotal.postValue(subtotal.getValue() - item.getPrice() * item.getAmount());
         items.getValue().remove(item);
         for (ItemOperationEventListener operationListener : operationListeners) {
             operationListener.onItemRemoved(item, idx);
         }
+        computeSubTotal();
     }
 
     public interface ItemOperationEventListener {

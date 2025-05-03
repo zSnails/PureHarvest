@@ -3,6 +3,7 @@ package cr.ac.itcr.zsnails.pureharvest.ui.cart;
 import static androidx.lifecycle.Lifecycle.State.RESUMED;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentShoppingCartBinding;
 import cr.ac.itcr.zsnails.pureharvest.decoration.MarginItemDecoration;
+import cr.ac.itcr.zsnails.pureharvest.entities.CartDisplayItem;
 import cr.ac.itcr.zsnails.pureharvest.ui.cart.adapter.Card;
 import cr.ac.itcr.zsnails.pureharvest.ui.cart.adapter.ShoppingCartAdapter;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -53,8 +55,6 @@ public final class ShoppingCartFragment extends Fragment
         this.binding.shoppingCartRecyclerView.addItemDecoration(
                 new MarginItemDecoration(
                         (int) getResources().getDimension(R.dimen.list_item_margin)));
-        this.binding.seedDataButton.setOnClickListener(this::onSeedClick);
-        this.binding.resetDataButton.setOnClickListener(this::onResetDatabaseClick);
 
         deletionDialog = new AlertDialog.Builder(requireContext())
                 .setTitle(R.string.shopping_cart_clear_confirmation_dialog_message)
@@ -64,10 +64,12 @@ public final class ShoppingCartFragment extends Fragment
                                 shoppingCart.removeAllItems())
                 .setNegativeButton(android.R.string.no, null)
                 .create();
-        shoppingCart.items.observe(getViewLifecycleOwner(), (it) -> {
+        shoppingCart.items.observe(getViewLifecycleOwner(), it -> {
             adapter.setItems(it);
         });
-        shoppingCart.subtotal.observe(getViewLifecycleOwner(), (total) -> {
+        //this.binding.shoppingCartCheckoutButton.setText(getString(R.string.checkout_total, shoppingCart.subtotal.getValue()));
+        shoppingCart.subtotal.observe(getViewLifecycleOwner(), total -> {
+            Log.d("computing:subtotal", String.format("value of total: %f", total));
             this.binding.shoppingCartCheckoutButton.setText(getString(R.string.checkout_total, total));
         });
         requireActivity().addMenuProvider(this, getViewLifecycleOwner(), RESUMED);
@@ -90,14 +92,6 @@ public final class ShoppingCartFragment extends Fragment
             }
         };
         new ItemTouchHelper(swipeHandler).attachToRecyclerView(this.binding.shoppingCartRecyclerView);
-    }
-
-    public void onResetDatabaseClick(View view) {
-        shoppingCart.removeAllItems();
-    }
-
-    public void onSeedClick(View view) {
-        shoppingCart.seedDatabase(shoppingCart::loadAllItems);
     }
 
     @Override
@@ -132,7 +126,7 @@ public final class ShoppingCartFragment extends Fragment
     }
 
     @Override
-    public void onAmountAccepted(Item item, int position, int amount) {
+    public void onAmountAccepted(CartDisplayItem item, int position, int amount) {
         item.setAmount(amount);
         shoppingCart.updateItem(item);
     }

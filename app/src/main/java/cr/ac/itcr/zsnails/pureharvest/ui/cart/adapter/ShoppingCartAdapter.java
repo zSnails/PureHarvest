@@ -9,13 +9,14 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import cr.ac.itcr.zsnails.pureharvest.entities.CartDisplayItem;
 import cr.ac.itcr.zsnails.pureharvest.ui.cart.Item;
 import cr.ac.itcr.zsnails.pureharvest.ui.cart.ShoppingCartViewModel;
 
 
 public final class ShoppingCartAdapter extends Adapter<Card> implements ShoppingCartViewModel.ItemOperationEventListener {
     private final Card.AmountTapListener amountTapListener;
-    private List<Item> items = new ArrayList<>();
+    private List<CartDisplayItem> items = new ArrayList<>();
 
     public ShoppingCartAdapter(Card.AmountTapListener listener) {
         setHasStableIds(true);
@@ -28,7 +29,7 @@ public final class ShoppingCartAdapter extends Adapter<Card> implements Shopping
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setItems(List<Item> items) {
+    public void setItems(List<CartDisplayItem> items) {
         this.items = items;
         notifyDataSetChanged();
     }
