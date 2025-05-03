@@ -87,17 +87,25 @@ public class ShoppingCartViewModel extends ViewModel {
         executor.execute(() -> {
             repo.deleteAll();
             var value = items.getValue();
-            value.clear();
-            items.postValue(value);
-            computeSubTotal();
+            if (value != null) {
+                value.clear();
+                items.postValue(value);
+                computeSubTotal();
+            }
         });
     }
 
     public void insertItem(CartItem item) {
-        repo.insert(item);
-        for (ItemOperationEventListener operationListener : operationListeners) {
-            operationListener.onItemCreated(item);
-        }
+        executor.execute(() -> {
+            long id = repo.insert(item);
+            for (ItemOperationEventListener operationListener : operationListeners) {
+                operationListener.onItemCreated(item);
+            }
+            item.id = id;
+            items.getValue().add(item);
+            items.postValue(items.getValue());
+            computeSubTotal();
+        });
     }
 
     public void seedDatabase(OnCompleteCallback cb) {
