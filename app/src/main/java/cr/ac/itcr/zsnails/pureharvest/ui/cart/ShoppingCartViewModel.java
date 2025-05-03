@@ -1,11 +1,15 @@
 package cr.ac.itcr.zsnails.pureharvest.ui.cart;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -13,6 +17,7 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import cr.ac.itcr.zsnails.pureharvest.data.model.Product;
 import cr.ac.itcr.zsnails.pureharvest.domain.repository.ShoppingCartRepository;
 import cr.ac.itcr.zsnails.pureharvest.entities.CartItem;
 import dagger.hilt.android.lifecycle.HiltViewModel;
@@ -22,24 +27,22 @@ public class ShoppingCartViewModel extends ViewModel {
 
     private final ShoppingCartRepository repo;
     private final ExecutorService executor;
-    private final ArrayList<CartItem> seedData = new ArrayList<>(Arrays.asList(
-            new CartItem("aaa", 1),
-            new CartItem("aab", 2),
-            new CartItem("aac", 3),
-            new CartItem("aad", 4),
-            new CartItem("aae", 5)
-    ));
+    private final FirebaseFirestore db;
+    private final ArrayList<CartItem> seedData = new ArrayList<>(List.of());
     private final List<ItemOperationEventListener> operationListeners = new LinkedList<>();
-    public MutableLiveData<List<Item>> items = new MutableLiveData<>();
+    public MutableLiveData<List<Item>> items = new MutableLiveData<>(new ArrayList<>());
     public MutableLiveData<Double> subtotal = new MutableLiveData<>(0.0);
 
     @Inject
     public ShoppingCartViewModel(
             @NonNull final ShoppingCartRepository repo,
-            @NonNull final ExecutorService executor
+            @NonNull final ExecutorService executor,
+            @NonNull final FirebaseFirestore db
     ) {
         this.repo = repo;
         this.executor = executor;
+        this.db = db;
+        loadAllItems();
     }
 
     public void addItemOperationEventListener(ItemOperationEventListener cb) {
