@@ -1,22 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/account_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.account.AccountFragment">
+    android:background="@android:color/white"
+    android:padding="24dp">
 
-    <TextView
-        android:id="@+id/text_notifications"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <!-- Logo arriba -->
+
+    <!-- Texto Pure -->
+
+    <!-- Texto Harvest -->
+
+    <!-- Botón Log In -->
+
+    <ImageView
+        android:id="@+id/img_logo"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="212dp"
+        android:contentDescription="TODO"
+        android:scaleType="centerCrop"
+        android:src="@drawable/pessi"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_harvest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Harvest"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/tv_pure"
+        tools:layout_editor_absoluteX="179dp"
+        android:scaleType="centerInside"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="181dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="108dp"
+        android:background="@drawable/rounded_outline"
+        android:text="Log In"
+        android:textAllCaps="false"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.456"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_harvest" />
+
+    <TextView
+        android:id="@+id/tv_pure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Pure"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.307"
+        android:scaleType="centerInside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_logo" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+

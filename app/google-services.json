@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1010691427014-drl8n6dpoius89e3a1g6c30qefigivch.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "cr.ac.itcr.zsnails.pureharvest",
+            "certificate_hash": "4a90e1afd02120e889e1ea80d7f05f58b076f06d"
+          }
+        },
+        {
           "client_id": "1010691427014-oj3bad1htq6le1taq5vtjkl1mccml62h.apps.googleusercontent.com",
           "client_type": 3
         }
