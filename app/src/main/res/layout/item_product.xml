@@ -1,34 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="8dp"
-    android:layout_marginVertical="4dp"
-    android:elevation="2dp">
+    android:layout_margin="6dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="3dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="6dp">
+        android:padding="8dp">
 
         <ImageView
             android:id="@+id/productImage"
             android:layout_width="0dp"
-            android:layout_height="80dp"
+            android:layout_height="120dp"
             android:scaleType="centerCrop"
+
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:srcCompat="@drawable/ic_placeholder_image" />
 
         <TextView
             android:id="@+id/productName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Product Name"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:paddingTop="4dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginHorizontal="4dp"
+            tools:text="Nombre Largo del Producto que Quizás Ocupa Dos Líneas"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+            android:maxLines="2"
+            android:ellipsize="end"
             app:layout_constraintTop_toBottomOf="@id/productImage"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -37,23 +42,27 @@
             android:id="@+id/productPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="$0.00"
-            android:textSize="12sp"
-            android:textColor="@android:color/holo_green_dark"
-            android:paddingTop="2dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="4dp"
+            tools:text="₡1200.00"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:textColor="@color/leaf_green"
+            android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@id/productName"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/manageButton"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Manage"
-            android:textSize="12sp"
-            android:layout_marginTop="6dp"
             android:backgroundTint="@color/leaf_green"
+            android:textColor="@color/white"
+            android:text="Gestionar"
+            android:layout_marginTop="8dp"
+            android:paddingHorizontal="8dp"
             app:layout_constraintTop_toBottomOf="@id/productPrice"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
