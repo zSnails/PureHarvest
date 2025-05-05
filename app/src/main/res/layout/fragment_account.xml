@@ -35,27 +35,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Harvest"
+        android:scaleType="centerInside"
+        android:text="@string/title_harvest"
         android:textColor="#000000"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/tv_pure"
-        tools:layout_editor_absoluteX="179dp"
-        android:scaleType="centerInside"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="185dp" />
 
     <Button
         android:id="@+id/btn_login"
         android:layout_width="181dp"
         android:layout_height="57dp"
-        android:layout_marginTop="108dp"
+        android:layout_marginTop="112dp"
         android:background="@drawable/rounded_outline"
-        android:text="Log In"
+        android:text="@string/login_button_text"
         android:textAllCaps="false"
         android:textColor="#000000"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.456"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_harvest" />
 
@@ -64,7 +63,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="Pure"
+        android:text="@string/title_pure"
         android:textColor="#000000"
         android:textSize="24sp"
         android:textStyle="bold"
