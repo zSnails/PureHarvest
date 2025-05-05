@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(new Intent(MainActivity.this, cr.ac.itcr.zsnails.pureharvest.ui.seller.CreateProductActivity.class));
                     return true;
                 } else if (item.getItemId() == R.id.action_view_product) {
-                    startActivity(new Intent(MainActivity.this, cr.ac.itcr.zsnails.pureharvest.ui.client.ViewProductActivity.class));
+                    startActivity(new Intent(MainActivity.this, cr.ac.itcr.zsnails.pureharvest.ui.client.ProductListActivity.class));
                     return true;
                 }
                 return false;

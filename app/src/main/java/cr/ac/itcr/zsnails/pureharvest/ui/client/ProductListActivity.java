@@ -44,6 +44,13 @@ public class ProductListActivity extends AppCompatActivity {
                     productList.clear();
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         Product product = doc.toObject(Product.class);
+
+                        product.id = doc.getId();
+
+                        if (product.name == null || product.name.isEmpty()) {
+                            product.name = "(ID only) " + product.id;
+                        }
+
                         productList.add(product);
                     }
                     adapter.notifyDataSetChanged();
@@ -51,6 +58,7 @@ public class ProductListActivity extends AppCompatActivity {
                 .addOnFailureListener(e ->
                         Toast.makeText(this, "Error loading products: " + e.getMessage(), Toast.LENGTH_LONG).show());
     }
+
 
     private void onProductClick(Product product) {
         Intent intent = new Intent(this, ViewProductActivity.class);
