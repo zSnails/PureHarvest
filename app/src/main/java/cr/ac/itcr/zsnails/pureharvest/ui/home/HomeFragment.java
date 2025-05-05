@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -69,5 +70,6 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
         item.productId = product.getId();
         item.amount = 1;
         shoppingCart.insertItem(item);
+        Toast.makeText(requireContext(), "Se ha agregado el producto al carrito de compras", Toast.LENGTH_SHORT).show();
     }
 }
