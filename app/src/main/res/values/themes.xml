@@ -2,8 +2,8 @@
     <!-- Base application theme. -->
     <style name="Theme.PureHarvest" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/pure_green</item>
-        <item name="colorPrimaryVariant">@color/pure_green</item>
+        <item name="colorPrimary">@color/leaf_green</item>
+        <item name="colorPrimaryVariant">@color/leaf_green</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/pure_green</item>
@@ -12,5 +12,6 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="android:windowActionBarOverlay">false</item>
     </style>
 </resources>

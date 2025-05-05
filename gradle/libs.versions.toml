@@ -1,6 +1,8 @@
 [versions]
 agp = "8.9.1"
-firebaseBom = "33.11.0"
+compiler = "4.15.1"
+firebaseBom = "33.13.0"
+glide = "4.15.1"
 hiltAndroid = "2.51.1"
 hiltCompiler = "2.56"
 junit = "4.13.2"
@@ -21,9 +23,18 @@ composeBom = "2024.09.00"
 playServicesSafetynet = "18.1.0"
 firebaseInappmessaging = "21.0.2"
 
+legacySupportV4 = "1.0.0"
+lifecycleLivedataKtx = "2.8.7"
+lifecycleViewmodelKtx = "2.8.7"
+roomCompiler = "2.7.1"
+roomRuntime = "2.7.1"
+lifecycle = "2.8.7"
+
 [libraries]
+compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compiler" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltCompiler" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -49,6 +60,16 @@ ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 material3 = { group = "androidx.compose.material3", name = "material3" }
 play-services-safetynet = { group = "com.google.android.gms", name = "play-services-safetynet", version.ref = "playServicesSafetynet" }
 firebase-inappmessaging = { group = "com.google.firebase", name = "firebase-inappmessaging", version.ref = "firebaseInappmessaging" }
+legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
+lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
+lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
+androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycle" }
+androidx-lifecycle-livedata = { module = "androidx.lifecycle:lifecycle-livedata", version.ref = "lifecycle" }
+firebase-firestore = { module = "com.google.firebase:firebase-firestore", version = "25.1.4" }
+firebase-auth = { module = "com.google.firebase:firebase-auth", version = "23.2.0" }
+firebase-storage = { module = "com.google.firebase:firebase-storage", version = "21.0.1" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
