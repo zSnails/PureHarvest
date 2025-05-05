@@ -130,7 +130,7 @@
             android:text="Recovery password"
             android:textSize="14sp"
             android:textStyle="normal"
-            android:textColor="@color/pure_green"
+            android:textColor="@color/leaf_green"
             android:textAlignment="center"
             app:layout_constraintTop_toBottomOf="@id/tilPassword"
             app:layout_constraintStart_toStartOf="parent"
@@ -178,7 +178,7 @@
                 android:layout_height="wrap_content"
                 android:text=" Register Now"
                 android:textSize="14sp"
-                android:textColor="@color/pure_green"
+                android:textColor="@color/leaf_green"
                 android:textStyle="bold"/>
         </LinearLayout>
         <!-- First divider -->

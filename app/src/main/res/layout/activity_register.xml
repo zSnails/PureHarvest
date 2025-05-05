@@ -160,7 +160,7 @@
             android:layout_marginTop="16dp"
             android:text="Already have an account?"
             android:textSize="14sp"
-            android:textColor="@color/pure_green"
+            android:textColor="@color/leaf_green"
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@id/btnSignUp"
             app:layout_constraintStart_toStartOf="parent"
