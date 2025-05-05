@@ -3,6 +3,7 @@ package cr.ac.itcr.zsnails.pureharvest.ui.client;
 import android.os.Bundle;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
+import android.app.Dialog;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -19,7 +20,7 @@ public class ViewProductActivity extends AppCompatActivity {
     private TextView productName, productDescription, productType, ratingCount, productPrice;
     private RatingBar productRating;
 
-    private FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+    private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     private String productId;
 
     @Override
@@ -41,6 +42,7 @@ public class ViewProductActivity extends AppCompatActivity {
 
 
         initViews();
+        imageMain.setOnClickListener(v -> showZoomDialog());
         loadProductFromFirestore();
     }
 
@@ -96,10 +98,27 @@ public class ViewProductActivity extends AppCompatActivity {
                 params.setMargins(8, 0, 8, 0);
                 mini.setLayoutParams(params);
                 mini.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
                 Glide.with(this).load(url).into(mini);
+
+                mini.setOnClickListener(v -> Glide.with(this).load(url).into(imageMain));
+
                 miniImagesContainer.addView(mini);
             }
         }
+
+    }
+
+    private void showZoomDialog() {
+        Dialog dialog = new Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+        dialog.setContentView(R.layout.dialog_image_zoom);
+
+        ImageView zoomedImage = dialog.findViewById(R.id.zoomedImage);
+        zoomedImage.setImageDrawable(imageMain.getDrawable());
+
+        zoomedImage.setOnClickListener(v -> dialog.dismiss()); //close when you touches
+
+        dialog.show();
     }
 
     @Override
