@@ -25,14 +25,14 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:src="@drawable/ic_language"
-                android:contentDescription=""/>
+                android:contentDescription="@string/todo"/>
 
             <TextView
                 android:id="@+id/tvLanguage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="English"
+                android:text="@string/english"
                 android:textSize="14sp"
                 android:textColor="#000000"/>
 
@@ -41,7 +41,7 @@
                 android:layout_height="16dp"
                 android:layout_marginStart="4dp"
                 android:src="@drawable/ic_arrow_down"
-                android:contentDescription=""/>
+                android:contentDescription="@string/todo"/>
         </LinearLayout>
 
         <!-- Title -->
@@ -49,7 +49,7 @@
             android:id="@+id/tvTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Hello Again!"
+            android:text="@string/hello_again"
             android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="#000000"
@@ -64,7 +64,7 @@
             android:id="@+id/tvSubtitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Welcome back, we’ve missed you!"
+            android:text="@string/welcome_back_we_ve_missed_you"
             android:textSize="16sp"
             android:textStyle="normal"
             android:textColor="#000000"
@@ -82,7 +82,12 @@
             app:layout_constraintTop_toBottomOf="@id/tvSubtitle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:boxBackgroundMode="outline"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeColor="@color/leaf_green"
             android:layout_marginTop="48dp">
+
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etEmail"
@@ -100,7 +105,7 @@
         <!-- Password input -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilPassword"
-            style="@style/RoundedOutlined"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/tilEmail"
@@ -114,7 +119,7 @@
                 android:background="@drawable/rounded_outline"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:hint="password"
+                android:hint="@string/password"
                 android:inputType="textPassword"
                 android:textColorHint="@color/black"/>
                 <!--android:drawableStart="@drawable/ic_lock"
@@ -127,7 +132,7 @@
             android:id="@+id/tvRecover"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Recovery password"
+            android:text="@string/recovery_password"
             android:textSize="14sp"
             android:textStyle="normal"
             android:textColor="@color/leaf_green"
@@ -142,7 +147,7 @@
             android:id="@+id/btnSignIn"
             android:layout_width="200dp"
             android:layout_height="48dp"
-            android:text="Sign in"
+            android:text="@string/sign_in"
             android:textAllCaps="false"
             android:textSize="16sp"
             android:textColor="#FFFFFF"
@@ -168,7 +173,7 @@
                 android:id="@+id/tvNotMember"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Not a member?"
+                android:text="@string/not_a_member"
                 android:textSize="14sp"
                 android:textColor="#000000"/>
 
@@ -176,7 +181,7 @@
                 android:id="@+id/tvRegisterNow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=" Register Now"
+                android:text="@string/register_now"
                 android:textSize="14sp"
                 android:textColor="@color/leaf_green"
                 android:textStyle="bold"/>
@@ -197,7 +202,7 @@
             android:id="@+id/tvOr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Or continue with "
+            android:text="@string/or_continue_with"
             android:textSize="14sp"
             android:textColor="#888888"
             android:textAlignment="center"
@@ -234,7 +239,7 @@
                 android:layout_height="30dp"
                 android:layout_marginEnd="24dp"
                 android:src="@drawable/ic_google"
-                android:contentDescription="Google"
+                android:contentDescription="@string/google_title"
                 android:background="@drawable/mock_outline"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside" />
@@ -244,7 +249,7 @@
                 android:layout_width="70dp"
                 android:layout_height="50dp"
                 android:src="@drawable/ic_facebook"
-                android:contentDescription="Facebook"
+                android:contentDescription="@string/facebook"
                 android:background="@drawable/mock_outline"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside" />

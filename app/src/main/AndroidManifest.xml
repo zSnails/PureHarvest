@@ -26,9 +26,11 @@
             android:name=".LoginActivity"
             android:exported="false"
             android:label="@string/title_activity_login"
-            android:theme="@style/Theme.PureHarvest" />
+            android:theme="@style/AppTheme" />
 
-        <activity android:name=".RegisterActivity"
+        <activity
+            android:name=".RegisterActivity"
+            android:theme="@style/AppTheme"
             android:exported="false"/>
         <activity
             android:name=".MainActivity"
