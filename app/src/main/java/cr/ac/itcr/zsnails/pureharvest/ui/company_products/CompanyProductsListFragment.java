@@ -1,108 +1,150 @@
 package cr.ac.itcr.zsnails.pureharvest.ui.company_products;
 
 import android.os.Bundle;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
+import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentCompnayProductsListBinding;
 
 public class CompanyProductsListFragment extends Fragment {
 
     FragmentCompnayProductsListBinding binding;
     private ProductAdapter productAdapter;
-
     private final List<Product> productList = new ArrayList<>();
     private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-    private final FirebaseStorage storage = FirebaseStorage.getInstance();
+    private static final String TAG = "CompanyProductsList";
 
-    private final List<String> allowedIds = Arrays.asList("1", "2");
-
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
 
         binding = FragmentCompnayProductsListBinding.inflate(inflater, container, false);
-
         View root = binding.getRoot();
 
-
-        fetchProductsFromFirestore();
         setupRecyclerView();
+        fetchProductsFromFirestore();
 
         return root;
     }
 
-    private void setupRecyclerView(){
-        //List<Product> productList = new ArrayList<>();
-        //productList.add(new Product("Tomates Cherry", 1200, "https://via.placeholder.com/150"));
-        //productList.add(new Product("Lechuga", 2100, "https://via.placeholder.com/150"));
-        //productList.add(new Product("Arroz", 4000, "https://via.placeholder.com/150"));
-
+    private void setupRecyclerView() {
         productAdapter = new ProductAdapter(productList);
-
         binding.recyclerViewProducts.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerViewProducts.setAdapter(productAdapter);
-
     }
 
     private void fetchProductsFromFirestore() {
+        Log.d(TAG, "Fetching products from Firestore for sellerId: 1");
+        showLoading(true);
+
         firestore.collection("products")
                 .whereEqualTo("sellerId", "1")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    int total = queryDocumentSnapshots.size();
-                    if (total == 0) return;
+                    Log.d(TAG, "Successfully fetched " + queryDocumentSnapshots.size() + " documents.");
+                    productList.clear();
 
-                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        String id = doc.getId(); // O usa doc.getString("id") si el campo es explícito
-                        String name = doc.getString("name");
-                        Long priceLong = doc.getLong("price");
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                            try {
+                                String id = doc.getId();
+                                String name = doc.getString("name");
 
-                        if (name == null || priceLong == null) continue;
+                                Number priceNumber = null;
+                                Object priceObj = doc.get("price");
+                                if (priceObj instanceof Number) {
+                                    priceNumber = (Number) priceObj;
+                                }
 
-                        int price = priceLong.intValue();
+                                Object imageUrlsObj = doc.get("imageUrls");
+                                String imageUrl = null;
 
-                        // Aquí es donde debes asegurarte de que el ID se pase correctamente al constructor de Product
-                        StorageReference imageRef = storage.getReference()
-                                .child("product_images/" + id + ".jpg");
+                                if (imageUrlsObj instanceof String) {
+                                    imageUrl = (String) imageUrlsObj;
+                                    Log.v(TAG, "Product ID: " + id + " - imageUrls is String: " + imageUrl);
+                                } else if (imageUrlsObj instanceof List) {
+                                    @SuppressWarnings("unchecked")
+                                    List<Object> urlList = (List<Object>) imageUrlsObj;
+                                    if (!urlList.isEmpty() && urlList.get(0) instanceof String) {
+                                        imageUrl = (String) urlList.get(0);
+                                        Log.v(TAG, "Product ID: " + id + " - imageUrls is List, using first URL: " + imageUrl);
+                                    } else {
+                                        Log.w(TAG, "Product ID: " + id + " - imageUrls List is empty or first element is not a String.");
+                                    }
+                                } else if (imageUrlsObj != null) {
+                                    Log.w(TAG, "Product ID: " + id + " - imageUrls has unexpected type: " + imageUrlsObj.getClass().getName());
+                                } else {
+                                    Log.w(TAG, "Product ID: " + id + " - imageUrls field is null or missing.");
+                                }
 
-                        imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                            String imageUrl = uri.toString();
-                            // Aquí el constructor de Product debe recibir ID, nombre, precio y URL de la imagen
-                            Product product = new Product(id, name, price, imageUrl);
-                            productList.add(product);
+                                if (id != null && name != null && !name.isEmpty() && priceNumber != null) {
+                                    Product product = new Product(id, name, priceNumber.intValue(), imageUrl);
+                                    productList.add(product);
+                                } else {
+                                    Log.w(TAG, "Skipping product due to missing/invalid data. ID: " + (id != null ? id : "N/A") + ", Name: " + name + ", PriceObj: " + priceObj);
+                                }
 
-                            // Solo actualizar una vez todos estén listos
-                            if (productList.size() == total) {
-                                productAdapter.notifyDataSetChanged();
+                            } catch (Exception e) {
+                                Log.e(TAG, "Error processing document " + doc.getId(), e);
                             }
-                        }).addOnFailureListener(e -> {
-                            // Si no hay imagen, igual mostrar producto con imagen por defecto (opcional)
-                            Product product = new Product(id, name, price, null); // o una imagen por defecto
-                            productList.add(product);
+                        }
+                    }
 
-                            if (productList.size() == total) {
-                                productAdapter.notifyDataSetChanged();
-                            }
-                        });
+                    if (productAdapter != null) {
+                        productAdapter.notifyDataSetChanged();
+                        Log.d(TAG, "RecyclerView adapter notified. Total products in list: " + productList.size());
+                    } else {
+                        Log.e(TAG, "Adapter was null when trying to notify.");
+                    }
+
+                    showLoading(false);
+                    updateEmptyViewVisibility();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error fetching products from Firestore", e);
+                    showLoading(false);
+                    updateEmptyViewVisibility();
+                    if (getContext() != null) {
+                        Toast.makeText(getContext(), "Error al cargar productos: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
     }
 
+    private void showLoading(boolean show) {
+        if (binding != null) {
+        }
+    }
 
+    private void updateEmptyViewVisibility() {
+        if (binding != null && binding.recyclerViewProducts != null) {
+            if (productList.isEmpty()) {
+                binding.recyclerViewProducts.setVisibility(View.GONE);
+            } else {
+                binding.recyclerViewProducts.setVisibility(View.VISIBLE);
+            }
+        }
+    }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
 }

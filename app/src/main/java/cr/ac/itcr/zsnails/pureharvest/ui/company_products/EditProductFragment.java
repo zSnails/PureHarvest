@@ -44,7 +44,6 @@ public class EditProductFragment extends Fragment {
     private static final String ARG_PRODUCT_ID = "productId";
     private static final int IMAGE_PICK_CODE = 1000;
 
-    // --- onCreate, onCreateView sin cambios ---
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
