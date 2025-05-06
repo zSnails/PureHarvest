@@ -8,7 +8,7 @@
     android:padding="16dp"
     tools:context=".ui.companyContact.companyContactFragment">
 
-    <!-- Existing ImageView and TextViews up to addressLabelT -->
+    <!-- ... (ImageView y otros TextViews como los tenías) ... -->
     <ImageView
         android:id="@+id/profileImagePlaceholder"
         android:layout_width="160dp"
@@ -132,9 +132,9 @@
         app:layout_constraintStart_toStartOf="@+id/addressLabelT"
         app:layout_constraintTop_toBottomOf="@+id/adressT" />
 
-    <!-- Existing Button for Google Maps -->
+    <!-- Único botón para la ubicación -->
     <Button
-        android:id="@+id/mapAdressT"
+        android:id="@+id/buttonSeeLocation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -144,18 +144,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/mapLabelT"
         app:layout_constraintStart_toEndOf="@+id/mapLabelT"
         app:layout_constraintEnd_toEndOf="parent" />
-
-    <!-- New Button for Waze -->
-    <Button
-        android:id="@+id/buttonOpenInWaze"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="See location in Waze"
-        app:layout_constraintTop_toBottomOf="@+id/mapAdressT"
-        app:layout_constraintStart_toStartOf="@+id/mapAdressT"
-        app:layout_constraintEnd_toEndOf="@+id/mapAdressT" />
-
 
     <!-- Edit Profile button removed -->
 
