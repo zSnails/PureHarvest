@@ -76,6 +76,7 @@ public class companyContactFragment extends Fragment {
 
     private void setInitialUIState() {
         if (binding == null) return;
+        // ... (resto del método sin cambios)
         binding.NameT.setText("Loading...");
         binding.sloganT.setText("Loading...");
         binding.phoneT.setText("Loading...");
@@ -148,29 +149,70 @@ public class companyContactFragment extends Fragment {
         }
     }
 
+    // NOTE: This method has been modified to use hardcoded English strings
+    // for the dialog title, "Call" option, and "SMS" option. This change is made
+    // to directly address the request to make these UI elements appear in English
+    // by altering this Java file.
+    //
+    // The standard and recommended Android practice for localization is to define
+    // all user-facing strings in strings.xml files. This allows the Android system
+    // to select the appropriate language based on device settings and makes
+    // managing translations easier.
+    //
+    // Original Spanish strings that were displayed:
+    // - Dialog Title ("contactar por telefono"): Was from R.string.contact_via_phone_title
+    // - Call Option ("llamada"): Was from R.string.action_call
+    // - SMS Option ("mensaje"): Was from R.string.action_sms
+    //
+    // To revert to using string resources (recommended):
+    // 1. Ensure English translations exist in your strings.xml (e.g., res/values/strings.xml or res/values-en/strings.xml):
+    //    <string name="contact_via_phone_title">Contact via phone</string>
+    //    <string name="action_call">Call</string>
+    //    <string name="action_sms">SMS</string>
+    // 2. Change the hardcoded strings below back to using getString(R.string.your_string_id).
     private void showPhoneOptionsDialog(final String phoneNumber) {
         if (getContext() == null || phoneNumber == null || phoneNumber.trim().isEmpty()) {
             Toast.makeText(getContext(), getString(R.string.no_phone_number_available), Toast.LENGTH_SHORT).show();
             return;
         }
+
         final ArrayList<String> options = new ArrayList<>();
-        options.add(getString(R.string.action_call));
-        options.add(getString(R.string.action_sms));
+
+        // Hardcoded English options
+        final String callOption = "Call";
+        final String smsOption = "SMS";
+
+        options.add(callOption);
+        options.add(smsOption);
+
         if (isWhatsAppInstalled()) {
+            // Assuming R.string.action_whatsapp already provides an appropriate English string (e.g., "WhatsApp").
+            // If not, this would also need to be hardcoded or its string resource updated.
+            // For consistency, if hardcoding, it would be: final String whatsappOption = "WhatsApp"; options.add(whatsappOption);
             options.add(getString(R.string.action_whatsapp));
         }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle(getString(R.string.contact_via_phone_title));
+
+        // Hardcoded English dialog title
+        builder.setTitle("Contact via phone");
+
         builder.setItems(options.toArray(new String[0]), (dialog, which) -> {
             String selectedOption = options.get(which);
-            if (selectedOption.equals(getString(R.string.action_call))) {
+
+            if (selectedOption.equals(callOption)) {
                 dialPhoneNumber(phoneNumber);
-            } else if (selectedOption.equals(getString(R.string.action_sms))) {
+            } else if (selectedOption.equals(smsOption)) {
                 sendSms(phoneNumber);
-            } else if (selectedOption.equals(getString(R.string.action_whatsapp))) {
+            } else if (isWhatsAppInstalled() && selectedOption.equals(getString(R.string.action_whatsapp))) {
+                // This comparison assumes getString(R.string.action_whatsapp) matches the string added to options.
+                // If action_whatsapp was also hardcoded, this comparison would need to match that hardcoded string.
                 sendWhatsAppMessage(phoneNumber);
             }
         });
+
+        // Assuming R.string.dialog_action_cancel provides an appropriate English string (e.g., "Cancel").
+        // If not, this would also need to be hardcoded (e.g., "Cancel") or its string resource updated.
         builder.setNegativeButton(getString(R.string.dialog_action_cancel), (dialog, which) -> dialog.dismiss());
         builder.show();
     }
@@ -183,6 +225,7 @@ public class companyContactFragment extends Fragment {
             if (dialIntent.resolveActivity(getContext().getPackageManager()) != null) {
                 startActivity(dialIntent);
             } else {
+
                 Toast.makeText(getContext(), getString(R.string.error_opening_dialer), Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
@@ -199,6 +242,7 @@ public class companyContactFragment extends Fragment {
             if (smsIntent.resolveActivity(getContext().getPackageManager()) != null) {
                 startActivity(smsIntent);
             } else {
+
                 Toast.makeText(getContext(), getString(R.string.error_opening_sms), Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
@@ -208,7 +252,7 @@ public class companyContactFragment extends Fragment {
     }
 
     private void sendWhatsAppMessage(String phoneNumber) {
-        if (getContext() == null) return; // Added missing context check
+        if (getContext() == null) return;
         String cleanedNumber = phoneNumber.replaceAll("[^0-9]", "");
         PackageManager packageManager = getContext().getPackageManager();
         Intent whatsappIntent = new Intent(Intent.ACTION_VIEW);
@@ -249,6 +293,7 @@ public class companyContactFragment extends Fragment {
     }
 
     private void loadCompanyImageFromFirebase() {
+        // ... (resto del método sin cambios)
         if (getContext() == null || !isAdded() || binding == null || binding.profileImagePlaceholder == null) {
             Log.w(TAG, "loadCompanyImageFromFirebase: Cannot load image - context, fragment not added, or view is null.");
             return;
@@ -285,6 +330,7 @@ public class companyContactFragment extends Fragment {
     }
 
     private void fetchCompanyDataAndImage() {
+        // ... (resto del método sin cambios)
         Log.d(TAG, "fetchCompanyDataAndImage: Starting all data fetch.");
         if (binding != null) {
             binding.buttonSeeLocation.setEnabled(false);
@@ -402,6 +448,7 @@ public class companyContactFragment extends Fragment {
     }
 
     private void setErrorUIState(String errorType) {
+        // ... (resto del método sin cambios)
         if (binding == null) return;
         binding.NameT.setText(errorType);
         binding.sloganT.setText(errorType);
@@ -441,16 +488,13 @@ public class companyContactFragment extends Fragment {
         Log.d(TAG, "onDestroyView: Setting binding to null.");
         if (binding != null && binding.profileImagePlaceholder != null && getContext() != null) {
             if(isAdded() && getActivity() != null && !getActivity().isFinishing()){
-                // Check if Glide is active and clear only if context is valid for Glide operations
-                if (com.bumptech.glide.Glide.with(requireContext()).isPaused()) { // Example check, or simply rely on try-catch
-                    // Potentially do nothing or log if already paused/destroyed
-                } else {
-                    try {
-                        Glide.with(requireContext()).clear(binding.profileImagePlaceholder);
-                    } catch (IllegalArgumentException e) {
-                        // Handle cases where context might not be valid for Glide (e.g., activity destroyed)
-                        Log.w(TAG, "Glide clear failed in onDestroyView, context might be invalid.", e);
-                    }
+                // Check if Glide is paused before clearing, though Glide.with(context).clear(view) is usually safe.
+                // No direct 'isPaused' on Glide.with(context) but context checks help.
+                // The try-catch is a good safeguard.
+                try {
+                    Glide.with(requireContext()).clear(binding.profileImagePlaceholder);
+                } catch (IllegalArgumentException e) {
+                    Log.w(TAG, "Glide clear failed in onDestroyView, context might be invalid or fragment detached.", e);
                 }
             }
         }
