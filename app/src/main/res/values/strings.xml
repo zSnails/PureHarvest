@@ -6,6 +6,22 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_account">Account</string>
     <string name="title_activity_example">ExampleActivity</string>
+
+    <string name="hint_product_name">Nombre del producto</string>
+    <string name="hint_rating">Puntuación (1 a 5)</string>
+    <string name="hint_price">Precio</string>
+    <string name="hint_description">Descripción (opcional)</string>
+    <string name="btn_select_images">Seleccionar imágenes (máx 5)</string>
+    <string name="btn_create_product">Crear producto</string>
+
+    <string name="hint_certifications">Certificaciones/Premios (opcional)</string>
+    <string name="hint_flavors">Sabores y aromas (opcional)</string>
+    <string name="hint_acidity">Acidez (opcional)</string>
+    <string name="hint_body">Cuerpo (opcional)</string>
+    <string name="hint_aftertaste">Post-gusto (opcional)</string>
+    <string name="hint_ingredients">Ingredientes (opcional)</string>
+    <string name="hint_preparation">Preparación (opcional)</string>
+
     <string name="title_activity_login">LoginActivity</string>
     <string name="default_web_client_id">1010691427014-drl8n6dpoius89e3a1g6c30qefigivch.apps.googleusercontent.com</string>
     <string name="facebook_app_id">fb617382781329733</string>
