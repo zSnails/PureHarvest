@@ -17,7 +17,6 @@
             android:layout_height="wrap_content"
             android:padding="20dp">
 
-            <!-- ImageView original sin cambios -->
             <ImageView
                 android:id="@+id/profileImagePlaceholder"
                 android:layout_width="160dp"
@@ -35,13 +34,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
+                android:text="@string/company_name"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:textColor="?android:attr/textColorPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/profileImagePlaceholder"
-                tools:text="Company Name" />
+                app:layout_constraintTop_toBottomOf="@+id/profileImagePlaceholder" />
 
             <TextView
                 android:id="@+id/sloganT"
@@ -49,18 +48,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:gravity="center"
+                android:text="@string/company_slogan"
                 android:textSize="16sp"
                 android:textColor="?android:attr/textColorSecondary"
                 android:textStyle="italic"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/NameT"
-                app:layout_constraintWidth_max="300dp"
-                tools:text="Professional Slogan Here. This can be a bit longer." />
-
-            <!-- Sección de Información de Contacto con ConstraintLayout -->
-            <!-- NOTA: Ya no hay un LinearLayout contenedor para la información.
-                 Cada elemento se posicionará directamente con constraints. -->
+                app:layout_constraintWidth_max="300dp" />
 
             <!-- Teléfono -->
             <TextView
@@ -68,7 +63,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:text="Teléfono:"
+                android:text="@string/label_phone"
                 android:textSize="14sp"
                 android:textColor="?android:attr/textColorSecondary"
                 app:layout_constraintStart_toStartOf="parent"
@@ -78,14 +73,14 @@
                 android:id="@+id/phoneT"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:text="@string/sample_phone"
                 android:textSize="18sp"
                 android:textColor="?android:attr/textColorPrimary"
                 android:layout_marginTop="2dp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/phoneLabelT"
                 app:layout_constraintTop_toBottomOf="@+id/phoneLabelT"
-                app:layout_constraintEnd_toEndOf="parent"
-                tools:text="8888-8888" />
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <View
                 android:id="@+id/divider1"
@@ -103,7 +98,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:text="Email:"
+                android:text="@string/label_email"
                 android:textSize="14sp"
                 android:textColor="?android:attr/textColorSecondary"
                 app:layout_constraintStart_toStartOf="parent"
@@ -113,14 +108,14 @@
                 android:id="@+id/emailT"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:text="@string/sample_email"
                 android:textSize="18sp"
                 android:textColor="?android:attr/textColorPrimary"
                 android:layout_marginTop="2dp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/emailLabelT"
                 app:layout_constraintTop_toBottomOf="@+id/emailLabelT"
-                app:layout_constraintEnd_toEndOf="parent"
-                tools:text="company@example.com" />
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <View
                 android:id="@+id/divider2"
@@ -138,7 +133,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:text="Dirección:"
+                android:text="@string/label_address"
                 android:textSize="14sp"
                 android:textColor="?android:attr/textColorSecondary"
                 app:layout_constraintStart_toStartOf="parent"
@@ -148,19 +143,19 @@
                 android:id="@+id/adressT"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:text="@string/sample_address"
                 android:textSize="16sp"
                 android:textColor="?android:attr/textColorPrimary"
                 android:layout_marginTop="2dp"
                 app:layout_constraintStart_toStartOf="@+id/addressLabelT"
                 app:layout_constraintTop_toBottomOf="@+id/addressLabelT"
-                app:layout_constraintEnd_toEndOf="parent"
-                tools:text="Santa Clara, San Carlos, Alajuela. Calle Principal, Edificio Azul." />
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <Button
                 android:id="@+id/buttonSeeLocation"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Ver ubicación en mapa"
+                android:text="@string/button_see_location"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
                 android:paddingTop="12dp"
@@ -171,7 +166,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

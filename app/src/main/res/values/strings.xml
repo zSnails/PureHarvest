@@ -24,6 +24,21 @@
     <string name="error_opening_whatsapp">Error al abrir WhatsApp.</string>
 
 
-   \
+
+    <string name="company_name">Company Name</string>
+    <string name="company_slogan">Professional Slogan Here. This can be a bit longer.</string>
+
+    <string name="label_phone">Phone number:</string>
+    <string name="sample_phone">8888-8888</string>
+
+    <string name="label_email">Email:</string>
+    <string name="sample_email">company@example.com</string>
+
+    <string name="label_address">Location:</string>
+    <string name="sample_address">Santa Clara, San Carlos, Alajuela.</string>
+
+    <string name="button_see_location">See location in map</string>
+
+
 
 </resources>
