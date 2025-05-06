@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             tools:text="27 Oct 2023, 10:30 AM"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-            android:textColor="?android:textColorSecondary"
+            android:textColor="@color/leaf_green"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -38,13 +38,7 @@
             app:layout_constraintTop_toBottomOf="@id/orderDate"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
-        <!-- Nota: El prefijo "ID Pedido: " se manejará en el código para permitir la concatenación
-             con el ID dinámico, o puedes usar un string con placeholder:
-             android:text="@string/label_order_id_prefix" y luego concatenar en código,
-             o si siempre es "ID Pedido: [valor]", puedes usar <string name="order_id_format">ID Pedido: %s</string>
-             y String.format() en el código.
-             Para `tools:text` es más simple poner un ejemplo completo.
-        -->
+
 
         <TextView
             android:id="@+id/orderUserName"
@@ -60,7 +54,7 @@
             app:layout_constraintTop_toBottomOf="@id/orderName"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/viewDetailsButton"/>
-        <!-- Similar al anterior, el prefijo "UsrID: " se manejará en código o con formato. -->
+
 
 
         <com.google.android.material.button.MaterialButton
@@ -74,6 +68,7 @@
             android:minHeight="0dp"
             android:paddingHorizontal="8dp"
             android:paddingVertical="4dp"
+            android:textColor="@color/leaf_green"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/orderName"
