@@ -242,6 +242,16 @@
     <string name="label_product_ids">Product IDs:</string>
 
 
+    <string name="error_fetching_product_details">Error fetching product details.</string>
+
+
+    <!-- New labels for the layout -->
+    <string name="label_product_id_from_order">Ordered Product ID:</string>
+
+
+    <string name="label_seller_info">Seller (Company):</string>
+    <string name="label_user_info">Customer (User):</string>
+
 
 
 

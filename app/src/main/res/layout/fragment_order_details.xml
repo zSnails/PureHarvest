@@ -41,7 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone"> <!-- CAMBIO: Inicia como gone, se mostrará cuando los datos estén listos -->
 
             <TextView
                 android:id="@+id/tvLabelOrderId"
@@ -103,19 +103,58 @@
                 android:layout_marginBottom="8dp"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"/>
 
+
             <TextView
-                android:id="@+id/tvLabelProductIds"
+                android:id="@+id/tvLabelProductId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="IDs Productos:"
-                android:textStyle="bold"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"/>
+                android:text="ID Producto Pedido:"
+            android:textStyle="bold"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+            android:layout_marginTop="12dp"/>
+
             <TextView
                 android:id="@+id/tvProductIds"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="ProdA, ProdB, ProdC"
+                tools:text="ProdXYZ123"
+                android:layout_marginBottom="8dp"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"/>
+
+
+            <TextView
+                android:id="@+id/tvLabelProductName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nombre Producto:"
+                android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                android:visibility="gone" /> <!-- Inicia oculto -->
+            <TextView
+                android:id="@+id/tvProductName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Manzanas Frescas"
+                android:layout_marginBottom="8dp"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:visibility="gone" /> <!-- Inicia oculto -->
+
+            <TextView
+                android:id="@+id/tvLabelProductPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Precio Producto:"
+                android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                android:visibility="gone" /> <!-- Inicia oculto -->
+            <TextView
+                android:id="@+id/tvProductPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="$2.99"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:visibility="gone" /> <!-- Inicia oculto -->
+
         </LinearLayout>
     </ScrollView>
 

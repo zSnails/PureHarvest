@@ -2,7 +2,7 @@
 package cr.ac.itcr.zsnails.pureharvest.ui.orders;
 
 import android.os.Bundle;
-// import android.text.TextUtils; // Ya no es necesario para TextUtils.join
+// import android.text.TextUtils; // No se usa directamente aquí
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,11 +22,13 @@ import androidx.navigation.Navigation;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.NumberFormat; // Para formatear el precio
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.ui.orders.Order;
+import cr.ac.itcr.zsnails.pureharvest.ui.orders.Product; // IMPORTAR EL NUEVO MODELO PRODUCT
 
 public class OrderDetailsFragment extends Fragment {
 
@@ -36,8 +38,13 @@ public class OrderDetailsFragment extends Fragment {
     private String orderId;
     private FirebaseFirestore db;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault());
+    private final NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("es", "CR")); // Formato de moneda para Costa Rica (Colones)
 
-    private TextView tvOrderId, tvOrderDate, tvSellerId, tvUserId, tvProductIdValue; // CAMBIO: tvProductIds a tvProductIdValue
+    // TextViews para la orden
+    private TextView tvOrderIdValue, tvOrderDateValue, tvSellerIdValue, tvUserIdValue, tvProductIdFromOrder;
+    // TextViews para el producto (nuevos)
+    private TextView tvLabelProductName, tvProductName, tvLabelProductPrice, tvProductPrice;
+
     private TextView tvOrderDetailsTitle;
     private ImageButton backButtonOrderDetails;
     private ProgressBar progressBarOrderDetails;
@@ -54,11 +61,9 @@ public class OrderDetailsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             orderId = getArguments().getString(ARG_ORDER_ID);
-            Log.d(TAG, "onCreate: Received orderId: " + orderId);
-        } else {
-            Log.w(TAG, "onCreate: Arguments bundle is null.");
         }
         db = FirebaseFirestore.getInstance();
+        // currencyFormat.setCurrency(Currency.getInstance("USD")); // Si quieres USD u otra moneda
     }
 
     @Nullable
@@ -67,14 +72,20 @@ public class OrderDetailsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_order_details, container, false);
 
         tvOrderDetailsTitle = view.findViewById(R.id.tvOrderDetailsTitle);
-        // backButtonOrderDetails = view.findViewById(R.id.your_back_button_id); // Si tienes uno
+        // backButtonOrderDetails = view.findViewById(R.id.your_back_button_id);
 
-        tvOrderId = view.findViewById(R.id.tvOrderId);
-        tvOrderDate = view.findViewById(R.id.tvOrderDate);
-        tvSellerId = view.findViewById(R.id.tvSellerId);
-        tvUserId = view.findViewById(R.id.tvUserId);
-        tvProductIdValue = view.findViewById(R.id.tvProductIds); // USAREMOS EL MISMO TEXTVIEW CON ID tvProductIds
-        // PERO LO RENOMBRO EN JAVA PARA CLARIDAD (tvProductIdValue)
+        // TextViews de la Orden
+        tvOrderIdValue = view.findViewById(R.id.tvOrderId);
+        tvOrderDateValue = view.findViewById(R.id.tvOrderDate);
+        tvSellerIdValue = view.findViewById(R.id.tvSellerId);
+        tvUserIdValue = view.findViewById(R.id.tvUserId);
+        tvProductIdFromOrder = view.findViewById(R.id.tvProductIds); // Este es el ID del producto EN la orden
+
+        // TextViews del Producto (nuevos)
+        tvLabelProductName = view.findViewById(R.id.tvLabelProductName);
+        tvProductName = view.findViewById(R.id.tvProductName);
+        tvLabelProductPrice = view.findViewById(R.id.tvLabelProductPrice);
+        tvProductPrice = view.findViewById(R.id.tvProductPrice);
 
         progressBarOrderDetails = view.findViewById(R.id.progressBarOrderDetails);
         contentLayout = view.findViewById(R.id.orderDetailsContent);
@@ -92,12 +103,9 @@ public class OrderDetailsFragment extends Fragment {
         }
         setupToolbar();
         if (orderId != null && !orderId.isEmpty()) {
-            Log.d(TAG, "onViewCreated: Fetching details for orderId: " + orderId);
             fetchOrderDetails();
         } else {
-            Log.e(TAG, "onViewCreated: Order ID is null or empty. Cannot fetch details.");
-            showError(getString(R.string.error_invalid_order_id_display));
-            navigateBack();
+            showErrorAndGoBack(getString(R.string.error_invalid_order_id_display));
         }
     }
 
@@ -105,7 +113,6 @@ public class OrderDetailsFragment extends Fragment {
         if (tvOrderDetailsTitle != null) {
             tvOrderDetailsTitle.setText(getString(R.string.title_order_details));
         }
-        // Si tienes un botón de retroceso específico en tu layout:
         // if (backButtonOrderDetails != null) {
         //     backButtonOrderDetails.setOnClickListener(v -> navigateBack());
         // }
@@ -113,95 +120,134 @@ public class OrderDetailsFragment extends Fragment {
 
     private void fetchOrderDetails() {
         if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.VISIBLE);
-        if (contentLayout != null) contentLayout.setVisibility(View.GONE);
+        if (contentLayout != null) contentLayout.setVisibility(View.GONE); // Ocultar contenido hasta que todo esté listo
 
         db.collection("orders").document(orderId).get()
                 .addOnCompleteListener(task -> {
-                    if (!isAdded() || getContext() == null) {
-                        Log.w(TAG, "Fragment not added or context is null in onComplete.");
-                        return;
-                    }
-                    if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.GONE);
+                    // No ocultar el progressBar aquí todavía si vamos a hacer otra consulta
+                    if (!isAdded() || getContext() == null) return;
 
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document != null && document.exists()) {
-                            Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                             Order order = document.toObject(Order.class);
-
                             if (order != null) {
-                                Log.d(TAG, "Order Object Deserialized: documentId=" + order.getDocumentId());
-                                Log.d(TAG, "Order Object Deserialized: userId=" + order.getUserId());
-                                Log.d(TAG, "Order Object Deserialized: sellerId=" + order.getSellerId());
-                                Log.d(TAG, "Order Object Deserialized: date=" + (order.getDate() != null ? order.getDate().toDate() : "null"));
-                                // LOG PARA EL NUEVO CAMPO productId (String)
-                                Log.d(TAG, "Order Object Deserialized: productId=" + order.getProductId());
+                                Log.d(TAG, "Order Fetched: " + order.getDocumentId() + ", ProductId in Order: " + order.getProductId());
+                                displayOrderBaseDetails(order); // Muestra detalles base de la orden
 
-                                displayOrderDetails(order);
-                                if (contentLayout != null) contentLayout.setVisibility(View.VISIBLE);
+                                // Ahora, si la orden tiene un productId, busca ese producto
+                                if (order.getProductId() != null && !order.getProductId().isEmpty()) {
+                                    fetchProductDetails(order.getProductId());
+                                } else {
+                                    Log.w(TAG, "Order does not have a productId.");
+                                    showProductDetailsAsNotAvailable();
+                                    if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.GONE);
+                                    if (contentLayout != null) contentLayout.setVisibility(View.VISIBLE); // Mostrar contenido de la orden
+                                }
                             } else {
-                                Log.e(TAG, "Order object is NULL after document.toObject() for ID: " + orderId + ". " +
-                                        "Verifica el modelo Order.java y los nombres de campo en Firestore.");
-                                showError(getString(R.string.error_deserializing_order));
+                                Log.e(TAG, "Order object is NULL after document.toObject() for ID: " + orderId);
+                                if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.GONE);
+                                showErrorAndGoBack(getString(R.string.error_deserializing_order));
                             }
                         } else {
-                            Log.w(TAG, "No such document with ID: " + orderId);
-                            showError(getString(R.string.error_order_not_found));
+                            Log.w(TAG, "No such order document with ID: " + orderId);
+                            if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.GONE);
+                            showErrorAndGoBack(getString(R.string.error_order_not_found));
                         }
                     } else {
+                        if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.GONE);
                         String errorMsg = getString(R.string.error_fetching_order_details);
-                        if (task.getException() != null) {
-                            errorMsg += ": " + task.getException().getMessage();
-                            Log.e(TAG, "Error getting document: " + orderId, task.getException());
-                        }
-                        showError(errorMsg);
+                        if (task.getException() != null) errorMsg += ": " + task.getException().getMessage();
+                        showErrorAndGoBack(errorMsg);
                     }
                 });
     }
 
-    private void displayOrderDetails(Order order) {
-        if (order == null) {
-            Log.e(TAG, "displayOrderDetails: Order object is null. Cannot display.");
-            return;
-        }
+    private void fetchProductDetails(String productIdToFetch) {
+        Log.d(TAG, "Fetching product details for productId: " + productIdToFetch);
+        db.collection("products").document(productIdToFetch).get()
+                .addOnCompleteListener(productTask -> {
+                    if (!isAdded() || getContext() == null) return;
+                    if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.GONE); // Ahora sí ocultar
+                    if (contentLayout != null) contentLayout.setVisibility(View.VISIBLE); //
+
+                    if (productTask.isSuccessful()) {
+                        DocumentSnapshot productDocument = productTask.getResult();
+                        if (productDocument != null && productDocument.exists()) {
+                            Product product = productDocument.toObject(Product.class);
+                            if (product != null) {
+                                Log.d(TAG, "Product Fetched: " + product.getName() + ", Price: " + product.getPrice());
+                                displayProductSpecificDetails(product);
+                            } else {
+                                Log.e(TAG, "Product object is NULL after document.toObject() for ID: " + productIdToFetch);
+                                showProductDetailsAsNotAvailable();
+                            }
+                        } else {
+                            Log.w(TAG, "No such product document with ID: " + productIdToFetch);
+                            showProductDetailsAsNotAvailable();
+                        }
+                    } else {
+                        Log.e(TAG, "Error fetching product details for ID: " + productIdToFetch, productTask.getException());
+                        showProductDetailsAsNotAvailable();
+                        Toast.makeText(getContext(), getString(R.string.error_fetching_product_details), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void displayOrderBaseDetails(Order order) {
+        if (order == null) return;
         String naText = getString(R.string.not_available_short);
 
-        if (tvOrderId != null) tvOrderId.setText(order.getDocumentId() != null ? order.getDocumentId() : naText);
-
-        if (tvOrderDate != null) {
+        if (tvOrderIdValue != null) tvOrderIdValue.setText(order.getDocumentId() != null ? order.getDocumentId() : naText);
+        if (tvOrderDateValue != null) {
             if (order.getDate() != null) {
-                try {
-                    tvOrderDate.setText(dateFormat.format(order.getDate().toDate()));
-                } catch (Exception e) {
-                    Log.e(TAG, "Error formatting date", e);
-                    tvOrderDate.setText(naText);
-                }
-            } else {
-                tvOrderDate.setText(naText);
-            }
+                try { tvOrderDateValue.setText(dateFormat.format(order.getDate().toDate())); }
+                catch (Exception e) { tvOrderDateValue.setText(naText); }
+            } else { tvOrderDateValue.setText(naText); }
         }
+        if (tvSellerIdValue != null) tvSellerIdValue.setText(order.getSellerId() != null ? order.getSellerId() : naText);
+        if (tvUserIdValue != null) tvUserIdValue.setText(order.getUserId() != null ? order.getUserId() : naText);
 
-        if (tvSellerId != null) tvSellerId.setText(order.getSellerId() != null ? order.getSellerId() : naText);
-        if (tvUserId != null) tvUserId.setText(order.getUserId() != null ? order.getUserId() : naText);
-
-        // CAMBIO: Lógica para mostrar el productId (String)
-        if (tvProductIdValue != null) {
-            if (order.getProductId() != null && !order.getProductId().isEmpty()) {
-                tvProductIdValue.setText(order.getProductId());
-                Log.d(TAG, "Displaying ProductID in UI: " + order.getProductId());
-            } else {
-                tvProductIdValue.setText(naText);
-                Log.d(TAG, "ProductID in Order object is null or empty. Displaying N/A in UI.");
-            }
-        } else {
-            Log.e(TAG, "tvProductIdValue (TextView for Product ID) is null! Check layout ID R.id.tvProductIds.");
+        // Mostrar el ID del producto que viene en la orden
+        if (tvProductIdFromOrder != null) {
+            tvProductIdFromOrder.setText(order.getProductId() != null && !order.getProductId().isEmpty() ?
+                    order.getProductId() : naText);
         }
     }
 
-    private void showError(String message) {
+    private void displayProductSpecificDetails(Product product) {
+        String naText = getString(R.string.not_available_short);
+        if (tvLabelProductName != null) tvLabelProductName.setVisibility(View.VISIBLE);
+        if (tvProductName != null) {
+            tvProductName.setText(product.getName() != null ? product.getName() : naText);
+            tvProductName.setVisibility(View.VISIBLE);
+        }
+        if (tvLabelProductPrice != null) tvLabelProductPrice.setVisibility(View.VISIBLE);
+        if (tvProductPrice != null) {
+            // Formatear el precio. Ejemplo: ₡1,250.00
+            tvProductPrice.setText(currencyFormat.format(product.getPrice()));
+            tvProductPrice.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void showProductDetailsAsNotAvailable() {
+        String naText = getString(R.string.not_available_short);
+        if (tvLabelProductName != null) tvLabelProductName.setVisibility(View.VISIBLE);
+        if (tvProductName != null) {
+            tvProductName.setText(naText);
+            tvProductName.setVisibility(View.VISIBLE);
+        }
+        if (tvLabelProductPrice != null) tvLabelProductPrice.setVisibility(View.VISIBLE);
+        if (tvProductPrice != null) {
+            tvProductPrice.setText(naText);
+            tvProductPrice.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void showErrorAndGoBack(String message) {
         if (getContext() == null || !isAdded()) return;
         Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
-        if (contentLayout != null) contentLayout.setVisibility(View.GONE);
+        navigateBack();
     }
 
     private void navigateBack() {

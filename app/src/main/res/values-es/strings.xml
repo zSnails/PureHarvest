@@ -243,4 +243,17 @@
     <string name="label_user_id_details">ID Usuario:</string>
     <string name="label_product_ids">IDs Productos:</string>
 
+
+    <string name="error_fetching_product_details">Error al obtener detalles del producto.</string>
+
+
+    <!-- Nuevas etiquetas para el layout -->
+    <string name="label_product_id_from_order">ID Producto Pedido:</string>
+
+
+    <string name="label_seller_info">Vendedor (Empresa):</string>
+    <string name="label_user_info">Cliente (Usuario):</string>
+
+
+
 </resources>
