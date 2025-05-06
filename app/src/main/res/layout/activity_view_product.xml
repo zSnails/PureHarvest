@@ -34,7 +34,7 @@
                 android:layout_gravity="top|end"
                 android:layout_margin="8dp"
                 android:background="@android:color/transparent"
-                android:src="@android:drawable/btn_star_big_off"
+                android:src="@drawable/ic_favorite_border"
                 app:tint="@android:color/holo_red_dark" />
         </FrameLayout>
 

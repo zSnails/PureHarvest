@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -27,6 +28,8 @@ public class ViewProductActivity extends AppCompatActivity {
     private int quantity = 1;
     private double unitPrice = 0;
     private Button btnAddToCart;
+    private ImageButton btnFavorite;
+    private boolean isFavorite = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +67,8 @@ public class ViewProductActivity extends AppCompatActivity {
         btnDecrease = findViewById(R.id.btnDecrease);
         tvQuantity = findViewById(R.id.tvQuantity);
         btnAddToCart = findViewById(R.id.btnAddToCart);
+        btnFavorite = findViewById(R.id.btnFavorite);
+        btnFavorite.setOnClickListener(v -> toggleFavorite());
     }
 
     private void loadProductFromFirestore() {
@@ -152,6 +157,13 @@ public class ViewProductActivity extends AppCompatActivity {
         btnAddToCart.setText("Add " + quantity + " to Cart");
     }
 
+    private void toggleFavorite() {
+        isFavorite = !isFavorite;
+        btnFavorite.setImageResource(isFavorite ? R.drawable.ic_favorite : R.drawable.ic_favorite_border);
+        btnFavorite.setColorFilter(
+                ContextCompat.getColor(this, isFavorite ? R.color.red : android.R.color.darker_gray)
+        );
+    }
     @Override
     public boolean onSupportNavigateUp() {
         finish();
