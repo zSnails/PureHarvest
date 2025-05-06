@@ -13,7 +13,7 @@ import com.google.firebase.storage.StorageReference;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import cr.ac.itcr.zsnails.pureharvest.model.Product;
+import cr.ac.itcr.zsnails.pureharvest.data.model.Product;
 
 public class ProductUploader {
 
@@ -45,7 +45,7 @@ public class ProductUploader {
                             uploadedImageUrls.add(uri.toString());
 
                             if (uploadCount.incrementAndGet() == imageUris.size()) { // If all have already been uploaded, we save the product
-                                product.imageUrls = uploadedImageUrls;
+                                product.setImageUrls(uploadedImageUrls);
                                 saveProduct(product, callback);
                             }
                         });
@@ -56,7 +56,7 @@ public class ProductUploader {
 
     private void saveProduct(Product product, UploadCallback callback) {
         String newId = UUID.randomUUID().toString();
-        product.id = newId;
+        product.setId(newId);
 
         firestore.collection("products").document(newId)
                 .set(product)

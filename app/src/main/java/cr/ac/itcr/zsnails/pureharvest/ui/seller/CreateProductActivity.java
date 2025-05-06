@@ -20,7 +20,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.firebase.ProductUploader;
-import cr.ac.itcr.zsnails.pureharvest.model.Product;
+import cr.ac.itcr.zsnails.pureharvest.data.model.Product;
 
 public class CreateProductActivity extends AppCompatActivity {
 

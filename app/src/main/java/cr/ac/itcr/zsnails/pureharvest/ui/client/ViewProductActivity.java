@@ -12,7 +12,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.List;
 
 import cr.ac.itcr.zsnails.pureharvest.R;
-import cr.ac.itcr.zsnails.pureharvest.model.Product;
+import cr.ac.itcr.zsnails.pureharvest.data.model.Product;
 
 public class ViewProductActivity extends AppCompatActivity {
 
@@ -93,14 +93,14 @@ public class ViewProductActivity extends AppCompatActivity {
     }
 
     private void updateUI(Product product) {
-        productName.setText(product.name);
-        productDescription.setText(product.description);
-        productType.setText(product.type);
-        productRating.setRating((float) product.rating);
-        ratingCount.setText(String.format("(%.1f)", product.rating));
-        productPrice.setText("₡" + product.price);
+        productName.setText(product.getName());
+        productDescription.setText(product.getDescription());
+        productType.setText(product.getType());
+        productRating.setRating((float) product.getRating());
+        ratingCount.setText(String.format("(%.1f)", product.getRating()));
+        productPrice.setText("₡" + product.getPrice());
 
-        unitPrice = product.price;
+        unitPrice = product.getPrice();
         updateQuantityAndPrice();
 
         tvQuantity.setText(String.valueOf(quantity));
@@ -117,14 +117,14 @@ public class ViewProductActivity extends AppCompatActivity {
             }
         });
         // Main image
-        if (product.imageUrls != null && !product.imageUrls.isEmpty()) {
-            Glide.with(this).load(product.imageUrls.get(0)).into(imageMain);
+        if (product.getImageUrls() != null && !product.getImageUrls().isEmpty()) {
+            Glide.with(this).load(product.getImageUrls().get(0)).into(imageMain);
         }
 
         // Mini images
         miniImagesContainer.removeAllViews();
-        if (product.imageUrls != null) {
-            for (String url : product.imageUrls) {
+        if (product.getImageUrls() != null) {
+            for (String url : product.getImageUrls()) {
                 ImageView mini = new ImageView(this);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(120, 120);
                 params.setMargins(8, 0, 8, 0);
@@ -139,13 +139,13 @@ public class ViewProductActivity extends AppCompatActivity {
             }
         }
         optionalFieldsContainer.removeAllViews();
-        addOptionalField("Certifications", product.certifications);
-        addOptionalField("Flavors", product.flavors);
-        addOptionalField("Acidity", product.acidity);
-        addOptionalField("Body", product.body);
-        addOptionalField("Aftertaste", product.aftertaste);
-        addOptionalField("Ingredients", product.ingredients);
-        addOptionalField("Preparation", product.preparation);
+        addOptionalField("Certifications", product.getCertifications());
+        addOptionalField("Flavors", product.getFlavors());
+        addOptionalField("Acidity", product.getAcidity());
+        addOptionalField("Body", product.getBody());
+        addOptionalField("Aftertaste", product.getAftertaste());
+        addOptionalField("Ingredients", product.getIngredients());
+        addOptionalField("Preparation", product.getPreparation());
     }
 
     private void showZoomDialog() {

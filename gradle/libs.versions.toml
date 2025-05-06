@@ -69,8 +69,6 @@ room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRunti
 androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycle" }
 androidx-lifecycle-livedata = { module = "androidx.lifecycle:lifecycle-livedata", version.ref = "lifecycle" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore", version = "25.1.4" }
-firebase-auth = { module = "com.google.firebase:firebase-auth", version = "23.2.0" }
-firebase-storage = { module = "com.google.firebase:firebase-storage", version = "21.0.1" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

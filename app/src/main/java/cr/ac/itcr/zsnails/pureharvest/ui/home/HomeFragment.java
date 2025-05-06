@@ -1,5 +1,6 @@
 package cr.ac.itcr.zsnails.pureharvest.ui.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,10 +23,11 @@ import cr.ac.itcr.zsnails.pureharvest.decoration.MarginItemDecoration;
 import cr.ac.itcr.zsnails.pureharvest.domain.repository.ShoppingCartRepository;
 import cr.ac.itcr.zsnails.pureharvest.entities.CartItem;
 import cr.ac.itcr.zsnails.pureharvest.ui.cart.ShoppingCartViewModel;
+import cr.ac.itcr.zsnails.pureharvest.ui.client.ViewProductActivity;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class HomeFragment extends Fragment implements ProductAdapter.AddToCartListener {
+public class HomeFragment extends Fragment implements ProductAdapter.AddToCartListener, ProductAdapter.OnProductClickListener {
 
     @Inject
     public ShoppingCartRepository repo = null;
@@ -48,7 +50,7 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
         viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         shoppingCart = new ViewModelProvider(requireActivity()).get(ShoppingCartViewModel.class);
 
-        final ProductAdapter adapter = new ProductAdapter(new ArrayList<>(), this);
+        final ProductAdapter adapter = new ProductAdapter(new ArrayList<>(), this, this);
         this.binding.recyclerView.addItemDecoration(
                 new MarginItemDecoration(
                         (int) getResources().getDimension(R.dimen.random_item_list_margin)));
@@ -71,5 +73,12 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
         item.amount = 1;
         shoppingCart.insertItem(item);
         Toast.makeText(requireContext(), "Se ha agregado el producto al carrito de compras", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onProductClick(Product product) {
+        Intent intent = new Intent(requireContext(), ViewProductActivity.class);
+        intent.putExtra("product_id", product.getId());
+        startActivity(intent);
     }
 }

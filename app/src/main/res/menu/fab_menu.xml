@@ -2,8 +2,4 @@
     <item
         android:id="@+id/action_create_product"
         android:title="Crear producto" />
-
-    <item
-        android:id="@+id/action_view_product"
-        android:title="Ver producto" />
 </menu>
