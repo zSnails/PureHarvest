@@ -12,7 +12,7 @@
         android:id="@+id/productNameLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Product Name"
+        android:text="@string/label_product_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="16dp"/>
@@ -21,7 +21,7 @@
         android:id="@+id/productName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Enter product name"
+        android:hint="@string/hint_product_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/productNameLabel"
@@ -34,7 +34,7 @@
         android:id="@+id/productTypeLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Type"
+        android:text="@string/label_product_type"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/productName"
         android:layout_marginTop="16dp"/>
@@ -43,7 +43,7 @@
         android:id="@+id/productType"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Enter product type"
+        android:hint="@string/hint_product_type"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/productTypeLabel"
@@ -56,7 +56,7 @@
         android:id="@+id/productPriceLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Price"
+        android:text="@string/label_product_price"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/productType"
         android:layout_marginTop="16dp"/>
@@ -65,21 +65,21 @@
         android:id="@+id/productPrice"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Enter product price"
+        android:hint="@string/hint_product_price"
+        android:inputType="numberDecimal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/productPriceLabel"
         android:layout_marginTop="8dp"
         android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:inputType="numberDecimal"/>
+        android:paddingEnd="16dp"/>
 
     <!-- Acidity -->
     <TextView
         android:id="@+id/productAcidityLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Acidity"
+        android:text="@string/label_product_acidity"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/productPrice"
         android:layout_marginTop="16dp"/>
@@ -88,21 +88,21 @@
         android:id="@+id/productAcidity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Enter acidity level"
+        android:hint="@string/hint_product_acidity"
+        android:inputType="numberDecimal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/productAcidityLabel"
         android:layout_marginTop="8dp"
         android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:inputType="numberDecimal"/>
+        android:paddingEnd="16dp"/>
 
     <!-- Description -->
     <TextView
         android:id="@+id/productDescriptionLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Description"
+        android:text="@string/label_product_description"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/productAcidity"
         android:layout_marginTop="16dp"/>
@@ -111,23 +111,23 @@
         android:id="@+id/productDescription"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Enter product description"
+        android:hint="@string/hint_product_description"
+        android:inputType="textMultiLine"
+        android:lines="4"
+        android:maxLines="6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/productDescriptionLabel"
         android:layout_marginTop="8dp"
         android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:inputType="textMultiLine"
-        android:lines="4"
-        android:maxLines="6"/>
+        android:paddingEnd="16dp"/>
 
     <!-- Button -->
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Save Product"
+        android:text="@string/button_save_product"
         android:backgroundTint="@color/leaf_green"
         app:layout_constraintTop_toBottomOf="@id/productDescription"
         app:layout_constraintStart_toStartOf="parent"

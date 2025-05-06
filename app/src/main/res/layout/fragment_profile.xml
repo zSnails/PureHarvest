@@ -14,7 +14,7 @@
         android:layout_height="48dp"
         android:src="@drawable/ic_arrow_back_24"
         android:background="?attr/selectableItemBackgroundBorderless"
-
+        android:contentDescription="@string/cd_back_button_profile_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginStart="0dp"
@@ -28,9 +28,11 @@
         android:background="@drawable/circle_mask"
         android:clipToOutline="true"
         android:scaleType="centerCrop"
+        android:contentDescription="@string/cd_profile_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/backButtonProfile" />
+        app:layout_constraintTop_toBottomOf="@+id/backButtonProfile"
+        tools:srcCompat="@tools:sample/avatars" /> <!-- Added tools:srcCompat for placeholder -->
 
     <Button
         android:id="@+id/addPhotoBtn"
@@ -38,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="4dp"
-        android:text="Change Photo"
+        android:text="@string/button_change_photo"
         android:textSize="12sp"
         android:backgroundTint="@color/leaf_green"
         app:layout_constraintEnd_toStartOf="@+id/deletePhotoBtn"
@@ -52,7 +54,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:text="Delete Photo"
+        android:text="@string/button_delete_photo"
         android:textSize="12sp"
         android:backgroundTint="@color/leaf_green"
         app:layout_constraintEnd_toEndOf="parent"
@@ -92,7 +94,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="Contact Information"
+        android:text="@string/label_contact_information"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -103,7 +105,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Phone:"
+        android:text="@string/label_phone"
         android:layout_marginStart="40dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/contactT" />
@@ -125,7 +127,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Email:"
+        android:text="@string/label_email"
         app:layout_constraintStart_toStartOf="@+id/phoneLabelT"
         app:layout_constraintTop_toBottomOf="@+id/phoneLabelT" />
 
@@ -146,7 +148,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Address:"
+        android:text="@string/label_address"
         app:layout_constraintStart_toStartOf="@+id/emailLabelT"
         app:layout_constraintTop_toBottomOf="@+id/emailLabelT" />
 
@@ -167,7 +169,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Map:"
+        android:text="@string/label_map"
         app:layout_constraintStart_toStartOf="@+id/addressLabelT"
         app:layout_constraintTop_toBottomOf="@+id/addressLabelT" />
 
@@ -181,14 +183,16 @@
         app:layout_constraintStart_toEndOf="@+id/mapLabelT"
         app:layout_constraintTop_toTopOf="@+id/mapLabelT"
         android:layout_marginEnd="40dp"
+        android:text="@string/text_view_on_map"
         tools:text="View on Map" />
+
 
     <Button
         android:id="@+id/editProfileBtn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="Edit Profile"
+        android:text="@string/button_edit_profile"
         android:backgroundTint="@color/leaf_green"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

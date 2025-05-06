@@ -43,7 +43,7 @@ public class ProfileFragment extends Fragment {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     // This ID will be used for Firestore document and image name
-    private static final String COMPANY_ID_FOR_IMAGE = "2"; // Variable as originally requested
+    private static final String COMPANY_ID = "2"; // Variable as originally requested
 
     // Declare all relevant TextViews as class members
     private TextView nameT;
@@ -73,8 +73,8 @@ public class ProfileFragment extends Fragment {
 
     private void uploadImageToFirebase(Uri uri) {
         if (getContext() == null || !isAdded()) return;
-        // Use COMPANY_ID_FOR_IMAGE for the image file name
-        String fileName = COMPANY_ID_FOR_IMAGE + ".jpg";
+        // Use COMPANY_ID for the image file name
+        String fileName = COMPANY_ID + ".jpg";
         StorageReference fileRef = storageReference.child("companyImages/" + fileName);
         Log.d(TAG, "Uploading image: " + fileName + " to companyImages/");
 
@@ -96,8 +96,8 @@ public class ProfileFragment extends Fragment {
 
     private void loadImageFromFirebase() {
         if (getContext() == null || !isAdded()) return;
-        // Use COMPANY_ID_FOR_IMAGE for the image file name
-        String fileName = COMPANY_ID_FOR_IMAGE + ".jpg";
+        // Use COMPANY_ID for the image file name
+        String fileName = COMPANY_ID + ".jpg";
         StorageReference fileRef = storageReference.child("companyImages/" + fileName);
         Log.d(TAG, "Loading image: " + fileName + " from companyImages/");
 
@@ -126,8 +126,8 @@ public class ProfileFragment extends Fragment {
 
     private void deleteImageFromFirebase() {
         if (getContext() == null || !isAdded()) return;
-        // Use COMPANY_ID_FOR_IMAGE for the image file name
-        String fileName = COMPANY_ID_FOR_IMAGE + ".jpg";
+        // Use COMPANY_ID for the image file name
+        String fileName = COMPANY_ID + ".jpg";
         StorageReference fileRef = storageReference.child("companyImages/" + fileName);
         Log.d(TAG, "Deleting image: " + fileName + " from companyImages/");
 
@@ -201,14 +201,14 @@ public class ProfileFragment extends Fragment {
     }
 
     private void loadProfileData() {
-        // Use COMPANY_ID_FOR_IMAGE to fetch the Firestore document
-        Log.d(TAG, "Loading profile data for company ID: " + COMPANY_ID_FOR_IMAGE);
-        db.collection("Company").document(COMPANY_ID_FOR_IMAGE).get()
+        // Use COMPANY_ID to fetch the Firestore document
+        Log.d(TAG, "Loading profile data for company ID: " + COMPANY_ID);
+        db.collection("Company").document(COMPANY_ID).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (getContext() == null || !isAdded()) return;
 
                     if (documentSnapshot.exists()) {
-                        Log.d(TAG, "Document " + COMPANY_ID_FOR_IMAGE + " found.");
+                        Log.d(TAG, "Document " + COMPANY_ID + " found.");
                         nameT.setText(documentSnapshot.getString("name"));
                         phoneT.setText(documentSnapshot.getString("number"));
                         adressT.setText(documentSnapshot.getString("adress"));
@@ -229,12 +229,12 @@ public class ProfileFragment extends Fragment {
                             emailT.setText(email);
                         }
                     } else {
-                        Log.w(TAG, "Document " + COMPANY_ID_FOR_IMAGE + " not found.");
+                        Log.w(TAG, "Document " + COMPANY_ID + " not found.");
                         handleProfileDataNotFound(); // Make sure this method uses string resources
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(TAG, "Error loading profile data for " + COMPANY_ID_FOR_IMAGE, e);
+                    Log.e(TAG, "Error loading profile data for " + COMPANY_ID, e);
                     if (getContext() != null && isAdded()) {
                         handleProfileDataLoadError(e); // Make sure this method uses string resources
                     }

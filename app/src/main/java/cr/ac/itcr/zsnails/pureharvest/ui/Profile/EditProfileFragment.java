@@ -38,6 +38,8 @@ public class EditProfileFragment extends Fragment {
     private EditText adressInput;
     private EditText mapAdressInput;
 
+    private static final String COMPANY_ID = "2";
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -79,7 +81,7 @@ public class EditProfileFragment extends Fragment {
 
     // --- Helper Method to Load Data ---
     private void loadCompanyData() {
-        db.collection("Company").document("1").get()
+        db.collection("Company").document(COMPANY_ID).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (getContext() == null || !isAdded()) return; // Context/Attachment check
 
@@ -158,7 +160,7 @@ public class EditProfileFragment extends Fragment {
         companyData.put("mapAdress", mapAddress);
 
         // --- Update Firestore ---
-        db.collection("Company").document("1").update(companyData)
+        db.collection("Company").document(COMPANY_ID).update(companyData)
                 .addOnSuccessListener(aVoid -> {
                     if (getContext() != null && isAdded() && getView() != null) {
                         Toast.makeText(getContext(), "Profile updated successfully", Toast.LENGTH_SHORT).show();

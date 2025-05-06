@@ -9,69 +9,77 @@
     app:cardCornerRadius="8dp"
     app:cardElevation="3dp">
 
-<androidx.constraintlayout.widget.ConstraintLayout
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:padding="12dp">
-
-    <TextView
-        android:id="@+id/orderDate"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="27 Oct 2023, 10:30 AM"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-        android:textColor="?android:textColorSecondary"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:padding="12dp">
 
-    <TextView
-        android:id="@+id/orderName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginHorizontal="4dp"
-        tools:text="ID Pedido: ABCxyz123verylongdocumentidexample"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-        android:textStyle="bold"
-        android:maxLines="2"
-        android:ellipsize="end"
-        app:layout_constraintTop_toBottomOf="@id/orderDate"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        <TextView
+            android:id="@+id/orderDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="27 Oct 2023, 10:30 AM"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            android:textColor="?android:textColorSecondary"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/orderUserName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="8dp"
-        tools:text="UsrID: user_very_long_id_example_which_might_be_truncated"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-        android:maxLines="1"
-        android:ellipsize="end"
-        app:layout_constraintTop_toBottomOf="@id/orderName"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/viewDetailsButton"/>
+        <TextView
+            android:id="@+id/orderName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginHorizontal="4dp"
+            tools:text="@string/tools_text_order_id_example"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:textStyle="bold"
+            android:maxLines="2"
+            android:ellipsize="end"
+            app:layout_constraintTop_toBottomOf="@id/orderDate"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+        <!-- Nota: El prefijo "ID Pedido: " se manejará en el código para permitir la concatenación
+             con el ID dinámico, o puedes usar un string con placeholder:
+             android:text="@string/label_order_id_prefix" y luego concatenar en código,
+             o si siempre es "ID Pedido: [valor]", puedes usar <string name="order_id_format">ID Pedido: %s</string>
+             y String.format() en el código.
+             Para `tools:text` es más simple poner un ejemplo completo.
+        -->
 
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/viewDetailsButton"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ver Detalle"
-        android:textAllCaps="false"
-        android:minWidth="0dp"
-        android:minHeight="0dp"
-        android:paddingHorizontal="8dp"
-        android:paddingVertical="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/orderName"
-        app:layout_constraintVertical_bias="1.0"
-        android:layout_marginTop="8dp"/>
+        <TextView
+            android:id="@+id/orderUserName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="8dp"
+            tools:text="@string/tools_text_user_id_example"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintTop_toBottomOf="@id/orderName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/viewDetailsButton"/>
+        <!-- Similar al anterior, el prefijo "UsrID: " se manejará en código o con formato. -->
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/viewDetailsButton"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_view_details"
+            android:textAllCaps="false"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/orderName"
+            app:layout_constraintVertical_bias="1.0"
+            android:layout_marginTop="8dp"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

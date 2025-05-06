@@ -5,30 +5,165 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_account">Account</string>
     <string name="title_activity_example">ExampleActivity</string>
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="cNameL">Company name</string>
-    <string name="placeholder_name" />
-    <string name="placeholder_phone" />
-    <string name="placeholder_address" />
-    <string name="placeholder_map" />
-    <string name="placeholder_error" />
+    <string name="placeholder_name">Name</string>
+    <string name="placeholder_phone">Phone</string>
+    <string name="placeholder_address">Address</string>
+    <string name="placeholder_map">Map</string>
+    <string name="placeholder_error">Error</string>
     <string name="not_available_short">N/A</string>
-    <string name="order_name_prefix">ID Product: </string>
-    <string name="order_user_prefix">Usr: </string>
-    <string name="view_order_details_for">Ver detalles de orden: %s</string>
-    <string name="error_loading_orders">Error al cargar órdenes.</string>
-    <string name="no_orders_yet_company">Aún no tienes órdenes registradas.</string>
-    <string name="title_my_orders">Mis Órdenes</string>
-    <string name="content_description_back_button">Volver</string>
-
-
+    <string name="order_name_prefix">Product ID: </string>
+    <string name="order_user_prefix">User: </string>
+    <string name="view_order_details_for">View order details: %s</string>
+    <string name="error_loading_orders">Error loading orders.</string>
+    <string name="no_orders_yet_company">You do not have any registered orders yet</string>
+    <string name="title_my_orders">My Orders</string>
+    <string name="content_description_back_button">Back</string>
     <string name="order_id_prefix">ID: </string>
+    <string name="order_doc_id_prefix">Order ID: </string>
 
-    <string name="order_doc_id_prefix">ID Pedido: </string>
+    <string name="button_profile">Profile</string>
+    <string name="button_products">Products</string>
+
+    <string name="label_product_name">Product Name</string>
+    <string name="label_product_type">Type</string>
+    <string name="label_product_price">Price</string>
+    <string name="label_product_acidity">Acidity</string>
+    <string name="label_product_description">Description</string>
+
+
+    <string name="hint_product_name">Enter product name</string>
+    <string name="hint_product_type">Enter product type</string>
+    <string name="hint_product_price">Enter product price</string>
+    <string name="hint_product_acidity">Enter acidity level</string>
+    <string name="hint_product_description">Enter product description</string>
+
+
+    <string name="button_save_product">Save Product</string>
+
+
+
+    <string name="back_button_content_description">Back</string>
+    <string name="title_product_list">My Products</string>
+    <string name="empty_product_list">You haven\'t added any products yet.</string>
 
 
 
 
+    <string name="manage_images">Manage Images</string>
+    <string name="product_name">Product Name</string>
+    <string name="product_type">Product Type</string>
+    <string name="product_description">Description</string>
+    <string name="product_ingredients">Ingredients</string>
+    <string name="product_preparation">Preparation</string>
+    <string name="product_price">Price</string>
+    <string name="product_acidity">Acidity</string>
+    <string name="product_body">Body</string>
+    <string name="product_aftertaste">Aftertaste</string>
+    <string name="delete_product">Delete Product</string>
+    <string name="product_image_description">Product image</string>
+
+    <string name="cd_back_button">Back button</string>
+    <string name="cd_product_image">Product image</string>
+    <string name="button_manage_images">Manage Images</string>
+
+
+    <string name="hint_description">Description</string>
+    <string name="hint_ingredients">Ingredients</string>
+    <string name="hint_preparation">Preparation</string>
+    <string name="hint_price">Price</string>
+    <string name="hint_acidity">Acidity</string>
+    <string name="hint_body">Body</string>
+    <string name="hint_aftertaste">Aftertaste</string>
+
+    <string name="button_delete_product">Delete Product</string>
+
+
+
+    <string name="cd_back_button_profile">Back button for profile</string>
+
+    <string name="label_company_name_required">Company Name *</string>
+    <string name="hint_current_name">Current Name</string>
+
+    <string name="label_slogan_optional">Slogan (Optional)</string>
+    <string name="hint_current_slogan">Current Slogan</string>
+
+    <string name="label_phone_number_required">Phone Number *</string>
+    <string name="hint_current_phone_number">Current Number</string>
+
+    <string name="label_email_optional">Email (Optional)</string>
+    <string name="hint_current_email">Current Email</string>
+
+    <string name="label_address_required">Address *</string>
+    <string name="hint_current_address">Current Address</string>
+
+    <string name="label_map_address_required">Map Address *</string>
+    <string name="hint_current_map_address">Current map address</string>
+
+
+    <string name="button_save_changes">Save Changes</string>
+    <string name="button_cancel">Cancel</string>
+
+
+    <string name="title_edit_profile">Edit Profile</string>
+
+    <string name="cd_back_button_manage_images">Back button for manage images</string>
+    <string name="title_manage_images">Manage Images</string>
+
+    <string name="cd_image_slot_1">Image 1</string>
+    <string name="cd_image_slot_2">Image 2</string>
+    <string name="cd_image_slot_3">Image 3</string>
+    <string name="cd_image_slot_4">Image 4</string>
+    <string name="cd_image_slot_5">Image 5</string>
+
+    <string name="text_slot_empty">Empty</string>
+    <string name="button_change">Change</string>
+    <string name="button_delete">Delete</string>
+
+    <string name="cd_back_button_options">Back button for product options</string>
+    <string name="title_manage_products">Manage Products</string>
+    <string name="button_see_my_products">See My Products</string>
+    <string name="button_see_company_orders">See company orders</string>
+
+    <string name="cd_back_button_profile_view">Back button to view profile</string>
+    <string name="cd_profile_image">Profile image</string>
+
+    <string name="button_change_photo">Change Photo</string>
+    <string name="button_delete_photo">Delete Photo</string>
+
+    <string name="label_contact_information">Contact Information</string>
+    <string name="label_phone">Phone:</string>
+    <string name="label_email">Email:</string>
+    <string name="label_address">Address:</string>
+    <string name="label_map">Map:</string>
+    <string name="text_view_on_map">View on Map</string>
+
+    <string name="button_edit_profile">Edit Profile</string>
+
+    <string name="title_profile">Profile</string>
+
+    <string name="button_view_details">View Details</string>
+
+
+    <string name="label_order_id_prefix">Order ID:\u0020</string>
+    <string name="label_user_id_prefix">User ID:\u0020</string>
+
+
+    <string name="format_order_id">Order ID: %s</string>
+    <string name="format_user_id">User ID: %s</string>
+
+
+    <string name="tools_text_order_id_example">Order ID: ABCxyz123verylongdocumentidexample</string>
+    <string name="tools_text_user_id_example">User ID: user_very_long_id_example_which_might_be_truncated</string>
+    <string name="tools_text_date_example">Oct 27, 2023, 10:30 AM</string>
+
+    <string name="cd_product_item_image">Product image</string>
+    <string name="button_manage">Manage</string>
+
+
+    <string name="tools_text_product_name_example_long">Long Product Name That Might Take Two Lines</string>
+    <string name="tools_text_product_price_example">$12.00</string>
 
 </resources>
