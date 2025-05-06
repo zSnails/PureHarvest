@@ -15,11 +15,20 @@
         android:id="@+id/navigation_dashboard"
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.dashboard.DashboardFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_dashboard" >
+        <action
+            android:id="@+id/action_navigation_dashboard_to_companyContactFragment"
+            app:destination="@id/companyContactFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_account"
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.account.AccountFragment"
         android:label="@string/title_account"
         tools:layout="@layout/fragment_account" />
+    <fragment
+        android:id="@+id/companyContactFragment"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.companyContact.companyContactFragment"
+        android:label="fragment_company_contact"
+        tools:layout="@layout/fragment_company_contact" />
 </navigation>
