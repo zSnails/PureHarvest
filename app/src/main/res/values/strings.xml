@@ -44,12 +44,9 @@
     <string name="button_save_product">Save Product</string>
 
 
-
     <string name="back_button_content_description">Back</string>
     <string name="title_product_list">My Products</string>
     <string name="empty_product_list">You haven\'t added any products yet.</string>
-
-
 
 
     <string name="manage_images">Manage Images</string>
@@ -79,7 +76,6 @@
     <string name="hint_aftertaste">Aftertaste</string>
 
     <string name="button_delete_product">Delete Product</string>
-
 
 
     <string name="cd_back_button_profile">Back button for profile</string>
@@ -218,6 +214,33 @@
     <string name="error_invalid_image_url_for_deletion">Invalid image URL for deletion.</string>
     <string name="log_image_pick_cancelled">Image selection cancelled or result not OK.</string>
     <string name="log_unknown_activity_request_code">onActivityResult: Unknown request code %d</string>
+
+    <string name="button_company_orders_list">Company orders list</string>
+
+
+    <string name="error_null_result_orders">Error: Null result when loading orders.</string>
+
+    <string name="error_invalid_order_id_details">Invalid order ID to view details.</string>
+    <string name="error_navigation_details">Error trying to navigate to details.</string>
+    <string name="error_navigation_controller_null">Navigation error (null controller).</string>
+
+
+    <!-- For OrderDetailsFragment -->
+    <string name="title_order_details">Order Details</string>
+    <string name="error_invalid_order_id_display">Invalid order ID. Cannot display details.</string>
+    <string name="error_deserializing_order">Failed to process order data.</string>
+    <string name="error_order_not_found">Order not found.</string>
+    <string name="error_fetching_order_details">Error fetching order details</string>
+    <string name="error_displaying_order_null">Error: No order data available to display.</string>
+
+
+    <!-- For the layout in OrderDetailsFragment (label examples) -->
+    <string name="label_order_id">Order ID:</string>
+    <string name="label_order_date">Date:</string>
+    <string name="label_seller_id">Seller ID:</string>
+    <string name="label_user_id_details">User ID:</string>
+    <string name="label_product_ids">Product IDs:</string>
+
 
 
 

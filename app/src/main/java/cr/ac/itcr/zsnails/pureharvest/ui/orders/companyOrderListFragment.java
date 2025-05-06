@@ -196,9 +196,43 @@ public class companyOrderListFragment extends Fragment implements CompanyOrderAd
 
     @Override
     public void onViewDetailsClick(Order order) {
-        if (getContext() == null) return;
-        Log.d(TAG, "View details for order: " + order.getDocumentId());
-        Toast.makeText(getContext(), String.format(getString(R.string.view_order_details_for), order.getDocumentId()), Toast.LENGTH_SHORT).show();
-        // TODO: Navegación a detalles
-    }
-}
+        if (getContext() == null || !isAdded()) { // Añadir chequeo !isAdded()
+            Log.w(TAG, "Context is null or fragment not added in onViewDetailsClick");
+            return;
+        }
+
+        String orderId = order.getDocumentId();
+
+        if (orderId == null || orderId.isEmpty()) {
+            Toast.makeText(getContext(), getString(R.string.error_invalid_order_id_details), Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Order ID is null or empty, cannot navigate to details.");
+            return;
+        }
+
+        Log.d(TAG, "Navigating to details for order: " + orderId);
+        // Quitar el Toast anterior que era solo para debugging si quieres
+        // Toast.makeText(getContext(), String.format(getString(R.string.view_order_details_for), order.getDocumentId()), Toast.LENGTH_SHORT).show();
+
+        if (navController != null) {
+            // Crear un Bundle para pasar los argumentos
+            Bundle bundle = new Bundle();
+            // La clave "order_id" DEBE COINCIDIR con el nombre del <argument>
+            // definido en tu grafo de navegación para OrderDetailsFragment.
+            bundle.putString("order_id", orderId);
+
+            try {
+                // Navegar usando la acción definida en el grafo de navegación
+                // y pasar el bundle con los argumentos.
+                // Asegúrate de que R.id.action_companyOrderListFragment_to_orderDetailsFragment
+                // es el ID correcto de la acción en tu nav_graph.xml
+                navController.navigate(R.id.action_companyOrderListFragment_to_orderDetailsFragment, bundle);
+            } catch (IllegalArgumentException e) {
+                // Esto puede suceder si el ID de la acción es incorrecto o el destino no se encuentra.
+                Log.e(TAG, "Navigation action/destination not found or other navigation error.", e);
+                Toast.makeText(getContext(), getString(R.string.error_navigation_details), Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Log.e(TAG, "NavController is null in onViewDetailsClick. Cannot navigate.");
+            Toast.makeText(getContext(), getString(R.string.error_navigation_controller_null), Toast.LENGTH_SHORT).show();
+        }
+    }}

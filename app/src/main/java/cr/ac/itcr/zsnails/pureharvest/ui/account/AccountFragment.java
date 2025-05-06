@@ -32,7 +32,9 @@ public class AccountFragment extends Fragment {
 
         Button profileBtn = root.findViewById(R.id.profileBtn);
 
-        Button ProductsBtn = root.findViewById(R.id.ProductsBtn);
+        Button ProductsBtn = root.findViewById(R.id.productsBtn);
+
+        Button companyOrdersBtn = root.findViewById(R.id.companyOrdersBtn);
 
         profileBtn.setOnClickListener(v ->
                 Navigation.findNavController(v).navigate(R.id.action_navigation_account_to_profileFragment)
@@ -40,6 +42,9 @@ public class AccountFragment extends Fragment {
 
         ProductsBtn.setOnClickListener(v->
                 Navigation.findNavController(v).navigate(R.id.action_navigation_account_to_productsOptionsFragment));
+
+        companyOrdersBtn.setOnClickListener(v->
+                Navigation.findNavController(v).navigate(R.id.action_navigation_account_to_companyOrderListFragment));
 
         return root;
     }

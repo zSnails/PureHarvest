@@ -217,4 +217,30 @@
     <string name="log_image_pick_cancelled">Selección de imagen cancelada o resultado no OK.</string>
     <string name="log_unknown_activity_request_code">onActivityResult: Código de solicitud desconocido %d</string>
 
+    <string name="button_company_orders_list">Lista de órdenes de la empresa</string>
+
+
+
+    <string name="error_invalid_order_id_details">ID de pedido no válido para ver detalles.</string>
+    <string name="error_navigation_details">Error al intentar navegar a los detalles.</string>
+    <string name="error_navigation_controller_null">Error de navegación (controlador nulo).</string>
+
+
+
+    <!-- Para OrderDetailsFragment -->
+    <string name="title_order_details">Detalles del Pedido</string>
+    <string name="error_invalid_order_id_display">ID de pedido no válido. No se pueden mostrar los detalles.</string>
+    <string name="error_deserializing_order">No se pudieron procesar los datos del pedido.</string>
+    <string name="error_order_not_found">Pedido no encontrado.</string>
+    <string name="error_fetching_order_details">Error al obtener los detalles del pedido</string>
+    <string name="error_displaying_order_null">Error: Datos del pedido no disponibles para mostrar.</string>
+
+
+    <!-- Para el layout de OrderDetailsFragment (ejemplos de etiquetas) -->
+    <string name="label_order_id">ID Pedido:</string>
+    <string name="label_order_date">Fecha:</string>
+    <string name="label_seller_id">ID Vendedor:</string>
+    <string name="label_user_id_details">ID Usuario:</string>
+    <string name="label_product_ids">IDs Productos:</string>
+
 </resources>
