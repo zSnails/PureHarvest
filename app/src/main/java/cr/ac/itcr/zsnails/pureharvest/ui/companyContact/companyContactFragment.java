@@ -46,7 +46,8 @@ public class companyContactFragment extends Fragment {
     private String companyEmailAddress;
     private String companyPhoneNumber;
 
-    private static final String COMPANY_ID_FOR_IMAGE = "1";
+    // This variable will now be used for both Firestore document ID and image name
+    private static final String COMPANY_ID_FOR_IMAGE = "2";
     private static final String COMPANY_IMAGE_FOLDER_IN_STORAGE = "companyImages";
     private static final String COMPANY_IMAGE_FILE_EXTENSION = ".jpg";
 
@@ -64,7 +65,7 @@ public class companyContactFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d(TAG, "onViewCreated: View created, starting data fetch.");
+        Log.d(TAG, "onViewCreated: View created, starting data fetch for company ID: " + COMPANY_ID_FOR_IMAGE);
 
         setInitialUIState();
         fetchCompanyDataAndImage();
@@ -76,7 +77,6 @@ public class companyContactFragment extends Fragment {
 
     private void setInitialUIState() {
         if (binding == null) return;
-        // ... (resto del método sin cambios)
         binding.NameT.setText("Loading...");
         binding.sloganT.setText("Loading...");
         binding.phoneT.setText("Loading...");
@@ -85,7 +85,7 @@ public class companyContactFragment extends Fragment {
         binding.buttonSeeLocation.setEnabled(false);
 
         binding.sloganT.setVisibility(View.VISIBLE);
-        binding.emailT.setVisibility(View.VISIBLE); // Ensure it's visible for "Loading..."
+        binding.emailT.setVisibility(View.VISIBLE);
 
         binding.emailT.setOnClickListener(null);
         if (getContext() != null) {
@@ -149,27 +149,6 @@ public class companyContactFragment extends Fragment {
         }
     }
 
-    // NOTE: This method has been modified to use hardcoded English strings
-    // for the dialog title, "Call" option, and "SMS" option. This change is made
-    // to directly address the request to make these UI elements appear in English
-    // by altering this Java file.
-    //
-    // The standard and recommended Android practice for localization is to define
-    // all user-facing strings in strings.xml files. This allows the Android system
-    // to select the appropriate language based on device settings and makes
-    // managing translations easier.
-    //
-    // Original Spanish strings that were displayed:
-    // - Dialog Title ("contactar por telefono"): Was from R.string.contact_via_phone_title
-    // - Call Option ("llamada"): Was from R.string.action_call
-    // - SMS Option ("mensaje"): Was from R.string.action_sms
-    //
-    // To revert to using string resources (recommended):
-    // 1. Ensure English translations exist in your strings.xml (e.g., res/values/strings.xml or res/values-en/strings.xml):
-    //    <string name="contact_via_phone_title">Contact via phone</string>
-    //    <string name="action_call">Call</string>
-    //    <string name="action_sms">SMS</string>
-    // 2. Change the hardcoded strings below back to using getString(R.string.your_string_id).
     private void showPhoneOptionsDialog(final String phoneNumber) {
         if (getContext() == null || phoneNumber == null || phoneNumber.trim().isEmpty()) {
             Toast.makeText(getContext(), getString(R.string.no_phone_number_available), Toast.LENGTH_SHORT).show();
@@ -177,8 +156,6 @@ public class companyContactFragment extends Fragment {
         }
 
         final ArrayList<String> options = new ArrayList<>();
-
-        // Hardcoded English options
         final String callOption = "Call";
         final String smsOption = "SMS";
 
@@ -186,33 +163,22 @@ public class companyContactFragment extends Fragment {
         options.add(smsOption);
 
         if (isWhatsAppInstalled()) {
-            // Assuming R.string.action_whatsapp already provides an appropriate English string (e.g., "WhatsApp").
-            // If not, this would also need to be hardcoded or its string resource updated.
-            // For consistency, if hardcoding, it would be: final String whatsappOption = "WhatsApp"; options.add(whatsappOption);
             options.add(getString(R.string.action_whatsapp));
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-
-        // Hardcoded English dialog title
         builder.setTitle("Contact via phone");
 
         builder.setItems(options.toArray(new String[0]), (dialog, which) -> {
             String selectedOption = options.get(which);
-
             if (selectedOption.equals(callOption)) {
                 dialPhoneNumber(phoneNumber);
             } else if (selectedOption.equals(smsOption)) {
                 sendSms(phoneNumber);
             } else if (isWhatsAppInstalled() && selectedOption.equals(getString(R.string.action_whatsapp))) {
-                // This comparison assumes getString(R.string.action_whatsapp) matches the string added to options.
-                // If action_whatsapp was also hardcoded, this comparison would need to match that hardcoded string.
                 sendWhatsAppMessage(phoneNumber);
             }
         });
-
-        // Assuming R.string.dialog_action_cancel provides an appropriate English string (e.g., "Cancel").
-        // If not, this would also need to be hardcoded (e.g., "Cancel") or its string resource updated.
         builder.setNegativeButton(getString(R.string.dialog_action_cancel), (dialog, which) -> dialog.dismiss());
         builder.show();
     }
@@ -225,7 +191,6 @@ public class companyContactFragment extends Fragment {
             if (dialIntent.resolveActivity(getContext().getPackageManager()) != null) {
                 startActivity(dialIntent);
             } else {
-
                 Toast.makeText(getContext(), getString(R.string.error_opening_dialer), Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
@@ -242,7 +207,6 @@ public class companyContactFragment extends Fragment {
             if (smsIntent.resolveActivity(getContext().getPackageManager()) != null) {
                 startActivity(smsIntent);
             } else {
-
                 Toast.makeText(getContext(), getString(R.string.error_opening_sms), Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
@@ -293,12 +257,12 @@ public class companyContactFragment extends Fragment {
     }
 
     private void loadCompanyImageFromFirebase() {
-        // ... (resto del método sin cambios)
         if (getContext() == null || !isAdded() || binding == null || binding.profileImagePlaceholder == null) {
             Log.w(TAG, "loadCompanyImageFromFirebase: Cannot load image - context, fragment not added, or view is null.");
             return;
         }
 
+        // COMPANY_ID_FOR_IMAGE is already used here for the image name
         String fileNameWithExtension = COMPANY_ID_FOR_IMAGE + COMPANY_IMAGE_FILE_EXTENSION;
         StorageReference fileRef = storage.getReference().child(COMPANY_IMAGE_FOLDER_IN_STORAGE + "/" + fileNameWithExtension);
 
@@ -322,7 +286,7 @@ public class companyContactFragment extends Fragment {
                     Log.e(TAG, "Failed to load company image from " + fileRef.getPath(), e);
                     if (getContext() != null && isAdded() && binding != null && binding.profileImagePlaceholder != null) {
                         Glide.with(companyContactFragment.this)
-                                .load(R.mipmap.ic_launcher_round)
+                                .load(R.mipmap.ic_launcher_round) // Fallback image
                                 .circleCrop()
                                 .into(binding.profileImagePlaceholder);
                     }
@@ -330,13 +294,12 @@ public class companyContactFragment extends Fragment {
     }
 
     private void fetchCompanyDataAndImage() {
-        // ... (resto del método sin cambios)
-        Log.d(TAG, "fetchCompanyDataAndImage: Starting all data fetch.");
+        Log.d(TAG, "fetchCompanyDataAndImage: Starting data fetch for company ID: " + COMPANY_ID_FOR_IMAGE);
         if (binding != null) {
             binding.buttonSeeLocation.setEnabled(false);
         }
 
-        loadCompanyImageFromFirebase();
+        loadCompanyImageFromFirebase(); // This already uses COMPANY_ID_FOR_IMAGE for the image name
 
         if (db == null) {
             Log.e(TAG, "fetchCompanyDataAndImage: Firestore db instance is null!");
@@ -345,31 +308,29 @@ public class companyContactFragment extends Fragment {
             return;
         }
 
-        db.collection("Company").document("1").get()
+        // Use COMPANY_ID_FOR_IMAGE to fetch the Firestore document
+        db.collection("Company").document(COMPANY_ID_FOR_IMAGE).get()
                 .addOnSuccessListener(documentSnapshot -> {
-                    Log.d(TAG, "fetchCompanyDataAndImage: Firestore onSuccess triggered.");
-                    if (binding == null || !isAdded() || getContext() == null) { // Added !isAdded() check
+                    Log.d(TAG, "fetchCompanyDataAndImage: Firestore onSuccess triggered for company ID: " + COMPANY_ID_FOR_IMAGE);
+                    if (binding == null || !isAdded() || getContext() == null) {
                         Log.w(TAG, "fetchCompanyDataAndImage: Binding, Context became null or Fragment not added.");
                         return;
                     }
                     if (documentSnapshot.exists()) {
-                        Log.d(TAG, "fetchCompanyDataAndImage: Document 'Company/1' exists.");
+                        Log.d(TAG, "fetchCompanyDataAndImage: Document 'Company/" + COMPANY_ID_FOR_IMAGE + "' exists.");
                         String name = documentSnapshot.getString("name");
                         String slogan = documentSnapshot.getString("slogan");
                         companyPhoneNumber = documentSnapshot.getString("number");
-                        mapAddressValue = documentSnapshot.getString("mapAdress");
-                        String address = documentSnapshot.getString("adress");
+                        mapAddressValue = documentSnapshot.getString("mapAdress"); // Ensure Firestore field name matches
+                        String address = documentSnapshot.getString("adress");   // Ensure Firestore field name matches
 
-                        // Log the raw email value from Firestore
                         String rawEmailFromFirestore = documentSnapshot.getString("email");
                         Log.d(TAG, "Raw companyEmailAddress from Firestore: [" + rawEmailFromFirestore + "]");
                         companyEmailAddress = rawEmailFromFirestore;
 
-
                         binding.NameT.setText(name != null ? name : "Name N/A");
                         binding.adressT.setText(address != null ? address : "Address N/A");
 
-                        // Handle Slogan
                         if (slogan != null && !slogan.trim().isEmpty()) {
                             binding.sloganT.setText(slogan);
                             binding.sloganT.setVisibility(View.VISIBLE);
@@ -378,7 +339,6 @@ public class companyContactFragment extends Fragment {
                             binding.sloganT.setVisibility(View.GONE);
                         }
 
-                        // Handle Email
                         Log.d(TAG, "Processing Email. Current value of companyEmailAddress: [" + companyEmailAddress + "]");
                         if (companyEmailAddress != null && !companyEmailAddress.trim().isEmpty()) {
                             Log.d(TAG, "Email has data. Setting VISIBLE.");
@@ -389,19 +349,15 @@ public class companyContactFragment extends Fragment {
                             binding.emailT.setVisibility(View.VISIBLE);
                         } else {
                             Log.d(TAG, "Email is null or empty. Setting GONE.");
-                            binding.emailT.setText(""); // Clear text from "Loading..."
+                            binding.emailT.setText("");
                             binding.emailT.setOnClickListener(null);
-                            // Reset style (safer with context check)
                             if (isAdded() && getContext() != null) {
                                 binding.emailT.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.tab_indicator_text));
                                 binding.emailT.setPaintFlags(binding.emailT.getPaintFlags() & (~Paint.UNDERLINE_TEXT_FLAG));
                             }
                             binding.emailT.setVisibility(View.GONE);
-                            Log.d(TAG, "emailT visibility after setting GONE: " + binding.emailT.getVisibility() +
-                                    " (0=VISIBLE, 4=INVISIBLE, 8=GONE)");
                         }
 
-                        // Handle Phone
                         if (companyPhoneNumber != null && !companyPhoneNumber.trim().isEmpty()) {
                             binding.phoneT.setText(companyPhoneNumber);
                             binding.phoneT.setOnClickListener(v -> showPhoneOptionsDialog(companyPhoneNumber));
@@ -413,19 +369,19 @@ public class companyContactFragment extends Fragment {
                             binding.phoneT.setOnClickListener(null);
                             binding.phoneT.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.tab_indicator_text));
                             binding.phoneT.setPaintFlags(binding.phoneT.getPaintFlags() & (~Paint.UNDERLINE_TEXT_FLAG));
-                            binding.phoneT.setVisibility(View.VISIBLE);
+                            binding.phoneT.setVisibility(View.VISIBLE); // Keep visible to show "Phone N/A"
                         }
                         binding.buttonSeeLocation.setEnabled(mapAddressValue != null && !mapAddressValue.trim().isEmpty());
-                        Log.d(TAG, "fetchCompanyDataAndImage: Firestore UI Updated successfully.");
+                        Log.d(TAG, "fetchCompanyDataAndImage: Firestore UI Updated successfully for company ID: " + COMPANY_ID_FOR_IMAGE);
                     } else {
-                        Log.w(TAG, "fetchCompanyDataAndImage: Document 'Company/1' does not exist.");
+                        Log.w(TAG, "fetchCompanyDataAndImage: Document 'Company/" + COMPANY_ID_FOR_IMAGE + "' does not exist.");
                         setErrorUIState("Not Found");
                         if (getContext() != null)
                             Toast.makeText(getContext(), getString(R.string.company_info_not_found), Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(TAG, "fetchCompanyDataAndImage: Firestore onFailure triggered.", e);
+                    Log.e(TAG, "fetchCompanyDataAndImage: Firestore onFailure triggered for company ID: " + COMPANY_ID_FOR_IMAGE, e);
                     if (binding == null) {
                         Log.w(TAG, "fetchCompanyDataAndImage: Binding became null on failure.");
                         return;
@@ -448,19 +404,18 @@ public class companyContactFragment extends Fragment {
     }
 
     private void setErrorUIState(String errorType) {
-        // ... (resto del método sin cambios)
         if (binding == null) return;
-        binding.NameT.setText(errorType);
-        binding.sloganT.setText(errorType);
-        binding.phoneT.setText(errorType);
-        binding.emailT.setText(errorType); // Will show "Error" or "Not Found"
-        binding.adressT.setText(errorType);
+        String errorMsg = errorType + " (ID: " + COMPANY_ID_FOR_IMAGE + ")";
+        binding.NameT.setText(errorMsg);
+        binding.sloganT.setText(errorMsg);
+        binding.phoneT.setText(errorMsg);
+        binding.emailT.setText(errorMsg);
+        binding.adressT.setText(errorMsg);
         binding.buttonSeeLocation.setEnabled(false);
 
         binding.sloganT.setVisibility(View.VISIBLE);
-        binding.emailT.setVisibility(View.VISIBLE); // Make sure it's visible to show errorType
+        binding.emailT.setVisibility(View.VISIBLE);
         binding.phoneT.setVisibility(View.VISIBLE);
-
 
         binding.emailT.setOnClickListener(null);
         if (getContext() != null) {
@@ -476,7 +431,7 @@ public class companyContactFragment extends Fragment {
 
         if (getContext() != null && binding.profileImagePlaceholder != null) {
             Glide.with(requireContext())
-                    .load(R.mipmap.ic_launcher_round)
+                    .load(R.mipmap.ic_launcher_round) // Fallback error image
                     .circleCrop()
                     .into(binding.profileImagePlaceholder);
         }
@@ -488,9 +443,6 @@ public class companyContactFragment extends Fragment {
         Log.d(TAG, "onDestroyView: Setting binding to null.");
         if (binding != null && binding.profileImagePlaceholder != null && getContext() != null) {
             if(isAdded() && getActivity() != null && !getActivity().isFinishing()){
-                // Check if Glide is paused before clearing, though Glide.with(context).clear(view) is usually safe.
-                // No direct 'isPaused' on Glide.with(context) but context checks help.
-                // The try-catch is a good safeguard.
                 try {
                     Glide.with(requireContext()).clear(binding.profileImagePlaceholder);
                 } catch (IllegalArgumentException e) {
