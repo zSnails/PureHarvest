@@ -1,3 +1,4 @@
+// File: cr.ac.itcr.zsnails.pureharvest.ui.Profile.ProfileFragment.java
 package cr.ac.itcr.zsnails.pureharvest.ui.Profile;
 
 import static android.app.Activity.RESULT_OK;
@@ -24,6 +25,9 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+// Importa MainActivity para acceder a la variable estática
+import cr.ac.itcr.zsnails.pureharvest.MainActivity; // Asegúrate que la ruta es correcta
 import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentProfileBinding;
 
@@ -35,9 +39,12 @@ public class ProfileFragment extends Fragment {
     private Uri imageUri;
     private FirebaseStorage storage;
     private StorageReference storageReference;
-    private static final int PICK_IMAGE_REQUEST = 1;
+    private static int PICK_IMAGE_REQUEST;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private static final String COMPANY_ID = "2";
+
+    // Ya no necesitas COMPANY_ID aquí si vas a usar la variable global de MainActivity
+    // private static final String COMPANY_ID = "2";
+    private String companyIdToUse; // Variable para almacenar el ID global
 
     private TextView nameT;
     private TextView sloganT;
@@ -46,6 +53,15 @@ public class ProfileFragment extends Fragment {
     private TextView emailT;
     private TextView adressT;
     private TextView mapAdressT;
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) { // Mejor obtenerla en onCreate
+        super.onCreate(savedInstanceState);
+        companyIdToUse = MainActivity.idGlobalUser;
+        PICK_IMAGE_REQUEST = Integer.parseInt(companyIdToUse);
+    }
+
 
     protected void openGallery() {
         Intent intent = new Intent();
@@ -65,8 +81,8 @@ public class ProfileFragment extends Fragment {
     }
 
     private void uploadImageToFirebase(Uri uri) {
-        if (getContext() == null || !isAdded()) return;
-        String fileName = COMPANY_ID + ".jpg";
+        if (getContext() == null || !isAdded() || companyIdToUse == null) return;
+        String fileName = companyIdToUse + ".jpg"; // Usa la variable obtenida
         StorageReference fileRef = storageReference.child("companyImages/" + fileName);
         Log.d(TAG, "Uploading image: " + fileName + " to companyImages/");
 
@@ -87,8 +103,8 @@ public class ProfileFragment extends Fragment {
     }
 
     private void loadImageFromFirebase() {
-        if (getContext() == null || !isAdded() || imageView == null) return;
-        String fileName = COMPANY_ID + ".jpg";
+        if (getContext() == null || !isAdded() || imageView == null || companyIdToUse == null) return;
+        String fileName = companyIdToUse + ".jpg"; // Usa la variable obtenida
         StorageReference fileRef = storageReference.child("companyImages/" + fileName);
         Log.d(TAG, "Loading image: " + fileName + " from companyImages/");
 
@@ -116,8 +132,8 @@ public class ProfileFragment extends Fragment {
     }
 
     private void deleteImageFromFirebase() {
-        if (getContext() == null || !isAdded() || imageView == null) return;
-        String fileName = COMPANY_ID + ".jpg";
+        if (getContext() == null || !isAdded() || imageView == null || companyIdToUse == null) return;
+        String fileName = companyIdToUse + ".jpg"; // Usa la variable obtenida
         StorageReference fileRef = storageReference.child("companyImages/" + fileName);
         Log.d(TAG, "Deleting image: " + fileName + " from companyImages/");
 
@@ -184,20 +200,33 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        loadImageFromFirebase();
-        loadProfileData();
+
+        // Asegurarse que companyIdToUse esté disponible antes de llamar a estos métodos
+        if (companyIdToUse != null && !companyIdToUse.isEmpty()) {
+            loadImageFromFirebase();
+            loadProfileData();
+        } else {
+            Log.e(TAG, "Company ID from MainActivity is null or empty. Cannot load data.");
+            handleProfileDataNotFound(); // O algún otro manejo de error
+        }
+
 
         return root;
     }
 
     private void loadProfileData() {
-        Log.d(TAG, "Loading profile data for company ID: " + COMPANY_ID);
-        db.collection("Company").document(COMPANY_ID).get()
+        if (companyIdToUse == null || companyIdToUse.isEmpty()) { // Chequeo adicional
+            Log.e(TAG, "Cannot load profile data, companyIdToUse is null or empty.");
+            handleProfileDataNotFound(); // Ocultar/mostrar error
+            return;
+        }
+        Log.d(TAG, "Loading profile data for company ID: " + companyIdToUse);
+        db.collection("Company").document(companyIdToUse).get() // Usa la variable obtenida
                 .addOnSuccessListener(documentSnapshot -> {
                     if (getContext() == null || !isAdded() || nameT == null) return;
 
                     if (documentSnapshot.exists()) {
-                        Log.d(TAG, "Document " + COMPANY_ID + " found.");
+                        Log.d(TAG, "Document " + companyIdToUse + " found.");
                         nameT.setText(documentSnapshot.getString("name"));
                         phoneT.setText(documentSnapshot.getString("number"));
                         adressT.setText(documentSnapshot.getString("adress"));
@@ -218,12 +247,12 @@ public class ProfileFragment extends Fragment {
                             emailT.setText(email);
                         }
                     } else {
-                        Log.w(TAG, "Document " + COMPANY_ID + " not found.");
+                        Log.w(TAG, "Document " + companyIdToUse + " not found.");
                         handleProfileDataNotFound();
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(TAG, "Error loading profile data for " + COMPANY_ID, e);
+                    Log.e(TAG, "Error loading profile data for " + companyIdToUse, e);
                     if (getContext() != null && isAdded()) {
                         handleProfileDataLoadError(e);
                     }

@@ -24,10 +24,6 @@ public class CompanyOrderAdapter extends RecyclerView.Adapter<CompanyOrderAdapte
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault());
     private OnOrderClickListener listener;
 
-    // Asegúrate de tener estas strings en tu archivo strings.xml
-    // <string name="not_available_short">N/A</string>
-    // <string name="order_doc_id_prefix">ID Pedido: </string> // Cambiado para claridad
-    // <string name="order_user_prefix">Usuario: </string>
 
     public interface OnOrderClickListener {
         void onOrderClick(Order order);
@@ -51,23 +47,19 @@ public class CompanyOrderAdapter extends RecyclerView.Adapter<CompanyOrderAdapte
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
         Order order = orderList.get(position);
 
-        // 1. Fecha de la orden
+
         if (order.getDate() != null) {
             holder.orderDate.setText(dateFormat.format(order.getDate().toDate()));
         } else {
             holder.orderDate.setText(context.getString(R.string.not_available_short));
         }
 
-        // 2. ID del DOCUMENTO de la orden (en el TextView orderName)
-        //    Anteriormente usaba order.getProductId(), ahora order.getDocumentId()
         String orderDocumentIdString = order.getDocumentId() != null ?
                 context.getString(R.string.order_doc_id_prefix) + order.getDocumentId() : // Usar el ID del documento
                 context.getString(R.string.order_doc_id_prefix) + context.getString(R.string.not_available_short);
         holder.orderName.setText(orderDocumentIdString);
-        // Si documentId puede ser muy largo, considera usar ellipsize en orderName también.
 
-        // 3. ID del Usuario (en el TextView orderUserName)
-        //    Usa order.getUserId() que es correcto
+
         String userIdString = order.getUserId() != null ?
                 context.getString(R.string.order_user_prefix) + order.getUserId() :
                 context.getString(R.string.order_user_prefix) + context.getString(R.string.not_available_short);

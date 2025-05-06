@@ -7,27 +7,41 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import android.text.TextUtils;
+import android.util.Log; // Importante para depurar
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
+// Ya no se necesitan Button, EditText, ImageButton si usas ViewBinding
+// import android.widget.Button;
+// import android.widget.EditText;
+// import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
+
+import cr.ac.itcr.zsnails.pureharvest.MainActivity; // IMPORTANTE: Importar MainActivity
 import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentEditProfileBinding;
 
 public class EditProfileFragment extends Fragment {
 
+    private static final String TAG = "EditProfileFragment"; // TAG para logs
     private FragmentEditProfileBinding binding;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    // Ya no se usará la constante local, se obtendrá de MainActivity
+    // private static final String COMPANY_ID = "2";
+    private String companyIdToUse; // Variable para almacenar el ID global
 
-    private static final String COMPANY_ID = "2";
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        companyIdToUse = MainActivity.idGlobalUser;
+
+
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -41,23 +55,39 @@ public class EditProfileFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         binding.backButtonEdit.setOnClickListener(v -> {
-
             Navigation.findNavController(v).navigateUp();
         });
 
-        loadCompanyData();
 
-        binding.saveChangesBtn.setOnClickListener(v -> saveCompanyData());
+        if (companyIdToUse != null && !companyIdToUse.isEmpty()) {
+            loadCompanyData();
+        } else {
+
+            if (getContext() != null) {
+                Toast.makeText(getContext(), getString(R.string.toast_error_loading_profile, "ID de perfil no disponible"), Toast.LENGTH_LONG).show();
+            }
+        }
+
+
+        binding.saveChangesBtn.setOnClickListener(v -> {
+            if (companyIdToUse != null && !companyIdToUse.isEmpty()) {
+                saveCompanyData();
+            } else {
+                if (getContext() != null) {
+                    Toast.makeText(getContext(), "No se puede guardar: ID de perfil no disponible.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
         binding.cancelBtn.setOnClickListener(v -> {
-
             Navigation.findNavController(v).navigate(R.id.action_editProfileFragment_to_profileFragment);
         });
     }
 
 
     private void loadCompanyData() {
-        db.collection("Company").document(COMPANY_ID).get()
+        Log.d(TAG, "Cargando datos para Company ID: " + companyIdToUse);
+        db.collection("Company").document(companyIdToUse).get() // Usa companyIdToUse
                 .addOnSuccessListener(documentSnapshot -> {
                     if (getContext() == null || !isAdded() || binding == null) return;
 
@@ -66,15 +96,15 @@ public class EditProfileFragment extends Fragment {
                         binding.sloganInput.setText(documentSnapshot.getString("slogan"));
                         binding.numberInput.setText(documentSnapshot.getString("number"));
                         binding.emailInput.setText(documentSnapshot.getString("email"));
-                        binding.adressInput.setText(documentSnapshot.getString("adress")); // 'address' con dos 'd' en Firestore?
-                        binding.mapAdressInput.setText(documentSnapshot.getString("mapAdress")); // 'mapAddress' con dos 'd' en Firestore?
+                        binding.adressInput.setText(documentSnapshot.getString("adress"));
+                        binding.mapAdressInput.setText(documentSnapshot.getString("mapAdress"));
                     } else {
                         if (getContext() != null) {
                             Toast.makeText(getContext(), getString(R.string.toast_company_data_not_found), Toast.LENGTH_SHORT).show();
                         }
                     }
                 }).addOnFailureListener(e -> {
-                    if (getContext() != null && isAdded()) { // Doble chequeo
+                    if (getContext() != null && isAdded()) {
                         Toast.makeText(getContext(), getString(R.string.toast_error_loading_profile, e.getMessage()), Toast.LENGTH_LONG).show();
                     }
                 });
@@ -90,7 +120,6 @@ public class EditProfileFragment extends Fragment {
         String address = binding.adressInput.getText().toString().trim();
         String mapAddress = binding.mapAdressInput.getText().toString().trim();
 
-
         boolean isValid = true;
         if (TextUtils.isEmpty(name)) {
             binding.nameInput.setError(getString(R.string.error_company_name_required));
@@ -99,14 +128,12 @@ public class EditProfileFragment extends Fragment {
             binding.nameInput.setError(null);
         }
 
-
         if (TextUtils.isEmpty(number)) {
             binding.numberInput.setError(getString(R.string.error_phone_number_required));
             isValid = false;
         } else {
             binding.numberInput.setError(null);
         }
-
 
         if (TextUtils.isEmpty(address)) {
             binding.adressInput.setError(getString(R.string.error_address_required));
@@ -123,7 +150,7 @@ public class EditProfileFragment extends Fragment {
         }
 
         if (!isValid) {
-            if (getContext() != null) { // Doble chequeo
+            if (getContext() != null) {
                 Toast.makeText(getContext(), getString(R.string.error_fill_required_fields), Toast.LENGTH_SHORT).show();
             }
             return;
@@ -137,7 +164,8 @@ public class EditProfileFragment extends Fragment {
         companyData.put("adress", address);
         companyData.put("mapAdress", mapAddress);
 
-        db.collection("Company").document(COMPANY_ID).update(companyData)
+        Log.d(TAG, "Guardando datos para Company ID: " + companyIdToUse);
+        db.collection("Company").document(companyIdToUse).update(companyData) // Usa companyIdToUse
                 .addOnSuccessListener(aVoid -> {
                     if (getContext() != null && isAdded() && getView() != null) {
                         Toast.makeText(getContext(), getString(R.string.toast_profile_updated_successfully), Toast.LENGTH_SHORT).show();
@@ -145,7 +173,7 @@ public class EditProfileFragment extends Fragment {
                     }
                 })
                 .addOnFailureListener(e -> {
-                    if (getContext() != null && isAdded()) { // Doble chequeo
+                    if (getContext() != null && isAdded()) {
                         Toast.makeText(getContext(), getString(R.string.toast_error_updating_profile, e.getMessage()), Toast.LENGTH_LONG).show();
                     }
                 });

@@ -1,3 +1,4 @@
+// File: cr.ac.itcr.zsnails.pureharvest.MainActivity.java
 package cr.ac.itcr.zsnails.pureharvest;
 
 import android.os.Bundle;
@@ -13,12 +14,17 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
 
+
+    public static String idGlobalUser = "1";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
@@ -29,5 +35,6 @@ public class MainActivity extends AppCompatActivity {
         //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
     }
+
 
 }

@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import cr.ac.itcr.zsnails.pureharvest.MainActivity;
 import cr.ac.itcr.zsnails.pureharvest.R;
 // Ensure correct binding class name
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentCompnayProductsListBinding;
@@ -40,12 +41,14 @@ public class CompanyProductsListFragment extends Fragment {
     private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
     private static final String TAG = "CompanyProductsList";
-    private static final String SELLER_ID_TO_FILTER = "1"; // Consider making this dynamic
+    private static String SELLER_ID_TO_FILTER;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
+        SELLER_ID_TO_FILTER = MainActivity.idGlobalUser;
 
         binding = FragmentCompnayProductsListBinding.inflate(inflater, container, false);
         View root = binding.getRoot();

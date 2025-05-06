@@ -24,6 +24,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+import cr.ac.itcr.zsnails.pureharvest.MainActivity;
 import cr.ac.itcr.zsnails.pureharvest.R;
 // Asegúrate que la importación de tu modelo Order es correcta
 import cr.ac.itcr.zsnails.pureharvest.ui.orders.Order; // Cambiado para apuntar al paquete 'models'
@@ -31,7 +32,7 @@ import cr.ac.itcr.zsnails.pureharvest.ui.orders.Order; // Cambiado para apuntar 
 public class companyOrderListFragment extends Fragment implements CompanyOrderAdapter.OnOrderClickListener {
 
     private static final String TAG = "CompanyOrderListFrag";
-    private final String TARGET_SELLER_ID = "1";
+    private String TARGET_SELLER_ID;
 
     private RecyclerView recyclerViewOrders;
     private CompanyOrderAdapter orderAdapter;
@@ -55,6 +56,7 @@ public class companyOrderListFragment extends Fragment implements CompanyOrderAd
         super.onCreate(savedInstanceState);
         db = FirebaseFirestore.getInstance();
         orderList = new ArrayList<>();
+        TARGET_SELLER_ID = MainActivity.idGlobalUser;
     }
 
     @Override
