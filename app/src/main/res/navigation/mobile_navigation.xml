@@ -73,9 +73,10 @@
         <action
             android:id="@+id/action_productsOptionsFragment_to_companyProductsListFragment"
             app:destination="@id/companyProductsListFragment" />
+
         <action
-            android:id="@+id/action_productsOptionsFragment_to_ordersFragment2"
-            app:destination="@id/ordersFragment" />
+            android:id="@+id/action_productsOptionsFragment_to_companyOrderListFragment"
+            app:destination="@id/companyOrderListFragment" />
     </fragment>
     <fragment
         android:id="@+id/editProductFragment"
@@ -92,8 +93,8 @@
         android:label="fragment_manage_images"
         tools:layout="@layout/fragment_manage_images" />
     <fragment
-        android:id="@+id/ordersFragment"
-        android:name="cr.ac.itcr.zsnails.pureharvest.ui.orders.ordersFragment"
-        android:label="fragment_orders2"
-        tools:layout="@layout/fragment_orders2" />
+        android:id="@+id/companyOrderListFragment"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.orders.companyOrderListFragment"
+        android:label="fragment_company_order_list"
+        tools:layout="@layout/fragment_company_order_list" />
 </navigation>

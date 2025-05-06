@@ -13,4 +13,12 @@
     <string name="placeholder_address" />
     <string name="placeholder_map" />
     <string name="placeholder_error" />
+    <string name="not_available_short">N/A</string>
+    <string name="order_name_prefix">ID Producto: </string>
+    <string name="order_user_prefix">ID Usuario: </string>
+    <string name="view_order_details_for">Ver detalles de orden: %s</string>
+    <string name="error_loading_orders">Error al cargar órdenes.</string>
+    <string name="no_orders_yet_company">Aún no tienes órdenes registradas.</string>
+    <string name="title_my_orders">Mis Órdenes</string>
+    <string name="content_description_back_button">Volver</string>
 </resources>

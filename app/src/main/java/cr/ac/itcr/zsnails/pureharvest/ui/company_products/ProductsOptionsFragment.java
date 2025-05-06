@@ -37,7 +37,7 @@ public class ProductsOptionsFragment extends Fragment {
 
         addProductBtn.setOnClickListener(v -> {
             if(getView() != null) {
-                Navigation.findNavController(v).navigate(R.id.action_productsOptionsFragment_to_ordersFragment2);
+                Navigation.findNavController(v).navigate(R.id.action_productsOptionsFragment_to_companyOrderListFragment);
             }
         });
 
