@@ -5,15 +5,13 @@ import static android.app.Activity.RESULT_OK;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-
 import android.text.TextUtils;
-import android.util.Log; // Import Log
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,18 +20,16 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
 import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentProfileBinding;
 
 public class ProfileFragment extends Fragment {
 
-    private static final String TAG = "ProfileFragment"; // Added TAG for logging
+    private static final String TAG = "ProfileFragment";
     private FragmentProfileBinding binding;
     private ImageView imageView;
     private Uri imageUri;
@@ -41,11 +37,8 @@ public class ProfileFragment extends Fragment {
     private StorageReference storageReference;
     private static final int PICK_IMAGE_REQUEST = 1;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private static final String COMPANY_ID = "2";
 
-    // This ID will be used for Firestore document and image name
-    private static final String COMPANY_ID = "2"; // Variable as originally requested
-
-    // Declare all relevant TextViews as class members
     private TextView nameT;
     private TextView sloganT;
     private TextView phoneT;
@@ -73,48 +66,46 @@ public class ProfileFragment extends Fragment {
 
     private void uploadImageToFirebase(Uri uri) {
         if (getContext() == null || !isAdded()) return;
-        // Use COMPANY_ID for the image file name
         String fileName = COMPANY_ID + ".jpg";
         StorageReference fileRef = storageReference.child("companyImages/" + fileName);
         Log.d(TAG, "Uploading image: " + fileName + " to companyImages/");
 
         fileRef.putFile(uri)
                 .addOnSuccessListener(taskSnapshot -> fileRef.getDownloadUrl().addOnSuccessListener(downloadUri -> {
-                    if (getContext() != null && isAdded()) {
-                        Glide.with(this).load(downloadUri).circleCrop().into(imageView); // Added circleCrop
-                        Toast.makeText(requireContext(), "Upload Successful", Toast.LENGTH_SHORT).show();
+                    if (getContext() != null && isAdded() && imageView != null) {
+                        Glide.with(this).load(downloadUri).circleCrop().into(imageView);
+                        Toast.makeText(requireContext(), getString(R.string.toast_upload_successful), Toast.LENGTH_SHORT).show();
                         Log.d(TAG, "Image upload successful: " + downloadUri.toString());
                     }
                 }))
                 .addOnFailureListener(e -> {
                     if (getContext() != null && isAdded()) {
-                        Toast.makeText(requireContext(), "Upload Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), getString(R.string.toast_upload_failed, e.getMessage()), Toast.LENGTH_SHORT).show();
                         Log.e(TAG, "Image upload failed", e);
                     }
                 });
     }
 
     private void loadImageFromFirebase() {
-        if (getContext() == null || !isAdded()) return;
-        // Use COMPANY_ID for the image file name
+        if (getContext() == null || !isAdded() || imageView == null) return;
         String fileName = COMPANY_ID + ".jpg";
         StorageReference fileRef = storageReference.child("companyImages/" + fileName);
         Log.d(TAG, "Loading image: " + fileName + " from companyImages/");
 
         fileRef.getDownloadUrl()
                 .addOnSuccessListener(downloadUri -> {
-                    if (getContext() != null && isAdded()) {
+                    if (getContext() != null && isAdded() && imageView != null) {
                         Glide.with(this)
                                 .load(downloadUri)
                                 .placeholder(R.drawable.circle_mask)
                                 .error(R.drawable.circle_mask)
-                                .circleCrop() // Apply circle crop
+                                .circleCrop()
                                 .into(imageView);
                         Log.d(TAG, "Image loaded successfully: " + downloadUri.toString());
                     }
                 })
                 .addOnFailureListener(e -> {
-                    if(getContext() != null && isAdded()){
+                    if(getContext() != null && isAdded() && imageView != null){
                         Glide.with(this)
                                 .load(R.drawable.circle_mask)
                                 .circleCrop()
@@ -125,34 +116,33 @@ public class ProfileFragment extends Fragment {
     }
 
     private void deleteImageFromFirebase() {
-        if (getContext() == null || !isAdded()) return;
-        // Use COMPANY_ID for the image file name
+        if (getContext() == null || !isAdded() || imageView == null) return;
         String fileName = COMPANY_ID + ".jpg";
         StorageReference fileRef = storageReference.child("companyImages/" + fileName);
         Log.d(TAG, "Deleting image: " + fileName + " from companyImages/");
 
         fileRef.delete()
                 .addOnSuccessListener(aVoid -> {
-                    if (getContext() != null && isAdded()) {
+                    if (getContext() != null && isAdded() && imageView != null) {
                         Glide.with(this)
                                 .load(R.drawable.circle_mask)
                                 .circleCrop()
                                 .into(imageView);
-                        Toast.makeText(requireContext(), "Image deleted successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), getString(R.string.toast_image_deleted_successfully), Toast.LENGTH_SHORT).show();
                         Log.d(TAG, "Image " + fileName + " deleted successfully.");
                     }
                 })
                 .addOnFailureListener(e -> {
-                    if (getContext() != null && isAdded()) {
+                    if (getContext() != null && isAdded() && imageView != null) {
                         if (e.getMessage() != null && e.getMessage().toLowerCase().contains("object does not exist")) {
                             Glide.with(this)
                                     .load(R.drawable.circle_mask)
                                     .circleCrop()
                                     .into(imageView);
-                            Toast.makeText(requireContext(), "Image not found to delete.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(requireContext(), getString(R.string.toast_image_not_found_to_delete), Toast.LENGTH_SHORT).show();
                             Log.w(TAG, "Image " + fileName + " not found to delete.");
                         } else {
-                            Toast.makeText(requireContext(), "Failed to delete image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(requireContext(), getString(R.string.toast_failed_to_delete_image, e.getMessage()), Toast.LENGTH_SHORT).show();
                             Log.e(TAG, "Failed to delete image " + fileName, e);
                         }
                     }
@@ -201,11 +191,10 @@ public class ProfileFragment extends Fragment {
     }
 
     private void loadProfileData() {
-        // Use COMPANY_ID to fetch the Firestore document
         Log.d(TAG, "Loading profile data for company ID: " + COMPANY_ID);
         db.collection("Company").document(COMPANY_ID).get()
                 .addOnSuccessListener(documentSnapshot -> {
-                    if (getContext() == null || !isAdded()) return;
+                    if (getContext() == null || !isAdded() || nameT == null) return;
 
                     if (documentSnapshot.exists()) {
                         Log.d(TAG, "Document " + COMPANY_ID + " found.");
@@ -230,35 +219,39 @@ public class ProfileFragment extends Fragment {
                         }
                     } else {
                         Log.w(TAG, "Document " + COMPANY_ID + " not found.");
-                        handleProfileDataNotFound(); // Make sure this method uses string resources
+                        handleProfileDataNotFound();
                     }
                 })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Error loading profile data for " + COMPANY_ID, e);
                     if (getContext() != null && isAdded()) {
-                        handleProfileDataLoadError(e); // Make sure this method uses string resources
+                        handleProfileDataLoadError(e);
                     }
                 });
     }
 
     private void handleProfileDataNotFound() {
-        if(getContext() == null || !isAdded()) return;
-        // Using the original string resource names as provided in the previous code
-        nameT.setText(R.string.placeholder_name);
-        phoneT.setText(R.string.placeholder_phone);
-        adressT.setText(R.string.placeholder_address);
-        mapAdressT.setText(R.string.placeholder_map);
-        sloganT.setVisibility(View.GONE);
-        emailLabelT.setVisibility(View.GONE);
-        emailT.setVisibility(View.GONE);
-        Toast.makeText(requireContext(), "Profile data not found.", Toast.LENGTH_SHORT).show();
+        if(getContext() == null || !isAdded() || nameT == null ) return;
+
+        nameT.setText(getString(R.string.placeholder_name_default));
+        phoneT.setText(getString(R.string.placeholder_phone_default));
+        adressT.setText(getString(R.string.placeholder_address_default));
+        mapAdressT.setText(getString(R.string.placeholder_map_default));
+
+        sloganT.setVisibility(View.VISIBLE);
+        sloganT.setText(getString(R.string.placeholder_slogan_default));
+        emailLabelT.setVisibility(View.VISIBLE);
+        emailT.setVisibility(View.VISIBLE);
+        emailT.setText(getString(R.string.placeholder_email_default));
+
+        Toast.makeText(requireContext(), getString(R.string.toast_profile_data_not_found_profile), Toast.LENGTH_SHORT).show();
     }
 
     private void handleProfileDataLoadError(Exception e) {
-        if(getContext() == null || !isAdded()) return;
-        Toast.makeText(requireContext(), "Error loading profile data: " + e.getMessage(), Toast.LENGTH_LONG).show();
-        // Using the original string resource names as provided in the previous code
-        nameT.setText(R.string.placeholder_error);
+        if(getContext() == null || !isAdded() || nameT == null) return;
+        Toast.makeText(requireContext(), getString(R.string.toast_error_loading_profile_data, e.getMessage()), Toast.LENGTH_LONG).show();
+
+        nameT.setText(getString(R.string.placeholder_error_loading));
         phoneT.setText("");
         adressT.setText("");
         mapAdressT.setText("");

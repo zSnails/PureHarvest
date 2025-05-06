@@ -260,8 +260,55 @@
     <string name="product_included">Product Included</string>
     <string name="product_id">Product ID:</string>
 
+    <string name="edit_profile_title">Edit Company Profile</string>
+    <string name="hint_company_name">Company Name *</string>
+    <string name="hint_company_slogan">Slogan (Optional)</string>
+    <string name="hint_phone_number">Phone Number *</string>
+    <string name="hint_email_address">Email Address (Optional)</string>
+    <string name="hint_physical_address">Physical Address *</string>
+    <string name="hint_map_address_link">Map Address Link *</string>
+
+    <string name="content_description_back_button_edit_profile">Back to Profile</string>
+
+    <!-- Validation Messages -->
+    <string name="error_company_name_required">Company Name is required</string>
+    <string name="error_phone_number_required">Phone Number is required</string>
+    <string name="error_address_required">Address is required</string>
+    <string name="error_map_address_required">Map Address is required</string>
+    <string name="error_fill_required_fields">Please complete all required fields (*)</string>
+
+    <!-- Toast Messages -->
+    <string name="toast_company_data_not_found">Company data not found.</string>
+    <string name="toast_error_loading_profile">Error loading profile data: %s</string>
+    <string name="toast_profile_updated_successfully">Profile updated successfully</string>
+    <string name="toast_error_updating_profile">Error updating profile: %s</string>
 
 
+    <string name="profile_title">Company Profile</string>
+    <string name="label_company_name">Name:</string>
+    <string name="label_slogan">Slogan:</string>
+
+    <string name="label_map_address">Map Location:</string>
+    <string name="button_add_photo">Add Photo</string>
+
+    <string name="content_description_back_button_profile">Back</string>
+    <string name="content_description_profile_image">Company profile image</string>
+
+    <string name="placeholder_name_default">Company Name</string>
+    <string name="placeholder_slogan_default">Our amazing slogan</string>
+    <string name="placeholder_phone_default">(506) 8888-8888</string>
+    <string name="placeholder_email_default">info@company.com</string>
+    <string name="placeholder_address_default">Main Street, City, Province</string>
+    <string name="placeholder_map_default">Google Maps link</string>
+    <string name="placeholder_error_loading">Error loading</string>
+
+    <string name="toast_upload_successful">Upload Successful</string>
+    <string name="toast_upload_failed">Upload failed: %s</string>
+    <string name="toast_image_deleted_successfully">Image deleted successfully</string>
+    <string name="toast_image_not_found_to_delete">Image not found to delete.</string>
+    <string name="toast_failed_to_delete_image">Failed to delete image: %s</string>
+    <string name="toast_profile_data_not_found_profile">Profile data not found.</string>
+    <string name="toast_error_loading_profile_data">Error loading profile data: %s</string>
 
 
 </resources>

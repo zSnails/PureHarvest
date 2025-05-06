@@ -264,6 +264,30 @@
     <string name="product_included">Producto Incluido</string>
     <string name="product_id">ID Producto:</string>
 
+    <string name="edit_profile_title">Editar Perfil de Empresa</string> <!-- Para un título si lo añades -->
+    <string name="hint_company_name">Nombre de la Empresa *</string>
+    <string name="hint_company_slogan">Eslogan (Opcional)</string>
+    <string name="hint_phone_number">Número de Teléfono *</string>
+    <string name="hint_email_address">Correo Electrónico (Opcional)</string>
+    <string name="hint_physical_address">Dirección Física *</string>
+    <string name="hint_map_address_link">Enlace de Dirección en Mapa *</string>
+
+    <string name="content_description_back_button_edit_profile">Volver a Perfil</string>
+
+    <!-- Validation Messages -->
+    <string name="error_company_name_required">Nombre de la Empresa es requerido</string>
+    <string name="error_phone_number_required">Número de Teléfono es requerido</string>
+    <string name="error_address_required">Dirección es requerida</string>
+    <string name="error_map_address_required">Dirección en Mapa es requerida</string>
+    <string name="error_fill_required_fields">Por favor, complete todos los campos requeridos (*)</string>
+
+    <!-- Toast Messages -->
+    <string name="toast_company_data_not_found">Datos de la empresa no encontrados.</string>
+    <string name="toast_error_loading_profile">Error al cargar datos del perfil: %s</string>
+    <string name="toast_profile_updated_successfully">Perfil actualizado exitosamente</string>
+    <string name="toast_error_updating_profile">Error al actualizar perfil: %s</string>
+
+
 
 
 

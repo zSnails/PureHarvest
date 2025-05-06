@@ -1,28 +1,23 @@
 package cr.ac.itcr.zsnails.pureharvest.ui.Profile;
 
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController; // Import NavController
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton; // Import ImageButton
+import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentEditProfileBinding;
 
@@ -31,145 +26,127 @@ public class EditProfileFragment extends Fragment {
     private FragmentEditProfileBinding binding;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    private EditText nameInput;
-    private EditText sloganInput;
-    private EditText numberInput;
-    private EditText emailInput;
-    private EditText adressInput;
-    private EditText mapAdressInput;
 
     private static final String COMPANY_ID = "2";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         binding = FragmentEditProfileBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-
-        // --- Find Views ---
-        ImageButton backButton = root.findViewById(R.id.backButtonEdit); // Find the back button
-        nameInput = root.findViewById(R.id.nameInput);
-        sloganInput = root.findViewById(R.id.sloganInput);
-        numberInput = root.findViewById(R.id.numberInput);
-        emailInput = root.findViewById(R.id.emailInput);
-        adressInput = root.findViewById(R.id.adressInput);
-        mapAdressInput = root.findViewById(R.id.mapAdressInput);
-        Button saveChangesBtn = root.findViewById(R.id.saveChangesBtn);
-        Button cancelBtn = root.findViewById(R.id.cancelBtn);
-
-        // --- Setup Back Button Listener ---
-        backButton.setOnClickListener(v -> {
-            NavController navController = Navigation.findNavController(v);
-            navController.navigateUp(); // Navigate back up the stack
-        });
-
-        // --- Load Existing Data ---
-        loadCompanyData(); // Refactored data loading
-
-        // --- Setup Save Button Listener ---
-        saveChangesBtn.setOnClickListener(v -> saveCompanyData());
-
-        // --- Setup Cancel Button Listener ---
-        // No change needed here, navigateUp() on backButton is usually preferred over a specific action like cancelBtn
-        cancelBtn.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_editProfileFragment_to_profileFragment));
-        // Consider making Cancel button also just call navigateUp() for consistency:
-        // cancelBtn.setOnClickListener(v -> Navigation.findNavController(v).navigateUp());
-
-        return root;
+        return binding.getRoot();
     }
 
-    // --- Helper Method to Load Data ---
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        binding.backButtonEdit.setOnClickListener(v -> {
+
+            Navigation.findNavController(v).navigateUp();
+        });
+
+        loadCompanyData();
+
+        binding.saveChangesBtn.setOnClickListener(v -> saveCompanyData());
+
+        binding.cancelBtn.setOnClickListener(v -> {
+
+            Navigation.findNavController(v).navigate(R.id.action_editProfileFragment_to_profileFragment);
+        });
+    }
+
+
     private void loadCompanyData() {
         db.collection("Company").document(COMPANY_ID).get()
                 .addOnSuccessListener(documentSnapshot -> {
-                    if (getContext() == null || !isAdded()) return; // Context/Attachment check
+                    if (getContext() == null || !isAdded() || binding == null) return;
 
                     if (documentSnapshot.exists()) {
-                        nameInput.setText(documentSnapshot.getString("name"));
-                        sloganInput.setText(documentSnapshot.getString("slogan"));
-                        numberInput.setText(documentSnapshot.getString("number"));
-                        emailInput.setText(documentSnapshot.getString("email"));
-                        adressInput.setText(documentSnapshot.getString("adress"));
-                        mapAdressInput.setText(documentSnapshot.getString("mapAdress"));
+                        binding.nameInput.setText(documentSnapshot.getString("name"));
+                        binding.sloganInput.setText(documentSnapshot.getString("slogan"));
+                        binding.numberInput.setText(documentSnapshot.getString("number"));
+                        binding.emailInput.setText(documentSnapshot.getString("email"));
+                        binding.adressInput.setText(documentSnapshot.getString("adress")); // 'address' con dos 'd' en Firestore?
+                        binding.mapAdressInput.setText(documentSnapshot.getString("mapAdress")); // 'mapAddress' con dos 'd' en Firestore?
                     } else {
-                        if(getContext() != null) {
-                            Toast.makeText(getContext(), "Company data not found.", Toast.LENGTH_SHORT).show();
+                        if (getContext() != null) {
+                            Toast.makeText(getContext(), getString(R.string.toast_company_data_not_found), Toast.LENGTH_SHORT).show();
                         }
                     }
                 }).addOnFailureListener(e -> {
-                    if (getContext() != null && isAdded()) {
-                        Toast.makeText(getContext(), "Error loading profile data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    if (getContext() != null && isAdded()) { // Doble chequeo
+                        Toast.makeText(getContext(), getString(R.string.toast_error_loading_profile, e.getMessage()), Toast.LENGTH_LONG).show();
                     }
                 });
     }
 
-    // --- Helper Method to Save Data ---
     private void saveCompanyData() {
-        String name = nameInput.getText().toString().trim();
-        String slogan = sloganInput.getText().toString().trim();
-        String number = numberInput.getText().toString().trim();
-        String email = emailInput.getText().toString().trim();
-        String address = adressInput.getText().toString().trim();
-        String mapAddress = mapAdressInput.getText().toString().trim();
+        if (binding == null) return;
 
-        // --- Input Validation ---
+        String name = binding.nameInput.getText().toString().trim();
+        String slogan = binding.sloganInput.getText().toString().trim();
+        String number = binding.numberInput.getText().toString().trim();
+        String email = binding.emailInput.getText().toString().trim();
+        String address = binding.adressInput.getText().toString().trim();
+        String mapAddress = binding.mapAdressInput.getText().toString().trim();
+
+
         boolean isValid = true;
         if (TextUtils.isEmpty(name)) {
-            nameInput.setError("Company Name is required");
+            binding.nameInput.setError(getString(R.string.error_company_name_required));
             isValid = false;
         } else {
-            nameInput.setError(null); // Clear error if valid
+            binding.nameInput.setError(null);
         }
+
 
         if (TextUtils.isEmpty(number)) {
-            numberInput.setError("Phone Number is required");
+            binding.numberInput.setError(getString(R.string.error_phone_number_required));
             isValid = false;
         } else {
-            numberInput.setError(null);
+            binding.numberInput.setError(null);
         }
 
+
         if (TextUtils.isEmpty(address)) {
-            adressInput.setError("Address is required");
+            binding.adressInput.setError(getString(R.string.error_address_required));
             isValid = false;
         } else {
-            adressInput.setError(null);
+            binding.adressInput.setError(null);
         }
 
         if (TextUtils.isEmpty(mapAddress)) {
-            mapAdressInput.setError("Map Address is required");
+            binding.mapAdressInput.setError(getString(R.string.error_map_address_required));
             isValid = false;
         } else {
-            mapAdressInput.setError(null);
+            binding.mapAdressInput.setError(null);
         }
 
         if (!isValid) {
-            if(getContext() != null) {
-                Toast.makeText(getContext(), "Please fill all required fields (*)", Toast.LENGTH_SHORT).show();
+            if (getContext() != null) { // Doble chequeo
+                Toast.makeText(getContext(), getString(R.string.error_fill_required_fields), Toast.LENGTH_SHORT).show();
             }
-            return; // Stop saving
+            return;
         }
-        // --- End Input Validation ---
 
         Map<String, Object> companyData = new HashMap<>();
         companyData.put("name", name);
         companyData.put("slogan", slogan);
         companyData.put("number", number);
         companyData.put("email", email);
-        companyData.put("adress", address); // Corrected key mapping
+        companyData.put("adress", address);
         companyData.put("mapAdress", mapAddress);
 
-        // --- Update Firestore ---
         db.collection("Company").document(COMPANY_ID).update(companyData)
                 .addOnSuccessListener(aVoid -> {
                     if (getContext() != null && isAdded() && getView() != null) {
-                        Toast.makeText(getContext(), "Profile updated successfully", Toast.LENGTH_SHORT).show();
-                        Navigation.findNavController(requireView()).navigateUp(); // Navigate back on success
+                        Toast.makeText(getContext(), getString(R.string.toast_profile_updated_successfully), Toast.LENGTH_SHORT).show();
+                        Navigation.findNavController(requireView()).navigateUp();
                     }
                 })
                 .addOnFailureListener(e -> {
-                    if (getContext() != null && isAdded()) {
-                        Toast.makeText(getContext(), "Error updating profile: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    if (getContext() != null && isAdded()) { // Doble chequeo
+                        Toast.makeText(getContext(), getString(R.string.toast_error_updating_profile, e.getMessage()), Toast.LENGTH_LONG).show();
                     }
                 });
     }
@@ -177,6 +154,6 @@ public class EditProfileFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null; // Clean up binding
+        binding = null;
     }
 }
