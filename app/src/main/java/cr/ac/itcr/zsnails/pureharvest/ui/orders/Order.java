@@ -1,18 +1,19 @@
-package cr.ac.itcr.zsnails.pureharvest.ui.orders; // Updated package
+package cr.ac.itcr.zsnails.pureharvest.ui.orders; // O el paquete correcto de tu modelo
 
 import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.Exclude; // To exclude documentId from being written back to Firestore
+import com.google.firebase.firestore.Exclude;
 
 public class Order {
-    @Exclude // Exclude from Firestore serialization, managed manually
-    private String documentId;
+    @Exclude
+    private String documentId; // Para almacenar el ID del documento de Firestore
     private Timestamp date;
     private String userId;
-    private String productId;  // Will be used for the "orderName" field in the item
+    private String productId;  // Este campo ahora no se usa directamente para el ID del pedido en la UI, pero puede ser útil internamente
     private String sellerId;
 
-    // Required empty constructor for Firestore
-    public Order() {}
+    public Order() {
+        // Constructor vacío requerido por Firestore
+    }
 
     public Order(Timestamp date, String userId, String productId, String sellerId) {
         this.date = date;
@@ -21,7 +22,7 @@ public class Order {
         this.sellerId = sellerId;
     }
 
-    @Exclude // Getter for documentId
+    @Exclude
     public String getDocumentId() {
         return documentId;
     }
