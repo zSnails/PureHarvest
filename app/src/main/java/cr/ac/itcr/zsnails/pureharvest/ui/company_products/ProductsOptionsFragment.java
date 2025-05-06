@@ -1,39 +1,45 @@
 package cr.ac.itcr.zsnails.pureharvest.ui.company_products;
 
 import android.os.Bundle;
-
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-
+import android.widget.ImageButton;
 import cr.ac.itcr.zsnails.pureharvest.R;
-import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentProductsOptionsBinding;
-
 
 public class ProductsOptionsFragment extends Fragment {
 
-    FragmentProductsOptionsBinding binding;
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        binding = FragmentProductsOptionsBinding.inflate(inflater, container, false);
+        View root = inflater.inflate(R.layout.fragment_products_options, container, false);
 
-        View root = binding.getRoot();
-
+        ImageButton backButton = root.findViewById(R.id.backButtonOptions);
         Button cProductsBtn = root.findViewById(R.id.cProductsBtn);
-
         Button addProductBtn = root.findViewById(R.id.addProductBtn);
 
-        cProductsBtn.setOnClickListener(v-> Navigation.findNavController(v).navigate(R.id.action_productsOptionsFragment_to_companyProductsListFragment));
+        backButton.setOnClickListener(v -> {
+            NavController navController = Navigation.findNavController(v);
+            navController.navigateUp();
+        });
 
-        addProductBtn.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_productsOptionsFragment_to_CompanyProductsFragment));
+        cProductsBtn.setOnClickListener(v -> {
+            if(getView() != null) {
+                Navigation.findNavController(v).navigate(R.id.action_productsOptionsFragment_to_companyProductsListFragment);
+            }
+        });
 
+        addProductBtn.setOnClickListener(v -> {
+            if(getView() != null) {
+                Navigation.findNavController(v).navigate(R.id.action_productsOptionsFragment_to_CompanyProductsFragment);
+            }
+        });
 
         return root;
     }

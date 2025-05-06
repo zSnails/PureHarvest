@@ -8,23 +8,29 @@
     android:padding="16dp"
     tools:context=".ui.Profile.ProfileFragment">
 
-    <!-- Profile Image Area -->
+    <ImageButton
+        android:id="@+id/backButtonProfile"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/ic_arrow_back_24"
+        android:background="?attr/selectableItemBackgroundBorderless"
 
-    <!-- Photo Buttons -->
-
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp" />
 
     <ImageView
         android:id="@+id/profileImagePlaceholder"
         android:layout_width="160dp"
         android:layout_height="160dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/circle_mask"
         android:clipToOutline="true"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/backButtonProfile" />
 
     <Button
         android:id="@+id/addPhotoBtn"
@@ -54,7 +60,6 @@
         app:layout_constraintTop_toTopOf="@+id/addPhotoBtn"
         app:layout_constraintWidth_percent="0.4" />
 
-    <!-- Profile Info -->
     <TextView
         android:id="@+id/NameT"
         android:layout_width="wrap_content"
@@ -82,7 +87,6 @@
         app:layout_constraintWidth_percent="0.8"
         tools:text="Professional Slogan Here" />
 
-    <!-- Contact Section - Simplified -->
     <TextView
         android:id="@+id/contactT"
         android:layout_width="wrap_content"
@@ -94,7 +98,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sloganT" />
 
-    <!-- Phone -->
     <TextView
         android:id="@+id/phoneLabelT"
         android:layout_width="wrap_content"
@@ -117,7 +120,6 @@
         app:layout_constraintTop_toTopOf="@+id/phoneLabelT"
         tools:text="8888 8888" />
 
-    <!-- Email -->
     <TextView
         android:id="@+id/emailLabelT"
         android:layout_width="wrap_content"
@@ -139,7 +141,6 @@
         app:layout_constraintTop_toTopOf="@+id/emailLabelT"
         tools:text="company@example.com" />
 
-    <!-- Address -->
     <TextView
         android:id="@+id/addressLabelT"
         android:layout_width="wrap_content"
@@ -161,7 +162,6 @@
         app:layout_constraintTop_toTopOf="@+id/addressLabelT"
         tools:text="Santa Clara, San Carlos" />
 
-    <!-- Map -->
     <TextView
         android:id="@+id/mapLabelT"
         android:layout_width="wrap_content"
