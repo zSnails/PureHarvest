@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="company_name">Frostyland Palmitas</string>
+    <string name="company_slogan">¡Los mejores helados al alcance de tu mano!</string>
+    <string name="label_phone">Teléfono:</string>
+    <string name="sample_phone">8888-8888</string>
+    <string name="label_email">Correo electrónico:</string>
+    <string name="sample_email">frostyland@ejemplo.com</string>
+    <string name="label_address">Dirección:</string>
+    <string name="sample_address">Santa Clara, San Carlos, Alajuela. Calle Principal, Edificio Azul.</string>
+    <string name="button_see_location">Ver ubicación en mapa</string>
+
+    <string name="no_address_available_map">No hay dirección disponible para abrir en el mapa.</string>
+    <string name="error_preparing_map_detail">Error al preparar el mapa: %1$s</string>
+
+    <string name="no_email_address_available">No hay dirección de correo electrónico disponible.</string>
+    <string name="send_email_with_chooser_title">Enviar correo con…</string> <!-- Ya estaba en español -->
+    <string name="no_email_app_found">No se encontró una aplicación de correo.</string> <!-- Ya estaba en español -->
+    <string name="error_preparing_email_detail">Error al preparar el correo: %1$s</string> <!-- Ya estaba en español -->
+
+    <string name="dialog_action_cancel">Cancelar</string> <!-- Ya estaba en español -->
+
+    <string name="error_opening_dialer_detail">Error al abrir el marcador: %1$s</string>
+    <string name="error_opening_sms_detail">Error al abrir la aplicación de SMS: %1$s</string>
+    <string name="error_opening_whatsapp_detail">Error al abrir WhatsApp: %1$s</string>
+
+    <string name="database_error">Error de base de datos</string>
+    <string name="company_info_not_found">Información de la empresa no encontrada.</string>
+    <string name="error_fetching_data_detail">Error al obtener datos: %1$s</string>
+    <string name="client_offline_error">Error: El cliente está desconectado. Verifique la conexión.</string>
+
+    <string name="app_name">Pure Harvest</string>
+    <string name="title_activity_main">Actividad Principal</string>
+    <string name="title_home">Inicio</string>
+    <string name="title_dashboard">Panel</string>
+    <string name="title_account">Cuenta</string>
+    <string name="title_activity_example">Actividad de Ejemplo</string>
+    <!-- TODO: Eliminar o cambiar este texto de marcador de posición -->
+    <string name="hello_blank_fragment">Hola fragmento en blanco</string>
+
+    <string name="open_location_with">Abrir ubicación con</string>
+    <string name="no_map_app_found">No se encontró una aplicación de mapas.</string>
+    <string name="error_preparing_map">Error al preparar el mapa</string>
+
+    <!-- Nuevos strings para las opciones del teléfono -->
+    <string name="contact_via_phone_title">Contactar por teléfono</string>
+    <string name="action_call">Llamar</string>
+    <string name="action_sms">Enviar SMS</string>
+    <string name="action_whatsapp">Enviar WhatsApp</string>
+    <string name="whatsapp_not_installed">WhatsApp no está instalado.</string>
+    <string name="no_phone_number_available">Número de teléfono no disponible.</string>
+    <string name="error_opening_dialer">Error al abrir el marcador.</string>
+    <string name="error_opening_sms">Error al abrir la app de SMS.</string>
+    <string name="error_opening_whatsapp">Error al abrir WhatsApp.</string>
+
+
+</resources>

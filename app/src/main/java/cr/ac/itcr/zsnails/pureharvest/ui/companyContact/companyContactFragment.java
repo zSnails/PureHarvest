@@ -83,6 +83,9 @@ public class companyContactFragment extends Fragment {
         binding.adressT.setText("Loading...");
         binding.buttonSeeLocation.setEnabled(false);
 
+        binding.sloganT.setVisibility(View.VISIBLE);
+        binding.emailT.setVisibility(View.VISIBLE); // Ensure it's visible for "Loading..."
+
         binding.emailT.setOnClickListener(null);
         if (getContext() != null) {
             binding.emailT.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.tab_indicator_text));
@@ -97,7 +100,7 @@ public class companyContactFragment extends Fragment {
 
         if (getContext() != null && binding.profileImagePlaceholder != null) {
             Glide.with(requireContext())
-                    .load(R.mipmap.ic_launcher) // Usar un drawable existente
+                    .load(R.mipmap.ic_launcher)
                     .circleCrop()
                     .into(binding.profileImagePlaceholder);
         }
@@ -106,7 +109,7 @@ public class companyContactFragment extends Fragment {
     private void openMapWithChooser() {
         if (getContext() == null) return;
         if (mapAddressValue == null || mapAddressValue.trim().isEmpty()) {
-            Toast.makeText(getContext(), "No address available to open in map.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.no_address_available_map), Toast.LENGTH_SHORT).show();
             return;
         }
         try {
@@ -120,28 +123,28 @@ public class companyContactFragment extends Fragment {
             }
         } catch (Exception e) {
             Log.e(TAG, "Error creating map intent: ", e);
-            if (getContext() != null) Toast.makeText(getContext(), getString(R.string.error_preparing_map) + ": " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            if (getContext() != null) Toast.makeText(getContext(), getString(R.string.error_preparing_map_detail, e.getMessage()), Toast.LENGTH_SHORT).show();
         }
     }
 
     private void sendEmail(String recipientEmail) {
         if (getContext() == null) return;
         if (recipientEmail == null || recipientEmail.trim().isEmpty()) {
-            Toast.makeText(getContext(), "No email address available.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.no_email_address_available), Toast.LENGTH_SHORT).show();
             return;
         }
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
         emailIntent.setData(Uri.parse("mailto:" + recipientEmail));
         try {
             if (emailIntent.resolveActivity(getContext().getPackageManager()) != null) {
-                Intent chooser = Intent.createChooser(emailIntent, "Enviar correo con...");
+                Intent chooser = Intent.createChooser(emailIntent, getString(R.string.send_email_with_chooser_title));
                 startActivity(chooser);
             } else {
-                Toast.makeText(getContext(), "No se encontró una aplicación de correo.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getString(R.string.no_email_app_found), Toast.LENGTH_LONG).show();
             }
         } catch (Exception e) {
             Log.e(TAG, "Error creating email intent: ", e);
-            Toast.makeText(getContext(), "Error al preparar el correo: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.error_preparing_email_detail, e.getMessage()), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -168,11 +171,12 @@ public class companyContactFragment extends Fragment {
                 sendWhatsAppMessage(phoneNumber);
             }
         });
-        builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
+        builder.setNegativeButton(getString(R.string.dialog_action_cancel), (dialog, which) -> dialog.dismiss());
         builder.show();
     }
 
     private void dialPhoneNumber(String phoneNumber) {
+        if (getContext() == null) return;
         try {
             Intent dialIntent = new Intent(Intent.ACTION_DIAL);
             dialIntent.setData(Uri.parse("tel:" + phoneNumber));
@@ -183,11 +187,12 @@ public class companyContactFragment extends Fragment {
             }
         } catch (Exception e) {
             Log.e(TAG, "Error dialing phone: ", e);
-            Toast.makeText(getContext(), getString(R.string.error_opening_dialer) + ": " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            if (getContext() != null) Toast.makeText(getContext(), getString(R.string.error_opening_dialer_detail, e.getMessage()), Toast.LENGTH_SHORT).show();
         }
     }
 
     private void sendSms(String phoneNumber) {
+        if (getContext() == null) return;
         try {
             Intent smsIntent = new Intent(Intent.ACTION_SENDTO);
             smsIntent.setData(Uri.parse("smsto:" + phoneNumber));
@@ -198,11 +203,12 @@ public class companyContactFragment extends Fragment {
             }
         } catch (Exception e) {
             Log.e(TAG, "Error sending SMS: ", e);
-            Toast.makeText(getContext(), getString(R.string.error_opening_sms) + ": " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            if (getContext() != null) Toast.makeText(getContext(), getString(R.string.error_opening_sms_detail, e.getMessage()), Toast.LENGTH_SHORT).show();
         }
     }
 
     private void sendWhatsAppMessage(String phoneNumber) {
+        if (getContext() == null) return; // Added missing context check
         String cleanedNumber = phoneNumber.replaceAll("[^0-9]", "");
         PackageManager packageManager = getContext().getPackageManager();
         Intent whatsappIntent = new Intent(Intent.ACTION_VIEW);
@@ -222,7 +228,7 @@ public class companyContactFragment extends Fragment {
             Toast.makeText(getContext(), getString(R.string.whatsapp_not_installed), Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Log.e(TAG, "Error sending WhatsApp message: ", e);
-            Toast.makeText(getContext(), getString(R.string.error_opening_whatsapp) + ": " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.error_opening_whatsapp_detail, e.getMessage()), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -258,8 +264,8 @@ public class companyContactFragment extends Fragment {
                     if (getContext() != null && isAdded() && binding != null && binding.profileImagePlaceholder != null) {
                         Glide.with(companyContactFragment.this)
                                 .load(downloadUri)
-                                .placeholder(R.mipmap.ic_launcher) // Usar un drawable existente
-                                .error(R.mipmap.ic_launcher_round)   // Usar un drawable existente
+                                .placeholder(R.mipmap.ic_launcher)
+                                .error(R.mipmap.ic_launcher_round)
                                 .circleCrop()
                                 .into(binding.profileImagePlaceholder);
                         Log.d(TAG, "Image loaded successfully from URL: " + downloadUri.toString());
@@ -271,7 +277,7 @@ public class companyContactFragment extends Fragment {
                     Log.e(TAG, "Failed to load company image from " + fileRef.getPath(), e);
                     if (getContext() != null && isAdded() && binding != null && binding.profileImagePlaceholder != null) {
                         Glide.with(companyContactFragment.this)
-                                .load(R.mipmap.ic_launcher_round) // Usar un drawable existente
+                                .load(R.mipmap.ic_launcher_round)
                                 .circleCrop()
                                 .into(binding.profileImagePlaceholder);
                     }
@@ -288,7 +294,7 @@ public class companyContactFragment extends Fragment {
 
         if (db == null) {
             Log.e(TAG, "fetchCompanyDataAndImage: Firestore db instance is null!");
-            if (getContext() != null) Toast.makeText(getContext(), "Database Error", Toast.LENGTH_SHORT).show();
+            if (getContext() != null) Toast.makeText(getContext(), getString(R.string.database_error), Toast.LENGTH_SHORT).show();
             setErrorUIState("DB Error");
             return;
         }
@@ -296,8 +302,8 @@ public class companyContactFragment extends Fragment {
         db.collection("Company").document("1").get()
                 .addOnSuccessListener(documentSnapshot -> {
                     Log.d(TAG, "fetchCompanyDataAndImage: Firestore onSuccess triggered.");
-                    if (binding == null || getContext() == null) {
-                        Log.w(TAG, "fetchCompanyDataAndImage: Binding or Context became null.");
+                    if (binding == null || !isAdded() || getContext() == null) { // Added !isAdded() check
+                        Log.w(TAG, "fetchCompanyDataAndImage: Binding, Context became null or Fragment not added.");
                         return;
                     }
                     if (documentSnapshot.exists()) {
@@ -305,36 +311,63 @@ public class companyContactFragment extends Fragment {
                         String name = documentSnapshot.getString("name");
                         String slogan = documentSnapshot.getString("slogan");
                         companyPhoneNumber = documentSnapshot.getString("number");
-                        companyEmailAddress = documentSnapshot.getString("email");
                         mapAddressValue = documentSnapshot.getString("mapAdress");
                         String address = documentSnapshot.getString("adress");
 
+                        // Log the raw email value from Firestore
+                        String rawEmailFromFirestore = documentSnapshot.getString("email");
+                        Log.d(TAG, "Raw companyEmailAddress from Firestore: [" + rawEmailFromFirestore + "]");
+                        companyEmailAddress = rawEmailFromFirestore;
+
+
                         binding.NameT.setText(name != null ? name : "Name N/A");
-                        binding.sloganT.setText(slogan != null ? slogan : "Slogan N/A");
                         binding.adressT.setText(address != null ? address : "Address N/A");
 
+                        // Handle Slogan
+                        if (slogan != null && !slogan.trim().isEmpty()) {
+                            binding.sloganT.setText(slogan);
+                            binding.sloganT.setVisibility(View.VISIBLE);
+                        } else {
+                            binding.sloganT.setText("");
+                            binding.sloganT.setVisibility(View.GONE);
+                        }
+
+                        // Handle Email
+                        Log.d(TAG, "Processing Email. Current value of companyEmailAddress: [" + companyEmailAddress + "]");
                         if (companyEmailAddress != null && !companyEmailAddress.trim().isEmpty()) {
+                            Log.d(TAG, "Email has data. Setting VISIBLE.");
                             binding.emailT.setText(companyEmailAddress);
                             binding.emailT.setOnClickListener(v -> sendEmail(companyEmailAddress));
                             binding.emailT.setTextColor(ContextCompat.getColor(requireContext(), R.color.link_blue));
                             binding.emailT.setPaintFlags(binding.emailT.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                            binding.emailT.setVisibility(View.VISIBLE);
                         } else {
-                            binding.emailT.setText("Email N/A");
+                            Log.d(TAG, "Email is null or empty. Setting GONE.");
+                            binding.emailT.setText(""); // Clear text from "Loading..."
                             binding.emailT.setOnClickListener(null);
-                            binding.emailT.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.tab_indicator_text));
-                            binding.emailT.setPaintFlags(binding.emailT.getPaintFlags() & (~Paint.UNDERLINE_TEXT_FLAG));
+                            // Reset style (safer with context check)
+                            if (isAdded() && getContext() != null) {
+                                binding.emailT.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.tab_indicator_text));
+                                binding.emailT.setPaintFlags(binding.emailT.getPaintFlags() & (~Paint.UNDERLINE_TEXT_FLAG));
+                            }
+                            binding.emailT.setVisibility(View.GONE);
+                            Log.d(TAG, "emailT visibility after setting GONE: " + binding.emailT.getVisibility() +
+                                    " (0=VISIBLE, 4=INVISIBLE, 8=GONE)");
                         }
 
+                        // Handle Phone
                         if (companyPhoneNumber != null && !companyPhoneNumber.trim().isEmpty()) {
                             binding.phoneT.setText(companyPhoneNumber);
                             binding.phoneT.setOnClickListener(v -> showPhoneOptionsDialog(companyPhoneNumber));
                             binding.phoneT.setTextColor(ContextCompat.getColor(requireContext(), R.color.link_blue));
                             binding.phoneT.setPaintFlags(binding.phoneT.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                            binding.phoneT.setVisibility(View.VISIBLE);
                         } else {
                             binding.phoneT.setText("Phone N/A");
                             binding.phoneT.setOnClickListener(null);
                             binding.phoneT.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.tab_indicator_text));
                             binding.phoneT.setPaintFlags(binding.phoneT.getPaintFlags() & (~Paint.UNDERLINE_TEXT_FLAG));
+                            binding.phoneT.setVisibility(View.VISIBLE);
                         }
                         binding.buttonSeeLocation.setEnabled(mapAddressValue != null && !mapAddressValue.trim().isEmpty());
                         Log.d(TAG, "fetchCompanyDataAndImage: Firestore UI Updated successfully.");
@@ -342,18 +375,18 @@ public class companyContactFragment extends Fragment {
                         Log.w(TAG, "fetchCompanyDataAndImage: Document 'Company/1' does not exist.");
                         setErrorUIState("Not Found");
                         if (getContext() != null)
-                            Toast.makeText(getContext(), "Company information not found.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), getString(R.string.company_info_not_found), Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "fetchCompanyDataAndImage: Firestore onFailure triggered.", e);
                     if (binding == null) {
-                        Log.w(TAG, "fetchCompanyDataAndImage: Binding became null.");
+                        Log.w(TAG, "fetchCompanyDataAndImage: Binding became null on failure.");
                         return;
                     }
                     setErrorUIState("Error");
                     if (getContext() != null) {
-                        Toast.makeText(getContext(), "Error fetching data: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), getString(R.string.error_fetching_data_detail, e.getMessage()), Toast.LENGTH_LONG).show();
                     }
                     if (e instanceof FirebaseFirestoreException) {
                         FirebaseFirestoreException firestoreEx = (FirebaseFirestoreException) e;
@@ -362,7 +395,7 @@ public class companyContactFragment extends Fragment {
                                 (firestoreEx.getMessage() != null && firestoreEx.getMessage().toLowerCase().contains("client is offline"))) {
                             setErrorUIState("Offline");
                             if (getContext() != null)
-                                Toast.makeText(getContext(), "Error: Client is offline. Check connection.", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getContext(), getString(R.string.client_offline_error), Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -373,9 +406,14 @@ public class companyContactFragment extends Fragment {
         binding.NameT.setText(errorType);
         binding.sloganT.setText(errorType);
         binding.phoneT.setText(errorType);
-        binding.emailT.setText(errorType);
+        binding.emailT.setText(errorType); // Will show "Error" or "Not Found"
         binding.adressT.setText(errorType);
         binding.buttonSeeLocation.setEnabled(false);
+
+        binding.sloganT.setVisibility(View.VISIBLE);
+        binding.emailT.setVisibility(View.VISIBLE); // Make sure it's visible to show errorType
+        binding.phoneT.setVisibility(View.VISIBLE);
+
 
         binding.emailT.setOnClickListener(null);
         if (getContext() != null) {
@@ -391,7 +429,7 @@ public class companyContactFragment extends Fragment {
 
         if (getContext() != null && binding.profileImagePlaceholder != null) {
             Glide.with(requireContext())
-                    .load(R.mipmap.ic_launcher_round) // Usar un drawable existente
+                    .load(R.mipmap.ic_launcher_round)
                     .circleCrop()
                     .into(binding.profileImagePlaceholder);
         }
@@ -402,8 +440,18 @@ public class companyContactFragment extends Fragment {
         super.onDestroyView();
         Log.d(TAG, "onDestroyView: Setting binding to null.");
         if (binding != null && binding.profileImagePlaceholder != null && getContext() != null) {
-            if(isAdded()){
-                Glide.with(requireContext()).clear(binding.profileImagePlaceholder);
+            if(isAdded() && getActivity() != null && !getActivity().isFinishing()){
+                // Check if Glide is active and clear only if context is valid for Glide operations
+                if (com.bumptech.glide.Glide.with(requireContext()).isPaused()) { // Example check, or simply rely on try-catch
+                    // Potentially do nothing or log if already paused/destroyed
+                } else {
+                    try {
+                        Glide.with(requireContext()).clear(binding.profileImagePlaceholder);
+                    } catch (IllegalArgumentException e) {
+                        // Handle cases where context might not be valid for Glide (e.g., activity destroyed)
+                        Log.w(TAG, "Glide clear failed in onDestroyView, context might be invalid.", e);
+                    }
+                }
             }
         }
         binding = null;

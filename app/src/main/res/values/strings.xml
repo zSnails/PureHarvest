@@ -40,5 +40,24 @@
     <string name="button_see_location">See location in map</string>
 
 
+    <string name="no_address_available_map">No address available to open in map.</string>
+    <string name="error_preparing_map_detail">Error preparing map: %1$s</string>
+
+    <string name="no_email_address_available">No email address available.</string>
+    <string name="send_email_with_chooser_title">Enviar correo con…</string>
+    <string name="no_email_app_found">No se encontró una aplicación de correo.</string>
+    <string name="error_preparing_email_detail">Error al preparar el correo: %1$s</string>
+
+    <string name="dialog_action_cancel">Cancelar</string>
+
+    <string name="error_opening_dialer_detail">Error opening dialer: %1$s</string>
+    <string name="error_opening_sms_detail">Error opening SMS app: %1$s</string>
+    <string name="error_opening_whatsapp_detail">Error opening WhatsApp: %1$s</string>
+
+    <string name="database_error">Database Error</string>
+    <string name="company_info_not_found">Company information not found.</string>
+    <string name="error_fetching_data_detail">Error fetching data: %1$s</string>
+    <string name="client_offline_error">Error: Client is offline. Check connection.</string>
+
 
 </resources>
