@@ -5,16 +5,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
+    android:background="?android:colorBackground"
     tools:context=".ui.orders.OrderDetailsFragment">
 
     <TextView
         android:id="@+id/tvOrderDetailsTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Detalles del Pedido"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+        android:textColor="@color/leaf_green"
+        android:gravity="center_horizontal"
+        android:paddingBottom="12dp"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <ProgressBar
         android:id="@+id/progressBarOrderDetails"
@@ -25,135 +30,179 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/tvOrderDetailsTitle"
+        android:layout_marginTop="24dp"/>
 
     <ScrollView
+        android:id="@+id/scrollViewDetails"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@id/tvOrderDetailsTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="16dp">
 
         <LinearLayout
             android:id="@+id/orderDetailsContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="gone"> <!-- CAMBIO: Inicia como gone, se mostrará cuando los datos estén listos -->
+            android:paddingHorizontal="8dp"
+            android:paddingBottom="32dp"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/tvLabelOrderId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="ID Pedido:"
-                android:textStyle="bold"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"/>
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:textColor="@color/leaf_green"
+                android:layout_marginTop="16dp"/>
             <TextView
                 android:id="@+id/tvOrderId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="XYZ123ABC"
-                android:layout_marginBottom="8dp"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"/>
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:textSize="16sp"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="20dp"/>
 
             <TextView
                 android:id="@+id/tvLabelOrderDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Fecha:"
-                android:textStyle="bold"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"/>
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:textColor="@color/leaf_green"/>
             <TextView
                 android:id="@+id/tvOrderDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="28 Oct 2023, 11:00 AM"
-                android:layout_marginBottom="8dp"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"/>
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:textSize="16sp"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="20dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider_color_light"
+                android:layout_marginVertical="12dp"/>
 
             <TextView
                 android:id="@+id/tvLabelSellerId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ID Vendedor:"
-                android:textStyle="bold"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"/>
+                android:text="Vendedor:"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:textColor="@color/leaf_green"/>
             <TextView
                 android:id="@+id/tvSellerId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="Seller789"
-                android:layout_marginBottom="8dp"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"/>
+                tools:text="ID: Seller789 - Nombre: Tienda XYZ"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:textSize="16sp"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="20dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider_color_light"
+                android:layout_marginVertical="12dp"/>
 
             <TextView
                 android:id="@+id/tvLabelUserId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ID Usuario:"
-                android:textStyle="bold"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"/>
+                android:text="Cliente:"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:textColor="@color/leaf_green"/>
             <TextView
                 android:id="@+id/tvUserId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="User456"
-                android:layout_marginBottom="8dp"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"/>
+                tools:text="ID: User456 - Nombre: Ana G."
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:textSize="16sp"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="20dp"/>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider_color_light"
+                android:layout_marginVertical="12dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Producto en la Orden"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                android:textColor="@color/leaf_green"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"/>
 
             <TextView
                 android:id="@+id/tvLabelProductId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ID Producto Pedido:"
-            android:textStyle="bold"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-            android:layout_marginTop="12dp"/>
-
+                android:text="ID Producto:"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:textColor="@color/leaf_green"/>
             <TextView
                 android:id="@+id/tvProductIds"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="ProdXYZ123"
-                android:layout_marginBottom="8dp"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"/>
-
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:textSize="16sp"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="12dp"/>
 
             <TextView
                 android:id="@+id/tvLabelProductName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nombre Producto:"
-                android:textStyle="bold"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-                android:visibility="gone" /> <!-- Inicia oculto -->
+                android:text="Nombre:"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:textColor="@color/leaf_green"
+                android:visibility="gone" />
             <TextView
                 android:id="@+id/tvProductName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="Manzanas Frescas"
-                android:layout_marginBottom="8dp"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                android:visibility="gone" /> <!-- Inicia oculto -->
+                android:textSize="16sp"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/tvLabelProductPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Precio Producto:"
-                android:textStyle="bold"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-                android:visibility="gone" /> <!-- Inicia oculto -->
+                android:text="Precio:"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:textColor="@color/leaf_green"
+                android:visibility="gone" />
             <TextView
                 android:id="@+id/tvProductPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="$2.99"
+                tools:text="₡1,500.00"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                android:visibility="gone" /> <!-- Inicia oculto -->
+                android:textSize="16sp"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="20dp"
+                android:visibility="gone" />
 
         </LinearLayout>
     </ScrollView>
