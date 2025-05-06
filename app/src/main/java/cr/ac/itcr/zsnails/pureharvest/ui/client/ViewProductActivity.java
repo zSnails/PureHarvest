@@ -22,6 +22,10 @@ public class ViewProductActivity extends AppCompatActivity {
 
     private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     private String productId;
+    private Button btnIncrease, btnDecrease;
+    private TextView tvQuantity;
+    private int quantity = 1;
+    private double unitPrice = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +59,9 @@ public class ViewProductActivity extends AppCompatActivity {
         productRating = findViewById(R.id.productRating);
         ratingCount = findViewById(R.id.ratingCount);
         productPrice = findViewById(R.id.productPrice);
+        btnIncrease = findViewById(R.id.btnIncrease);
+        btnDecrease = findViewById(R.id.btnDecrease);
+        tvQuantity = findViewById(R.id.tvQuantity);
     }
 
     private void loadProductFromFirestore() {
@@ -84,6 +91,22 @@ public class ViewProductActivity extends AppCompatActivity {
         ratingCount.setText(String.format("(%.1f)", product.rating));
         productPrice.setText("₡" + product.price);
 
+        unitPrice = product.price;
+        updateQuantityAndPrice();
+
+        tvQuantity.setText(String.valueOf(quantity));
+
+        btnIncrease.setOnClickListener(v -> {
+            quantity++;
+            updateQuantityAndPrice();
+        });
+
+        btnDecrease.setOnClickListener(v -> {
+            if (quantity > 1) {
+                quantity--;
+                updateQuantityAndPrice();
+            }
+        });
         // Main image
         if (product.imageUrls != null && !product.imageUrls.isEmpty()) {
             Glide.with(this).load(product.imageUrls.get(0)).into(imageMain);
@@ -119,6 +142,11 @@ public class ViewProductActivity extends AppCompatActivity {
         zoomedImage.setOnClickListener(v -> dialog.dismiss()); //close when you touches
 
         dialog.show();
+    }
+    private void updateQuantityAndPrice() {
+        tvQuantity.setText(String.valueOf(quantity));
+        double totalPrice = unitPrice * quantity;
+        productPrice.setText(String.format("₡%.2f", totalPrice));
     }
 
     @Override
