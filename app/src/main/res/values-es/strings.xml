@@ -1,0 +1,169 @@
+<resources>
+    <string name="app_name">Pure Harvest</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_home">Inicio</string>
+    <string name="title_dashboard">Panel</string>
+    <string name="title_account">Cuenta</string>
+    <string name="title_activity_example">ExampleActivity</string>
+
+    <string name="hello_blank_fragment">Hola fragmento vacío</string>
+    <string name="cNameL">Nombre de la empresa</string>
+    <string name="placeholder_name">Nombre</string>
+    <string name="placeholder_phone">Teléfono</string>
+    <string name="placeholder_address">Dirección</string>
+    <string name="placeholder_map">Mapa</string>
+    <string name="placeholder_error">Error</string>
+    <string name="not_available_short">N/D</string>
+    <string name="order_name_prefix">ID Producto: </string>
+    <string name="order_user_prefix">Usuario: </string>
+    <string name="view_order_details_for">Ver detalles del pedido: %s</string>
+    <string name="error_loading_orders">Error al cargar los pedidos.</string>
+    <string name="no_orders_yet_company">Aún no tienes pedidos registrados</string>
+    <string name="title_my_orders">Mis Pedidos</string>
+    <string name="content_description_back_button">Atrás</string>
+    <string name="order_id_prefix">ID: </string>
+    <string name="order_doc_id_prefix">ID Pedido: </string>
+
+    <string name="button_profile">Perfil</string>
+    <string name="button_products">Productos</string>
+
+    <string name="label_product_name">Nombre del Producto</string>
+    <string name="label_product_type">Tipo</string>
+    <string name="label_product_price">Precio</string>
+    <string name="label_product_acidity">Acidez</string>
+    <string name="label_product_description">Descripción</string>
+
+
+    <string name="hint_product_name">Ingresa el nombre del producto</string>
+    <string name="hint_product_type">Ingresa el tipo de producto</string>
+    <string name="hint_product_price">Ingresa el precio del producto</string>
+    <string name="hint_product_acidity">Ingresa el nivel de acidez</string>
+    <string name="hint_product_description">Ingresa la descripción del producto</string>
+
+
+    <string name="button_save_product">Guardar Producto</string>
+
+
+
+    <string name="back_button_content_description">Atrás</string>
+    <string name="title_product_list">Mis Productos</string>
+    <string name="empty_product_list">Aún no has añadido productos.</string>
+
+
+
+
+    <string name="manage_images">Administrar Imágenes</string>
+    <string name="product_name">Nombre del Producto</string>
+    <string name="product_type">Tipo de Producto</string>
+    <string name="product_description">Descripción</string>
+    <string name="product_ingredients">Ingredientes</string>
+    <string name="product_preparation">Preparación</string>
+    <string name="product_price">Precio</string>
+    <string name="product_acidity">Acidez</string>
+    <string name="product_body">Cuerpo</string>
+    <string name="product_aftertaste">Postgusto</string>
+    <string name="delete_product">Eliminar Producto</string>
+    <string name="product_image_description">Imagen del producto</string>
+
+    <string name="cd_back_button">Botón atrás</string>
+    <string name="cd_product_image">Imagen del producto</string>
+    <string name="button_manage_images">Administrar Imágenes</string>
+
+
+    <string name="hint_description">Descripción</string>
+    <string name="hint_ingredients">Ingredientes</string>
+    <string name="hint_preparation">Preparación</string>
+    <string name="hint_price">Precio</string>
+    <string name="hint_acidity">Acidez</string>
+    <string name="hint_body">Cuerpo</string>
+    <string name="hint_aftertaste">Postgusto</string>
+
+    <string name="button_delete_product">Eliminar Producto</string>
+
+
+
+    <string name="cd_back_button_profile">Botón atrás para perfil</string>
+
+    <string name="label_company_name_required">Nombre de la Empresa *</string>
+    <string name="hint_current_name">Nombre Actual</string>
+
+    <string name="label_slogan_optional">Eslogan (Opcional)</string>
+    <string name="hint_current_slogan">Eslogan Actual</string>
+
+    <string name="label_phone_number_required">Número de Teléfono *</string>
+    <string name="hint_current_phone_number">Número Actual</string>
+
+    <string name="label_email_optional">Correo Electrónico (Opcional)</string>
+    <string name="hint_current_email">Correo Electrónico Actual</string>
+
+    <string name="label_address_required">Dirección *</string>
+    <string name="hint_current_address">Dirección Actual</string>
+
+    <string name="label_map_address_required">Dirección en Mapa *</string>
+    <string name="hint_current_map_address">Dirección actual en mapa</string>
+
+
+    <string name="button_save_changes">Guardar Cambios</string>
+    <string name="button_cancel">Cancelar</string>
+
+
+    <string name="title_edit_profile">Editar Perfil</string>
+
+    <string name="cd_back_button_manage_images">Botón atrás para administrar imágenes</string>
+    <string name="title_manage_images">Administrar Imágenes</string>
+
+    <string name="cd_image_slot_1">Imagen 1</string>
+    <string name="cd_image_slot_2">Imagen 2</string>
+    <string name="cd_image_slot_3">Imagen 3</string>
+    <string name="cd_image_slot_4">Imagen 4</string>
+    <string name="cd_image_slot_5">Imagen 5</string>
+
+    <string name="text_slot_empty">Vacío</string>
+    <string name="button_change">Cambiar</string>
+    <string name="button_delete">Eliminar</string>
+
+    <string name="cd_back_button_options">Botón atrás para opciones de productos</string>
+    <string name="title_manage_products">Gestionar Productos</string>
+    <string name="button_see_my_products">Ver mis Productos</string>
+    <string name="button_see_company_orders">Ver pedidos de la empresa</string>
+
+    <string name="cd_back_button_profile_view">Botón atrás para ver perfil</string>
+    <string name="cd_profile_image">Imagen de perfil</string>
+
+    <string name="button_change_photo">Cambiar Foto</string>
+    <string name="button_delete_photo">Eliminar Foto</string>
+
+    <string name="label_contact_information">Información de Contacto</string>
+    <string name="label_phone">Teléfono:</string>
+    <string name="label_email">Correo:</string>
+    <string name="label_address">Dirección:</string>
+    <string name="label_map">Mapa:</string>
+    <string name="text_view_on_map">Ver en Mapa</string>
+
+    <string name="button_edit_profile">Editar Perfil</string>
+
+    <string name="title_profile">Perfil</string>
+
+    <string name="button_view_details">Ver Detalles</string>
+
+
+    <string name="label_order_id_prefix">ID Pedido:\u0020</string>
+    <string name="label_user_id_prefix">ID Usuario:\u0020</string>
+
+
+    <string name="format_order_id">ID Pedido: %s</string>
+    <string name="format_user_id">ID Usuario: %s</string>
+
+
+    <string name="tools_text_order_id_example">ID Pedido: ABCxyz123ejemplodeiddocumentomuylargo</string>
+    <string name="tools_text_user_id_example">ID Usuario: usuario_id_muy_largo_ejemplo_que_podria_ser_truncado</string>
+    <string name="tools_text_date_example">27 Oct 2023, 10:30 AM</string>
+
+    <string name="cd_product_item_image">Imagen del producto</string>
+    <string name="button_manage">Gestionar</string>
+
+
+    <string name="tools_text_product_name_example_long">Nombre Largo del Producto que Podría Ocupar Dos Líneas</string>
+    <string name="tools_text_product_price_example">₡1200.00</string>
+
+</resources>
