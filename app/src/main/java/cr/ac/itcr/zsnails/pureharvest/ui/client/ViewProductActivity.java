@@ -26,6 +26,7 @@ public class ViewProductActivity extends AppCompatActivity {
     private TextView tvQuantity;
     private int quantity = 1;
     private double unitPrice = 0;
+    private Button btnAddToCart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +63,7 @@ public class ViewProductActivity extends AppCompatActivity {
         btnIncrease = findViewById(R.id.btnIncrease);
         btnDecrease = findViewById(R.id.btnDecrease);
         tvQuantity = findViewById(R.id.tvQuantity);
+        btnAddToCart = findViewById(R.id.btnAddToCart);
     }
 
     private void loadProductFromFirestore() {
@@ -147,6 +149,7 @@ public class ViewProductActivity extends AppCompatActivity {
         tvQuantity.setText(String.valueOf(quantity));
         double totalPrice = unitPrice * quantity;
         productPrice.setText(String.format("₡%.2f", totalPrice));
+        btnAddToCart.setText("Add " + quantity + " to Cart");
     }
 
     @Override
