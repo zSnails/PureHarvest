@@ -25,6 +25,7 @@
     <string name="title_activity_login">LoginActivity</string>
     <string name="default_web_client_id">1010691427014-drl8n6dpoius89e3a1g6c30qefigivch.apps.googleusercontent.com</string>
     <string name="facebook_app_id">fb617382781329733</string>
+    <string name="fb_login_protocol_scheme">fb617382781329733</string>
     <string name="facebook_client_token">0c783f4da01a28487465dc7a97957533</string>
     <string name="email">Email</string>
     <string name="title_shopping_cart">Shopping Cart</string>
