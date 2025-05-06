@@ -166,4 +166,55 @@
     <string name="tools_text_product_name_example_long">Nombre Largo del Producto que Podría Ocupar Dos Líneas</string>
     <string name="tools_text_product_price_example">₡1200.00</string>
 
+    <string name="toast_product_added_successfully">¡Producto añadido con éxito!</string>
+    <string name="toast_error_adding_product">Error al añadir producto: %s</string>
+
+    <string name="error_fields_cannot_be_empty">Los campos no pueden estar vacíos.</string>
+    <string name="error_invalid_number_format">Formato de número inválido para precio o acidez.</string>
+
+    <string name="error_invalid_product_id">Error: ID de producto inválido.</string>
+    <string name="error_cannot_delete_product_now">No se puede eliminar el producto en este momento.</string>
+    <string name="dialog_title_confirm_deletion">Confirmar Eliminación</string>
+    <string name="dialog_message_confirm_deletion">¿Estás seguro de que quieres eliminar este producto? Esta acción no se puede deshacer y borrará también las imágenes asociadas.</string>
+    <string name="dialog_button_delete">Eliminar</string>
+    <string name="dialog_button_cancel">Cancelar</string>
+    <string name="log_product_deletion_cancelled">Eliminación de producto cancelada por el usuario.</string>
+    <string name="error_internal_while_deleting">Error interno al intentar eliminar.</string>
+    <string name="success_product_data_deleted">Datos del producto eliminados.</string>
+    <string name="success_product_deleted">Producto eliminado.</string>
+    <string name="success_product_and_images_deleted">Producto e imágenes eliminados.</string>
+    <string name="error_product_deleted_images_error">Producto eliminado, pero ocurrió un error al borrar imágenes.</string>
+    <string name="success_product_deleted_no_images_or_list_error">Producto eliminado (no se encontraron imágenes o error al listar).</string>
+    <string name="error_product_does_not_exist">El producto no existe.</string>
+    <string name="error_loading_data_generic">Error al cargar datos: %s</string>
+    <string name="error_navigation_generic">Error de navegación.</string>
+    <string name="error_invalid_product_id_for_manage_images">ID de producto no válido para administrar imágenes.</string>
+    <string name="error_internal_binding_null">Error interno (binding no disponible)</string>
+    <string name="error_name_required">Nombre es requerido</string>
+    <string name="error_price_required">Precio es requerido</string>
+    <string name="error_invalid_price">Precio inválido</string>
+    <string name="error_internal_while_saving">Error interno al guardar.</string>
+    <string name="success_product_updated">Producto actualizado con éxito.</string>
+    <string name="error_updating_product_generic">Error al actualizar producto: %s</string>
+
+    <string name="error_invalid_product_id_manage_images">Error: ID de producto no válido.</string>
+    <string name="error_product_not_found_manage_images">Producto no encontrado.</string>
+    <string name="error_loading_images_generic">Error al cargar imágenes: %s</string>
+    <string name="button_add_image">Añadir</string>
+    <string name="button_change_image_action">Cambiar</string>
+    <string name="error_starting_upload">Error al iniciar subida.</string>
+    <string name="error_getting_image_url">Error al obtener URL de imagen.</string>
+    <string name="error_uploading_image">Error al subir imagen.</string>
+    <string name="success_image_updated">Imagen actualizada.</string>
+    <string name="error_saving_image_url">Error al guardar URL: %s</string>
+    <string name="dialog_title_confirm_image_deletion">Confirmar Eliminación</string>
+    <string name="dialog_message_confirm_image_deletion">¿Estás seguro de que quieres eliminar esta imagen?</string>
+    <string name="error_deleting_image_url">Error al eliminar URL: %s</string>
+    <string name="success_image_deleted">Imagen eliminada.</string>
+    <string name="success_image_deleted_not_found_in_storage">Imagen eliminada (no encontrada en almacenamiento).</string>
+    <string name="error_deleting_image_from_storage">Error al borrar imagen de almacenamiento.</string>
+    <string name="error_invalid_image_url_for_deletion">URL de imagen inválida para borrar.</string>
+    <string name="log_image_pick_cancelled">Selección de imagen cancelada o resultado no OK.</string>
+    <string name="log_unknown_activity_request_code">onActivityResult: Código de solicitud desconocido %d</string>
+
 </resources>

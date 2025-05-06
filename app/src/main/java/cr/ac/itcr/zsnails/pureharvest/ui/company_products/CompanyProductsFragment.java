@@ -1,9 +1,7 @@
 package cr.ac.itcr.zsnails.pureharvest.ui.company_products;
 
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,45 +15,48 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentCompanyProductsBinding;
 
-
 public class CompanyProductsFragment extends Fragment {
 
     FirebaseFirestore db;
-    EditText productName, productType, productPrice, productAcidity, productDescription;
-    Button saveButton;
 
     FragmentCompanyProductsBinding binding;
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         binding = FragmentCompanyProductsBinding.inflate(inflater, container, false);
-
         View root = binding.getRoot();
 
         db = FirebaseFirestore.getInstance();
-        productName = root.findViewById(R.id.productName);
-        productType = root.findViewById(R.id.productType);
-        productPrice = root.findViewById(R.id.productPrice);
-        productAcidity = root.findViewById(R.id.productAcidity);
-        productDescription = root.findViewById(R.id.productDescription);
-        saveButton = root.findViewById(R.id.button);
 
-        saveButton.setOnClickListener(v -> {
 
-            String name = productName.getText().toString();
-            String type = productType.getText().toString();
-            double price = Double.parseDouble(productPrice.getText().toString());
-            double acidity = Double.parseDouble(productAcidity.getText().toString());
-            String description = productDescription.getText().toString();
+        binding.button.setOnClickListener(v -> {
+            // Accede a los EditTexts a través del binding
+            String name = binding.productName.getText().toString();
+            String type = binding.productType.getText().toString();
+            String priceStr = binding.productPrice.getText().toString();
+            String acidityStr = binding.productAcidity.getText().toString();
+            String description = binding.productDescription.getText().toString();
 
+            // Validación básica (puedes expandirla)
+            if (name.isEmpty() || type.isEmpty() || priceStr.isEmpty() || acidityStr.isEmpty() || description.isEmpty()) {
+                Toast.makeText(getContext(), R.string.error_fields_cannot_be_empty, Toast.LENGTH_SHORT).show(); // Necesitarás añadir este string
+                return;
+            }
+
+            double price;
+            double acidity;
+
+            try {
+                price = Double.parseDouble(priceStr);
+                acidity = Double.parseDouble(acidityStr);
+            } catch (NumberFormatException e) {
+                Toast.makeText(getContext(), R.string.error_invalid_number_format, Toast.LENGTH_SHORT).show(); // Necesitarás añadir este string
+                return;
+            }
 
             ProductM product = new ProductM(name, type, price, acidity, description);
-
-
             addProductToFirestore(product);
         });
 
@@ -65,15 +66,34 @@ public class CompanyProductsFragment extends Fragment {
     private void addProductToFirestore(ProductM product) {
         CollectionReference productsRef = db.collection("products");
 
-
         productsRef.add(product)
                 .addOnSuccessListener(documentReference -> {
 
-                    Toast.makeText(getContext(), "Product added successfully!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.toast_product_added_successfully), Toast.LENGTH_SHORT).show();
+
+                    clearInputFields();
                 })
                 .addOnFailureListener(e -> {
 
-                    Toast.makeText(getContext(), "Error adding product: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    String errorMessage = getString(R.string.toast_error_adding_product, e.getMessage());
+                    Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
                 });
+    }
+
+    private void clearInputFields() {
+        if (binding != null) {
+            binding.productName.setText("");
+            binding.productType.setText("");
+            binding.productPrice.setText("");
+            binding.productAcidity.setText("");
+            binding.productDescription.setText("");
+            binding.productName.requestFocus();
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 
 import cr.ac.itcr.zsnails.pureharvest.R;
@@ -75,7 +76,7 @@ public class EditProductFragment extends Fragment {
             loadProductData();
         } else {
             Log.e(TAG, "Cannot load data: Product ID is null or empty.");
-            showErrorState("Error: ID de producto inválido.");
+            showErrorState(getString(R.string.error_invalid_product_id));
             setButtonsEnabled(false);
         }
 
@@ -89,20 +90,20 @@ public class EditProductFragment extends Fragment {
     private void handleDeleteProductConfirmation() {
         if (getContext() == null || !isAdded() || productId == null || productId.isEmpty()) {
             Log.e(TAG, "Cannot delete: context, fragment state, or productId invalid.");
-            showErrorState("No se puede eliminar el producto en este momento.");
+            showErrorState(getString(R.string.error_cannot_delete_product_now));
             return;
         }
         new AlertDialog.Builder(requireContext())
-                .setTitle("Confirmar Eliminación")
-                .setMessage("¿Estás seguro de que quieres eliminar este producto? Esta acción no se puede deshacer y borrará también las imágenes asociadas.")
+                .setTitle(getString(R.string.dialog_title_confirm_deletion))
+                .setMessage(getString(R.string.dialog_message_confirm_deletion))
                 .setIcon(android.R.drawable.ic_dialog_alert)
-                .setPositiveButton("Eliminar", (dialog, whichButton) -> performProductDeletion())
-                .setNegativeButton("Cancelar", (dialog, whichButton) -> Log.d(TAG, "Product deletion cancelled by user."))
+                .setPositiveButton(getString(R.string.dialog_button_delete), (dialog, whichButton) -> performProductDeletion())
+                .setNegativeButton(getString(R.string.dialog_button_cancel), (dialog, whichButton) -> Log.d(TAG, getString(R.string.log_product_deletion_cancelled)))
                 .show();
     }
     private void performProductDeletion() {
         if (productId == null || productId.isEmpty() || firestore == null) {
-            showErrorState("Error interno al intentar eliminar.");
+            showErrorState(getString(R.string.error_internal_while_deleting));
             return;
         }
         showLoading(true);
@@ -115,14 +116,14 @@ public class EditProductFragment extends Fragment {
                 .addOnFailureListener(e -> {
                     showLoading(false);
                     Log.e(TAG, "Error deleting Firestore document for ID: " + productId, e);
-                    showErrorState("Error al eliminar datos del producto: " + e.getMessage());
+                    showErrorState(String.format(getString(R.string.error_updating_product_generic), e.getMessage())); // Re-used generic update error string
                 });
     }
     private void deleteProductImagesFromStorage() {
         if (productId == null || productId.isEmpty() || storage == null || !isAdded()) {
             Log.w(TAG, "Skipping storage deletion due to invalid state.");
             showLoading(false);
-            showSuccessMessage("Datos del producto eliminados.");
+            showSuccessMessage(getString(R.string.success_product_data_deleted));
             navigateBack();
             return;
         }
@@ -135,7 +136,7 @@ public class EditProductFragment extends Fragment {
                     if (items.isEmpty()) {
                         Log.d(TAG, "No images found in storage for product ID: " + productId + ". Deletion complete.");
                         showLoading(false);
-                        showSuccessMessage("Producto eliminado.");
+                        showSuccessMessage(getString(R.string.success_product_deleted));
                         navigateBack();
                         return;
                     }
@@ -149,22 +150,23 @@ public class EditProductFragment extends Fragment {
                                 if (!isAdded()) return;
                                 Log.d(TAG, "All images deleted successfully from storage for product ID: " + productId);
                                 showLoading(false);
-                                showSuccessMessage("Producto e imágenes eliminados.");
+                                showSuccessMessage(getString(R.string.success_product_and_images_deleted));
                                 navigateBack();
                             })
                             .addOnFailureListener(e -> {
                                 if (!isAdded()) return;
                                 showLoading(false);
                                 Log.e(TAG, "Error deleting some images from storage for product ID: " + productId, e);
-                                showErrorState("Producto eliminado, pero ocurrió un error al borrar imágenes.");
-                                navigateBack();
+                                showErrorState(getString(R.string.error_product_deleted_images_error));
+                                navigateBack(); // Navigate back even if image deletion fails partially
                             });
                 })
                 .addOnFailureListener(e -> {
                     if (!isAdded()) return;
                     showLoading(false);
                     Log.e(TAG, "Error listing images in storage for product ID: " + productId, e);
-                    showSuccessMessage("Producto eliminado (no se encontraron imágenes o error al listar).");
+                    // Show success for product deletion, but acknowledge image listing issue
+                    showSuccessMessage(getString(R.string.success_product_deleted_no_images_or_list_error));
                     navigateBack();
                 });
     }
@@ -182,14 +184,14 @@ public class EditProductFragment extends Fragment {
                         populateFields(documentSnapshot);
                         setButtonsEnabled(true);
                     } else {
-                        showErrorState("El producto no existe.");
+                        showErrorState(getString(R.string.error_product_does_not_exist));
                         setButtonsEnabled(false);
                     }
                 })
                 .addOnFailureListener(e -> {
                     if (!isAdded() || binding == null) return;
                     showLoading(false);
-                    showErrorState("Error al cargar datos: " + e.getMessage());
+                    showErrorState(String.format(getString(R.string.error_loading_data_generic), e.getMessage()));
                     binding.imageProduct.setImageResource(R.drawable.ic_error_image);
                     setButtonsEnabled(false);
                 });
@@ -238,19 +240,17 @@ public class EditProductFragment extends Fragment {
         if (getContext() != null && isAdded() && getView() != null) {
             if (productId != null && !productId.isEmpty()) {
                 Log.d(TAG, "Navigating to Manage Images for product ID: " + productId);
-                // --- Navigation Logic ---
                 Bundle args = new Bundle();
-                args.putString("productId", productId); // Pass the product ID
-                // Replace R.id.action_editProductFragment_to_manageImagesFragment with your actual action ID
+                args.putString(ARG_PRODUCT_ID, productId); // Use defined constant
                 try {
                     Navigation.findNavController(requireView()).navigate(R.id.action_editProductFragment_to_manageImagesFragment, args);
                 } catch (IllegalArgumentException e) {
                     Log.e(TAG, "Navigation action not found. Ensure it's defined in your nav graph.", e);
-                    showErrorState("Error de navegación.");
+                    showErrorState(getString(R.string.error_navigation_generic));
                 }
 
             } else {
-                showErrorState("ID de producto no válido para administrar imágenes.");
+                showErrorState(getString(R.string.error_invalid_product_id_for_manage_images));
             }
         } else {
             Log.w(TAG, "Cannot navigate: context, view, or fragment state invalid.");
@@ -258,23 +258,26 @@ public class EditProductFragment extends Fragment {
     }
 
 
-
     private void handleSaveChanges() {
-        if (binding == null || productId == null || productId.isEmpty()) {
-            showErrorState(binding == null ? "Error interno (binding)" : "Error: ID de producto inválido.");
+        if (binding == null) {
+            showErrorState(getString(R.string.error_internal_binding_null));
+            return;
+        }
+        if (productId == null || productId.isEmpty()) {
+            showErrorState(getString(R.string.error_invalid_product_id));
             return;
         }
 
 
-        String name = binding.editProductName.getText().toString().trim();
-        String priceStr = binding.editProductPrice.getText().toString().trim();
+        String name = Objects.requireNonNull(binding.editProductName.getText()).toString().trim();
+        String priceStr = Objects.requireNonNull(binding.editProductPrice.getText()).toString().trim();
         boolean valid = true;
-        if (name.isEmpty()) { binding.layoutProductName.setError("Nombre es requerido"); valid = false; } else { binding.layoutProductName.setError(null); }
-        if (priceStr.isEmpty()) { binding.layoutProductPrice.setError("Precio es requerido"); valid = false; } else { binding.layoutProductPrice.setError(null); }
+        if (name.isEmpty()) { binding.layoutProductName.setError(getString(R.string.error_name_required)); valid = false; } else { binding.layoutProductName.setError(null); }
+        if (priceStr.isEmpty()) { binding.layoutProductPrice.setError(getString(R.string.error_price_required)); valid = false; } else { binding.layoutProductPrice.setError(null); }
         double price = 0;
-        if (valid) {
-            try { price = Double.parseDouble(priceStr.replace(',', '.')); if (price < 0) throw new NumberFormatException(); binding.layoutProductPrice.setError(null); }
-            catch (NumberFormatException e) { binding.layoutProductPrice.setError("Precio inválido"); valid = false; }
+        if (valid && !priceStr.isEmpty()) { // Check priceStr not empty before parsing
+            try { price = Double.parseDouble(priceStr.replace(',', '.')); if (price < 0) throw new NumberFormatException("Price cannot be negative"); binding.layoutProductPrice.setError(null); }
+            catch (NumberFormatException e) { binding.layoutProductPrice.setError(getString(R.string.error_invalid_price)); valid = false; }
         }
         if (!valid) return;
 
@@ -283,23 +286,23 @@ public class EditProductFragment extends Fragment {
 
         Map<String, Object> productUpdates = new HashMap<>();
         productUpdates.put("name", name);
-        productUpdates.put("type", binding.editProductType.getText().toString().trim());
-        productUpdates.put("description", binding.editProductDescription.getText().toString().trim());
-        productUpdates.put("ingredients", binding.editProductIngredients.getText().toString().trim());
-        productUpdates.put("preparation", binding.editProductPreparation.getText().toString().trim());
+        productUpdates.put("type", Objects.requireNonNull(binding.editProductType.getText()).toString().trim());
+        productUpdates.put("description", Objects.requireNonNull(binding.editProductDescription.getText()).toString().trim());
+        productUpdates.put("ingredients", Objects.requireNonNull(binding.editProductIngredients.getText()).toString().trim());
+        productUpdates.put("preparation", Objects.requireNonNull(binding.editProductPreparation.getText()).toString().trim());
         productUpdates.put("price", price);
-        productUpdates.put("acidity", binding.editProductAcidity.getText().toString().trim());
-        productUpdates.put("body", binding.editProductBody.getText().toString().trim());
-        productUpdates.put("aftertaste", binding.editProductAftertaste.getText().toString().trim());
+        productUpdates.put("acidity", Objects.requireNonNull(binding.editProductAcidity.getText()).toString().trim());
+        productUpdates.put("body", Objects.requireNonNull(binding.editProductBody.getText()).toString().trim());
+        productUpdates.put("aftertaste", Objects.requireNonNull(binding.editProductAftertaste.getText()).toString().trim());
 
 
-        updateProductFirestoreOnlyText(productUpdates); // Call dedicated method
+        updateProductFirestoreOnlyText(productUpdates);
     }
 
     private void updateProductFirestoreOnlyText(Map<String, Object> productUpdates) {
         if (productId == null || productId.isEmpty() || firestore == null) {
             showLoading(false);
-            showErrorState("Error interno al guardar.");
+            showErrorState(getString(R.string.error_internal_while_saving));
             return;
         }
 
@@ -308,34 +311,44 @@ public class EditProductFragment extends Fragment {
                 .update(productUpdates)
                 .addOnSuccessListener(aVoid -> {
                     showLoading(false);
-                    showSuccessMessage("Producto actualizado con éxito.");
-                    // imageUri = null; // No longer needed
+                    showSuccessMessage(getString(R.string.success_product_updated));
                     navigateBack();
                 })
                 .addOnFailureListener(e -> {
                     showLoading(false);
                     Log.e(TAG, "Error updating product text fields in Firestore for ID: " + productId, e);
-                    showErrorState("Error al actualizar producto: " + e.getMessage());
+                    showErrorState(String.format(getString(R.string.error_updating_product_generic), e.getMessage()));
                 });
     }
 
     private void handleCancel() {
-        // imageUri = null;
         navigateBack();
     }
 
 
     private void navigateBack() {
-        if (getView() != null && isAdded()) { Navigation.findNavController(requireView()).navigateUp(); }
-        else if (getActivity() != null) { getActivity().getSupportFragmentManager().popBackStack(); }
+        if (getView() != null && isAdded()) {
+            try {
+                Navigation.findNavController(requireView()).navigateUp();
+            } catch (IllegalStateException e) {
+                Log.e(TAG, "Error navigating up, controller not found or view not attached.", e);
+                // Fallback if NavController fails (e.g., during rapid configuration changes)
+                if (getActivity() != null) {
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }
+            }
+        } else if (getActivity() != null) {
+            getActivity().getSupportFragmentManager().popBackStack();
+        }
     }
+
     private void setButtonsEnabled(boolean enabled) {
         if (binding == null) return;
         binding.buttonSave.setEnabled(enabled);
         binding.buttonCancel.setEnabled(enabled);
         binding.buttonChangeImage.setEnabled(enabled);
         binding.buttonDeleteProduct.setEnabled(enabled);
-        binding.backButtonEditProduct.setEnabled(enabled);
+        binding.backButtonEditProduct.setEnabled(enabled); // Assuming this is the ID from your layout
         binding.editProductName.setEnabled(enabled);
         binding.editProductType.setEnabled(enabled);
         binding.editProductDescription.setEnabled(enabled);
@@ -346,14 +359,17 @@ public class EditProductFragment extends Fragment {
         binding.editProductBody.setEnabled(enabled);
         binding.editProductAftertaste.setEnabled(enabled);
     }
+
     private void showLoading(boolean isLoading) {
         if (binding == null) return;
         binding.progressBarEdit.setVisibility(isLoading ? View.VISIBLE : View.GONE);
-        setButtonsEnabled(!isLoading);
+        setButtonsEnabled(!isLoading); // Disable buttons while loading
     }
+
     private void showErrorState(String message) {
         if(getContext() != null && isAdded()) Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
     }
+
     private void showSuccessMessage(String message) {
         if(getContext() != null && isAdded()) Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }

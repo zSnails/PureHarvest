@@ -77,11 +77,11 @@ public class ManageImagesFragment extends Fragment {
             Log.d(TAG, "Received Product ID: " + productId);
             if (productId == null || productId.isEmpty()) {
                 Log.e(TAG, "Product ID is invalid.");
-                // Handle error - maybe navigate back or show permanent error
+                // Consider showing a persistent error or navigating back if critical
             }
         } else {
             Log.e(TAG, "Product ID not provided in arguments.");
-            // Handle error
+            // Consider showing a persistent error or navigating back
         }
     }
 
@@ -103,12 +103,12 @@ public class ManageImagesFragment extends Fragment {
             loadInitialImages();
             setupButtonListeners();
         } else {
-            showErrorState("Error: ID de producto no válido.");
-            // Disable all buttons or show an error view
+            showErrorState(getString(R.string.error_invalid_product_id_manage_images));
+            // Optionally disable all UI elements or show an error placeholder view
+            setAllSlotsEnabled(false);
         }
     }
 
-    // Helper to initialize arrays of UI elements
     private void initializeUIReferences() {
         imageSlots[0] = binding.imageSlot1;
         imageSlots[1] = binding.imageSlot2;
@@ -143,7 +143,7 @@ public class ManageImagesFragment extends Fragment {
 
     private void setupButtonListeners() {
         for (int i = 0; i < 5; i++) {
-            final int slotIndex = i; // Need final variable for lambda
+            final int slotIndex = i;
             changeButtons[i].setOnClickListener(v -> handlePickImage(slotIndex));
             deleteButtons[i].setOnClickListener(v -> handleDeleteImageConfirmation(slotIndex));
         }
@@ -151,13 +151,13 @@ public class ManageImagesFragment extends Fragment {
 
     private void loadInitialImages() {
         if (productId == null || productId.isEmpty()) return;
-        showSlotLoading(-1, true); // Show general loading initially? Maybe not needed.
+        // showSlotLoading(-1, true); // Consider if a global loading state is desired
 
         firestore.collection("products").document(productId).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (!isAdded() || binding == null) return;
 
-                    currentImageUrls.clear(); // Clear previous data
+                    currentImageUrls.clear();
                     if (documentSnapshot.exists()) {
                         Object urlsObj = documentSnapshot.get("imageUrls");
                         if (urlsObj instanceof List) {
@@ -174,75 +174,68 @@ public class ManageImagesFragment extends Fragment {
                         }
                     } else {
                         Log.w(TAG, "Product document " + productId + " does not exist.");
-                        showErrorState("Producto no encontrado."); // Or handle differently
+                        showErrorState(getString(R.string.error_product_not_found_manage_images));
                     }
-                    updateUISlots(); // Update UI based on loaded URLs
+                    updateUISlots();
                 })
                 .addOnFailureListener(e -> {
                     if (!isAdded() || binding == null) return;
                     Log.e(TAG, "Error fetching product data for images", e);
-                    showErrorState("Error al cargar imágenes: " + e.getMessage());
-                    updateUISlots(); // Update UI to show empty state
+                    showErrorState(String.format(getString(R.string.error_loading_images_generic), e.getMessage()));
+                    updateUISlots(); // Update UI to reflect empty or error state
                 });
     }
 
-    // Updates all 5 slots based on the currentImageUrls list
     private void updateUISlots() {
         if (!isAdded() || binding == null) return;
 
         for (int i = 0; i < 5; i++) {
             if (i < currentImageUrls.size()) {
-                // Image exists for this slot
                 String url = currentImageUrls.get(i);
                 if (!TextUtils.isEmpty(url)) {
-                    setSlotState(i, url, false); // Load image, hide empty text
+                    setSlotState(i, url, false);
                 } else {
-                    setSlotState(i, null, true); // Treat empty URL as empty slot
+                    setSlotState(i, null, true);
                 }
             } else {
-                // No image for this slot
-                setSlotState(i, null, true); // Show empty state
+                setSlotState(i, null, true);
             }
-            progressBars[i].setVisibility(View.GONE); // Ensure progress is hidden
+            progressBars[i].setVisibility(View.GONE);
         }
     }
 
-    // Sets the state (image or empty) for a single slot
     private void setSlotState(int slotIndex, @Nullable String imageUrl, boolean isEmpty) {
         if (!isAdded() || slotIndex < 0 || slotIndex >= 5) return;
 
         if (isEmpty || TextUtils.isEmpty(imageUrl)) {
-            // Set empty state
-            imageSlots[slotIndex].setImageResource(0); // Clear image
-            imageSlots[slotIndex].setBackgroundColor(getResources().getColor(R.color.placeholder_grey)); // Use color placeholder
+            imageSlots[slotIndex].setImageResource(0);
+            if (getContext() != null) { // Check context for getResources
+                imageSlots[slotIndex].setBackgroundColor(getResources().getColor(R.color.placeholder_grey));
+            }
             emptyTexts[slotIndex].setVisibility(View.VISIBLE);
-            changeButtons[slotIndex].setText("Añadir"); // Change button text
-            changeButtons[slotIndex].setVisibility(View.VISIBLE); // Show "Añadir"
-            deleteButtons[slotIndex].setVisibility(View.GONE);    // Hide "Eliminar"
+            changeButtons[slotIndex].setText(getString(R.string.button_add_image));
+            changeButtons[slotIndex].setVisibility(View.VISIBLE);
+            deleteButtons[slotIndex].setVisibility(View.GONE);
         } else {
-            // Load image and set occupied state
             emptyTexts[slotIndex].setVisibility(View.GONE);
             Glide.with(this)
                     .load(imageUrl)
-                    .placeholder(R.drawable.ic_placeholder_image) // Use drawable placeholders
+                    .placeholder(R.drawable.ic_placeholder_image)
                     .error(R.drawable.ic_error_image)
                     .into(imageSlots[slotIndex]);
-            changeButtons[slotIndex].setText("Cambiar"); // Set button text
-            changeButtons[slotIndex].setVisibility(View.VISIBLE); // Show "Cambiar"
-            deleteButtons[slotIndex].setVisibility(View.VISIBLE); // Show "Eliminar"
+            changeButtons[slotIndex].setText(getString(R.string.button_change_image_action));
+            changeButtons[slotIndex].setVisibility(View.VISIBLE);
+            deleteButtons[slotIndex].setVisibility(View.VISIBLE);
         }
-        // Ensure progress bar is hidden unless explicitly shown by upload/delete
         progressBars[slotIndex].setVisibility(View.GONE);
-        changeButtons[slotIndex].setEnabled(true); // Ensure buttons are enabled
+        changeButtons[slotIndex].setEnabled(true);
         deleteButtons[slotIndex].setEnabled(true);
     }
 
-    // Handles clicking "Cambiar" or "Añadir"
     private void handlePickImage(int slotIndex) {
-        currentPickingSlot = slotIndex; // Remember which slot we're picking for
+        currentPickingSlot = slotIndex;
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
-        // Use unique request code for each slot to potentially handle multiple picks
         startActivityForResult(intent, IMAGE_PICK_CODE_BASE + slotIndex);
     }
 
@@ -253,33 +246,27 @@ public class ManageImagesFragment extends Fragment {
 
         if (resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
             if (requestCode >= IMAGE_PICK_CODE_BASE && requestCode < IMAGE_PICK_CODE_BASE + 5) {
-                int slotIndex = requestCode - IMAGE_PICK_CODE_BASE; // Determine slot from request code
+                int slotIndex = requestCode - IMAGE_PICK_CODE_BASE;
                 Uri selectedImageUri = data.getData();
                 Log.d(TAG, "Image picked for slot " + slotIndex + ": " + selectedImageUri.toString());
-
-                // Start upload process for the selected image and slot
                 uploadImageForSlot(slotIndex, selectedImageUri);
             } else {
-                Log.w(TAG,"onActivityResult: Unknown request code " + requestCode);
+                Log.w(TAG, String.format(getString(R.string.log_unknown_activity_request_code), requestCode));
             }
         } else {
-            Log.d(TAG, "onActivityResult: No image selected or result not OK.");
+            Log.d(TAG, getString(R.string.log_image_pick_cancelled));
         }
     }
 
-
     private void uploadImageForSlot(int slotIndex, @NonNull Uri imageUri) {
         if (productId == null || productId.isEmpty() || storage == null || !isAdded() || slotIndex < 0 || slotIndex >= 5) {
-            showErrorState("Error al iniciar subida.");
+            showErrorState(getString(R.string.error_starting_upload));
             return;
         }
-
-        showSlotLoading(slotIndex, true); // Show progress for this specific slot
-
+        showSlotLoading(slotIndex, true);
         StorageReference storageRef = storage.getReference();
         String imagePath = "product_images/" + productId + "/" + UUID.randomUUID().toString() + ".jpg";
         StorageReference imageRef = storageRef.child(imagePath);
-
         Log.d(TAG, "Uploading image for slot " + slotIndex + " to: " + imagePath);
 
         imageRef.putFile(imageUri)
@@ -289,27 +276,25 @@ public class ManageImagesFragment extends Fragment {
                             .addOnSuccessListener(downloadUri -> {
                                 if (!isAdded()) return;
                                 Log.d(TAG, "Download URL for slot " + slotIndex + ": " + downloadUri.toString());
-                                updateFirestoreWithNewUrl(slotIndex, downloadUri.toString()); // Update Firestore with new URL
+                                updateFirestoreWithNewUrl(slotIndex, downloadUri.toString());
                             })
                             .addOnFailureListener(e -> {
                                 if (!isAdded()) return;
                                 showSlotLoading(slotIndex, false);
                                 Log.e(TAG, "Error getting download URL for slot " + slotIndex, e);
-                                showErrorState("Error al obtener URL de imagen.");
+                                showErrorState(getString(R.string.error_getting_image_url));
                             });
                 })
                 .addOnFailureListener(e -> {
                     if (!isAdded()) return;
                     showSlotLoading(slotIndex, false);
                     Log.e(TAG, "Error uploading image for slot " + slotIndex, e);
-                    showErrorState("Error al subir imagen.");
+                    showErrorState(getString(R.string.error_uploading_image));
                 });
     }
 
-    // Updates Firestore after successful upload
     private void updateFirestoreWithNewUrl(int slotIndex, String newUrl) {
         if (productId == null || productId.isEmpty() || firestore == null || !isAdded()) return;
-
         DocumentReference productRef = firestore.collection("products").document(productId);
 
         firestore.runTransaction((Transaction.Function<Void>) transaction -> {
@@ -318,7 +303,6 @@ public class ManageImagesFragment extends Fragment {
             Object urlsObj = snapshot.get("imageUrls");
 
             if (urlsObj instanceof List) {
-                // Filter only valid strings from the existing list
                 @SuppressWarnings("unchecked") List<Object> rawList = (List<Object>) urlsObj;
                 for(Object item : rawList){
                     if(item instanceof String && !((String)item).isEmpty()){
@@ -327,53 +311,43 @@ public class ManageImagesFragment extends Fragment {
                 }
             }
 
-            // Decide whether to add or replace based on slotIndex
             if (slotIndex < existingUrls.size()) {
-                // Replace existing URL - Also delete the old image from storage
                 String oldUrl = existingUrls.get(slotIndex);
-                deleteImageFromStorage(oldUrl); // Attempt to delete the old one
-                existingUrls.set(slotIndex, newUrl); // Replace with new URL
+                deleteImageFromStorage(oldUrl);
+                existingUrls.set(slotIndex, newUrl);
                 Log.d(TAG,"Replacing URL at index " + slotIndex);
-            } else if (slotIndex < 5) { // Ensure we don't exceed max slots
-                // Add new URL (if list size is less than slot index + 1)
+            } else if (slotIndex < 5) {
                 while(existingUrls.size() <= slotIndex && existingUrls.size() < 5){
-                    existingUrls.add(null); // Pad with nulls if necessary (though direct add should work)
+                    existingUrls.add(null);
                 }
                 if(existingUrls.size() > slotIndex){
-                    existingUrls.set(slotIndex, newUrl); // If padding worked
+                    existingUrls.set(slotIndex, newUrl);
                 } else {
-                    existingUrls.add(newUrl); // Add normally if within bounds
+                    existingUrls.add(newUrl);
                 }
-
                 Log.d(TAG, "Adding new URL at index " + slotIndex);
             } else {
                 Log.e(TAG,"Slot index " + slotIndex + " is out of bounds (max 5).");
                 throw new FirebaseFirestoreException("Slot index out of bounds", FirebaseFirestoreException.Code.INVALID_ARGUMENT);
             }
-
-            // Remove any trailing nulls that might have been added during padding
             while (!existingUrls.isEmpty() && existingUrls.get(existingUrls.size() - 1) == null) {
                 existingUrls.remove(existingUrls.size() - 1);
             }
-
-
             transaction.update(productRef, "imageUrls", existingUrls);
-            return null; // Transaction must return null on success
+            return null;
         }).addOnSuccessListener(aVoid -> {
             if (!isAdded()) return;
             Log.d(TAG, "Firestore updated successfully for slot " + slotIndex);
-            showSuccessMessage("Imagen actualizada.");
-            loadInitialImages(); // Reload all images to refresh UI state consistently
+            showSuccessMessage(getString(R.string.success_image_updated));
+            loadInitialImages();
         }).addOnFailureListener(e -> {
             if (!isAdded()) return;
-            showSlotLoading(slotIndex, false); // Hide loading for this slot on failure
+            showSlotLoading(slotIndex, false);
             Log.e(TAG, "Firestore transaction failed for slot " + slotIndex, e);
-            showErrorState("Error al guardar URL: " + e.getMessage());
+            showErrorState(String.format(getString(R.string.error_saving_image_url), e.getMessage()));
         });
     }
 
-
-    // Confirmation dialog before deleting
     private void handleDeleteImageConfirmation(int slotIndex) {
         if (getContext() == null || !isAdded() || slotIndex < 0 || slotIndex >= currentImageUrls.size()) {
             Log.e(TAG, "Cannot delete image: invalid state or index.");
@@ -382,32 +356,25 @@ public class ManageImagesFragment extends Fragment {
         String urlToDelete = currentImageUrls.get(slotIndex);
         if(TextUtils.isEmpty(urlToDelete)){
             Log.w(TAG,"Attempting to delete an empty/null URL at index: "+slotIndex);
-            // Maybe just refresh the UI here?
             updateUISlots();
             return;
         }
-
-
         new AlertDialog.Builder(requireContext())
-                .setTitle("Confirmar Eliminación")
-                .setMessage("¿Estás seguro de que quieres eliminar esta imagen?")
+                .setTitle(getString(R.string.dialog_title_confirm_image_deletion))
+                .setMessage(getString(R.string.dialog_message_confirm_image_deletion))
                 .setIcon(android.R.drawable.ic_dialog_alert)
-                .setPositiveButton("Eliminar", (dialog, which) -> {
+                .setPositiveButton(getString(R.string.dialog_button_delete), (dialog, which) -> {
                     performImageDeletion(slotIndex, urlToDelete);
                 })
-                .setNegativeButton("Cancelar", null)
+                .setNegativeButton(getString(R.string.dialog_button_cancel), null)
                 .show();
     }
 
-    // Performs the actual deletion
     private void performImageDeletion(int slotIndex, String urlToDelete) {
         if (productId == null || productId.isEmpty() || firestore == null || !isAdded()) return;
-
         showSlotLoading(slotIndex, true);
-
         DocumentReference productRef = firestore.collection("products").document(productId);
 
-        // Use a transaction to ensure atomicity between reading and writing the list
         firestore.runTransaction((Transaction.Function<Void>) transaction -> {
             DocumentSnapshot snapshot = transaction.get(productRef);
             List<String> existingUrls = new ArrayList<>();
@@ -420,47 +387,39 @@ public class ManageImagesFragment extends Fragment {
                     }
                 }
             }
-
             if (slotIndex < existingUrls.size() && urlToDelete.equals(existingUrls.get(slotIndex))) {
-                // Remove the URL from the list
                 existingUrls.remove(slotIndex);
                 Log.d(TAG,"Removing URL at index " + slotIndex);
                 transaction.update(productRef, "imageUrls", existingUrls);
             } else {
                 Log.w(TAG, "URL to delete not found at expected index " + slotIndex + " or list modified.");
-                // Don't throw error, just log, maybe the list changed? Proceed to storage deletion anyway?
-                // Or throw: throw new FirebaseFirestoreException("URL mismatch", FirebaseFirestoreException.Code.ABORTED);
             }
             return null;
         }).addOnSuccessListener(aVoid -> {
             if (!isAdded()) return;
             Log.d(TAG, "Firestore updated after removing URL for slot " + slotIndex);
-            // Now delete from Storage
-            deleteImageFromStorage(urlToDelete, slotIndex); // Pass slotIndex for UI update
+            deleteImageFromStorage(urlToDelete, slotIndex);
         }).addOnFailureListener(e -> {
             if (!isAdded()) return;
             showSlotLoading(slotIndex, false);
             Log.e(TAG, "Firestore transaction failed for deleting URL at slot " + slotIndex, e);
-            showErrorState("Error al eliminar URL: " + e.getMessage());
+            showErrorState(String.format(getString(R.string.error_deleting_image_url), e.getMessage()));
         });
     }
 
-    // Deletes a single image file from Storage
     private void deleteImageFromStorage(String urlToDelete) {
-        deleteImageFromStorage(urlToDelete, -1); // Call overload with invalid slot index
+        deleteImageFromStorage(urlToDelete, -1);
     }
 
     private void deleteImageFromStorage(String urlToDelete, int slotIndex) {
         if (TextUtils.isEmpty(urlToDelete) || storage == null || !isAdded()) {
             Log.w(TAG,"Skipping storage deletion for URL: " + urlToDelete + " (invalid state or URL)");
-            // If called from delete flow, need to update UI anyway
             if (slotIndex != -1) {
                 showSlotLoading(slotIndex, false);
-                loadInitialImages(); // Refresh UI after failed storage delete but successful Firestore update
+                loadInitialImages();
             }
             return;
         }
-
         try {
             StorageReference imageRef = storage.getReferenceFromUrl(urlToDelete);
             Log.d(TAG, "Attempting to delete from storage: " + imageRef.getPath());
@@ -468,40 +427,36 @@ public class ManageImagesFragment extends Fragment {
                     .addOnSuccessListener(aVoid -> {
                         if (!isAdded()) return;
                         Log.d(TAG, "Successfully deleted image from storage: " + urlToDelete);
-                        // If called from delete flow, update UI for that slot
                         if(slotIndex != -1) {
                             showSlotLoading(slotIndex, false);
-                            showSuccessMessage("Imagen eliminada.");
-                            loadInitialImages(); // Refresh UI fully
+                            showSuccessMessage(getString(R.string.success_image_deleted));
+                            loadInitialImages();
                         }
-                        // If called during replacement, no specific UI update needed here
                     })
                     .addOnFailureListener(e -> {
                         if (!isAdded()) return;
                         Log.e(TAG, "Failed to delete image from storage: " + urlToDelete, e);
-                        // Check if the error is because the file doesn't exist (which is okay after deleting reference)
                         if (e instanceof StorageException && ((StorageException) e).getErrorCode() == StorageException.ERROR_OBJECT_NOT_FOUND) {
                             Log.w(TAG, "Image already deleted or not found in storage (expected after reference removal).");
-                            if(slotIndex != -1) { // If part of delete flow
+                            if(slotIndex != -1) {
                                 showSlotLoading(slotIndex, false);
-                                showSuccessMessage("Imagen eliminada (no encontrada en almacenamiento).");
+                                showSuccessMessage(getString(R.string.success_image_deleted_not_found_in_storage));
                                 loadInitialImages();
                             }
                         } else {
-                            // Actual error deleting
-                            showErrorState("Error al borrar imagen de almacenamiento.");
+                            showErrorState(getString(R.string.error_deleting_image_from_storage));
                             if(slotIndex != -1) {
                                 showSlotLoading(slotIndex, false);
-                                loadInitialImages(); // Still refresh UI
+                                loadInitialImages();
                             }
                         }
                     });
         } catch (IllegalArgumentException e) {
             Log.e(TAG, "Invalid URL format for storage deletion: " + urlToDelete, e);
-            if(slotIndex != -1) { // If part of delete flow
+            if(slotIndex != -1) {
                 showSlotLoading(slotIndex, false);
-                showErrorState("URL de imagen inválida para borrar.");
-                loadInitialImages(); // Refresh UI
+                showErrorState(getString(R.string.error_invalid_image_url_for_deletion));
+                loadInitialImages();
             }
         }
     }
@@ -512,42 +467,52 @@ public class ManageImagesFragment extends Fragment {
         binding = null;
     }
 
-    // --- Helper Methods ---
     private void navigateBack() {
         if (getView() != null && isAdded()) {
-            Navigation.findNavController(requireView()).navigateUp();
+            try {
+                Navigation.findNavController(requireView()).navigateUp();
+            } catch (IllegalStateException e) {
+                Log.e(TAG, "Error navigating up, controller not found or view not attached.", e);
+                if (getActivity() != null) {
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }
+            }
         } else if (getActivity() != null) {
             getActivity().getSupportFragmentManager().popBackStack();
         }
     }
 
-    // Shows/hides loading indicator for a specific slot, or all if slotIndex is -1
     private void showSlotLoading(int slotIndex, boolean isLoading) {
         if (!isAdded() || binding == null) return;
-
         if (slotIndex >= 0 && slotIndex < 5) {
-            // Specific slot
             progressBars[slotIndex].setVisibility(isLoading ? View.VISIBLE : View.GONE);
             changeButtons[slotIndex].setEnabled(!isLoading);
             deleteButtons[slotIndex].setEnabled(!isLoading);
             if (isLoading) {
-                // Optionally hide image/text while loading slot
-                imageSlots[slotIndex].setAlpha(isLoading ? 0.5f : 1.0f);
+                imageSlots[slotIndex].setAlpha(0.5f);
                 emptyTexts[slotIndex].setVisibility(View.GONE);
             } else {
                 imageSlots[slotIndex].setAlpha(1.0f);
-                // Don't show empty text here, let updateUISlots handle it
             }
-
-        } else if (slotIndex == -1) {
-            // General loading state (maybe not needed for this screen)
-            // You could show a main progress bar or disable all buttons
+        } else if (slotIndex == -1) { // General loading (e.g., initial load)
             for(int i = 0; i < 5; i++) {
-                progressBars[i].setVisibility(isLoading ? View.VISIBLE : View.GONE);
+                // Decide if you want to show all progress bars or a central one
+                // For now, keeping it simple:
+                // progressBars[i].setVisibility(isLoading ? View.VISIBLE : View.GONE);
                 changeButtons[i].setEnabled(!isLoading);
                 deleteButtons[i].setEnabled(!isLoading);
-                imageSlots[i].setAlpha(isLoading ? 0.5f : 1.0f);
+                // imageSlots[i].setAlpha(isLoading ? 0.5f : 1.0f); // Maybe too much visual noise
             }
+        }
+    }
+
+    private void setAllSlotsEnabled(boolean enabled) {
+        if (binding == null || !isAdded()) return;
+        for (int i = 0; i < 5; i++) {
+            changeButtons[i].setEnabled(enabled);
+            deleteButtons[i].setEnabled(enabled);
+            // You might want to disable imageViews too if they are clickable
+            // imageSlots[i].setEnabled(enabled);
         }
     }
 
