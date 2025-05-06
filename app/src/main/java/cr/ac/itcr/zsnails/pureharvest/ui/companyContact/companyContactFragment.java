@@ -46,7 +46,7 @@ public class companyContactFragment extends Fragment {
     private String companyEmailAddress;
     private String companyPhoneNumber;
 
-    // This variable will now be used for both Firestore document ID and image name
+
     private static final String COMPANY_ID_FOR_IMAGE = "2";
     private static final String COMPANY_IMAGE_FOLDER_IN_STORAGE = "companyImages";
     private static final String COMPANY_IMAGE_FILE_EXTENSION = ".jpg";
@@ -151,34 +151,41 @@ public class companyContactFragment extends Fragment {
 
     private void showPhoneOptionsDialog(final String phoneNumber) {
         if (getContext() == null || phoneNumber == null || phoneNumber.trim().isEmpty()) {
+            // Ya usa getString para el Toast, asegurándose de que está traducido.
             Toast.makeText(getContext(), getString(R.string.no_phone_number_available), Toast.LENGTH_SHORT).show();
             return;
         }
 
         final ArrayList<String> options = new ArrayList<>();
-        final String callOption = "Call";
-        final String smsOption = "SMS";
+        // Obtener opciones de strings.xml para permitir la localización
+        final String callOptionText = getString(R.string.action_call);
+        final String smsOptionText = getString(R.string.action_sms);
 
-        options.add(callOption);
-        options.add(smsOption);
+        options.add(callOptionText);
+        options.add(smsOptionText);
 
         if (isWhatsAppInstalled()) {
+            // Esta opción ya se obtiene de strings.xml
             options.add(getString(R.string.action_whatsapp));
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Contact via phone");
+        // El título del diálogo se obtiene de strings.xml
+        builder.setTitle(getString(R.string.contact_via_phone_title));
 
         builder.setItems(options.toArray(new String[0]), (dialog, which) -> {
             String selectedOption = options.get(which);
-            if (selectedOption.equals(callOption)) {
+            // La comparación también usa las cadenas obtenidas de getString
+            if (selectedOption.equals(callOptionText)) {
                 dialPhoneNumber(phoneNumber);
-            } else if (selectedOption.equals(smsOption)) {
+            } else if (selectedOption.equals(smsOptionText)) {
                 sendSms(phoneNumber);
             } else if (isWhatsAppInstalled() && selectedOption.equals(getString(R.string.action_whatsapp))) {
+                // getString(R.string.action_whatsapp) fue lo que se añadió a 'options'
                 sendWhatsAppMessage(phoneNumber);
             }
         });
+        // El botón negativo ya se obtiene de strings.xml
         builder.setNegativeButton(getString(R.string.dialog_action_cancel), (dialog, which) -> dialog.dismiss());
         builder.show();
     }
@@ -262,7 +269,6 @@ public class companyContactFragment extends Fragment {
             return;
         }
 
-        // COMPANY_ID_FOR_IMAGE is already used here for the image name
         String fileNameWithExtension = COMPANY_ID_FOR_IMAGE + COMPANY_IMAGE_FILE_EXTENSION;
         StorageReference fileRef = storage.getReference().child(COMPANY_IMAGE_FOLDER_IN_STORAGE + "/" + fileNameWithExtension);
 
@@ -299,7 +305,7 @@ public class companyContactFragment extends Fragment {
             binding.buttonSeeLocation.setEnabled(false);
         }
 
-        loadCompanyImageFromFirebase(); // This already uses COMPANY_ID_FOR_IMAGE for the image name
+        loadCompanyImageFromFirebase();
 
         if (db == null) {
             Log.e(TAG, "fetchCompanyDataAndImage: Firestore db instance is null!");
@@ -308,7 +314,6 @@ public class companyContactFragment extends Fragment {
             return;
         }
 
-        // Use COMPANY_ID_FOR_IMAGE to fetch the Firestore document
         db.collection("Company").document(COMPANY_ID_FOR_IMAGE).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     Log.d(TAG, "fetchCompanyDataAndImage: Firestore onSuccess triggered for company ID: " + COMPANY_ID_FOR_IMAGE);
@@ -321,8 +326,8 @@ public class companyContactFragment extends Fragment {
                         String name = documentSnapshot.getString("name");
                         String slogan = documentSnapshot.getString("slogan");
                         companyPhoneNumber = documentSnapshot.getString("number");
-                        mapAddressValue = documentSnapshot.getString("mapAdress"); // Ensure Firestore field name matches
-                        String address = documentSnapshot.getString("adress");   // Ensure Firestore field name matches
+                        mapAddressValue = documentSnapshot.getString("mapAdress");
+                        String address = documentSnapshot.getString("adress");
 
                         String rawEmailFromFirestore = documentSnapshot.getString("email");
                         Log.d(TAG, "Raw companyEmailAddress from Firestore: [" + rawEmailFromFirestore + "]");
@@ -369,7 +374,7 @@ public class companyContactFragment extends Fragment {
                             binding.phoneT.setOnClickListener(null);
                             binding.phoneT.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.tab_indicator_text));
                             binding.phoneT.setPaintFlags(binding.phoneT.getPaintFlags() & (~Paint.UNDERLINE_TEXT_FLAG));
-                            binding.phoneT.setVisibility(View.VISIBLE); // Keep visible to show "Phone N/A"
+                            binding.phoneT.setVisibility(View.VISIBLE);
                         }
                         binding.buttonSeeLocation.setEnabled(mapAddressValue != null && !mapAddressValue.trim().isEmpty());
                         Log.d(TAG, "fetchCompanyDataAndImage: Firestore UI Updated successfully for company ID: " + COMPANY_ID_FOR_IMAGE);
@@ -431,7 +436,7 @@ public class companyContactFragment extends Fragment {
 
         if (getContext() != null && binding.profileImagePlaceholder != null) {
             Glide.with(requireContext())
-                    .load(R.mipmap.ic_launcher_round) // Fallback error image
+                    .load(R.mipmap.ic_launcher_round)
                     .circleCrop()
                     .into(binding.profileImagePlaceholder);
         }

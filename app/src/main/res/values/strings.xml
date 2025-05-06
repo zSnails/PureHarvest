@@ -5,25 +5,22 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_account">Account</string>
     <string name="title_activity_example">ExampleActivity</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <string name="open_location_with">Abrir ubicación con</string>
-    <string name="no_map_app_found">No se encontró una aplicación de mapas.</string>
-    <string name="error_preparing_map">Error al preparar el mapa</string>
+    <string name="open_location_with">Open location with</string>
+    <string name="no_map_app_found">No map application found.</string>
+    <string name="error_preparing_map">Error preparing the map</string>
 
-    <!-- Nuevos strings para las opciones del teléfono -->
-    <string name="contact_via_phone_title">Contactar por teléfono</string>
-    <string name="action_call">Llamar</string>
-    <string name="action_sms">Enviar SMS</string>
-    <string name="action_whatsapp">Enviar WhatsApp</string>
-    <string name="whatsapp_not_installed">WhatsApp no está instalado.</string>
-    <string name="no_phone_number_available">Número de teléfono no disponible.</string>
-    <string name="error_opening_dialer">Error al abrir el marcador.</string>
-    <string name="error_opening_sms">Error al abrir la app de SMS.</string>
-    <string name="error_opening_whatsapp">Error al abrir WhatsApp.</string>
-
-
+    <!-- New strings for phone options -->
+    <string name="contact_via_phone_title">Contact via phone</string>
+    <string name="action_call">Call</string>
+    <string name="action_sms">Send SMS</string>
+    <string name="action_whatsapp">Send WhatsApp</string>
+    <string name="whatsapp_not_installed">WhatsApp is not installed.</string>
+    <string name="no_phone_number_available">Phone number not available.</string>
+    <string name="error_opening_dialer">Error opening the dialer.</string>
+    <string name="error_opening_sms">Error opening the SMS app.</string>
+    <string name="error_opening_whatsapp">Error opening WhatsApp.</string>
 
     <string name="company_name">Company Name</string>
     <string name="company_slogan">Professional Slogan Here. This can be a bit longer.</string>
@@ -39,16 +36,15 @@
 
     <string name="button_see_location">See location in map</string>
 
-
     <string name="no_address_available_map">No address available to open in map.</string>
     <string name="error_preparing_map_detail">Error preparing map: %1$s</string>
 
     <string name="no_email_address_available">No email address available.</string>
-    <string name="send_email_with_chooser_title">Enviar correo con…</string>
-    <string name="no_email_app_found">No se encontró una aplicación de correo.</string>
-    <string name="error_preparing_email_detail">Error al preparar el correo: %1$s</string>
+    <string name="send_email_with_chooser_title">Send email with…</string>
+    <string name="no_email_app_found">No email application found.</string>
+    <string name="error_preparing_email_detail">Error preparing email: %1$s</string>
 
-    <string name="dialog_action_cancel">Cancelar</string>
+    <string name="dialog_action_cancel">Cancel</string>
 
     <string name="error_opening_dialer_detail">Error opening dialer: %1$s</string>
     <string name="error_opening_sms_detail">Error opening SMS app: %1$s</string>
@@ -58,7 +54,4 @@
     <string name="company_info_not_found">Company information not found.</string>
     <string name="error_fetching_data_detail">Error fetching data: %1$s</string>
     <string name="client_offline_error">Error: Client is offline. Check connection.</string>
-
-
-
 </resources>
