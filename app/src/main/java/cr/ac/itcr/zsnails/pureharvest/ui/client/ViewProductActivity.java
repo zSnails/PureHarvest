@@ -30,6 +30,7 @@ public class ViewProductActivity extends AppCompatActivity {
     private Button btnAddToCart;
     private ImageButton btnFavorite;
     private boolean isFavorite = false;
+    private LinearLayout optionalFieldsContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +70,7 @@ public class ViewProductActivity extends AppCompatActivity {
         btnAddToCart = findViewById(R.id.btnAddToCart);
         btnFavorite = findViewById(R.id.btnFavorite);
         btnFavorite.setOnClickListener(v -> toggleFavorite());
+        optionalFieldsContainer = findViewById(R.id.optionalFieldsContainer);
     }
 
     private void loadProductFromFirestore() {
@@ -136,7 +138,14 @@ public class ViewProductActivity extends AppCompatActivity {
                 miniImagesContainer.addView(mini);
             }
         }
-
+        optionalFieldsContainer.removeAllViews();
+        addOptionalField("Certifications", product.certifications);
+        addOptionalField("Flavors", product.flavors);
+        addOptionalField("Acidity", product.acidity);
+        addOptionalField("Body", product.body);
+        addOptionalField("Aftertaste", product.aftertaste);
+        addOptionalField("Ingredients", product.ingredients);
+        addOptionalField("Preparation", product.preparation);
     }
 
     private void showZoomDialog() {
@@ -149,6 +158,22 @@ public class ViewProductActivity extends AppCompatActivity {
         zoomedImage.setOnClickListener(v -> dialog.dismiss()); //close when you touches
 
         dialog.show();
+    }
+    private void addOptionalField(String label, String value) {
+        if (value != null && !value.trim().isEmpty()) {
+            TextView labelView = new TextView(this);
+            labelView.setText(label);
+            labelView.setTextAppearance(android.R.style.TextAppearance_Medium);
+            labelView.setTypeface(null, android.graphics.Typeface.BOLD);
+            labelView.setPadding(0, 12, 0, 0);
+
+            TextView valueView = new TextView(this);
+            valueView.setText(value);
+            valueView.setTextAppearance(android.R.style.TextAppearance_Small);
+
+            optionalFieldsContainer.addView(labelView);
+            optionalFieldsContainer.addView(valueView);
+        }
     }
     private void updateQuantityAndPrice() {
         tvQuantity.setText(String.valueOf(quantity));
