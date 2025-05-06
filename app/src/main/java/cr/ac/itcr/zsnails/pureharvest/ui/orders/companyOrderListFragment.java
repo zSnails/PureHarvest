@@ -1,4 +1,5 @@
-package cr.ac.itcr.zsnails.pureharvest.ui.orders; // Correct package
+// File: cr.ac.itcr.zsnails.pureharvest.ui.orders.companyOrderListFragment.java
+package cr.ac.itcr.zsnails.pureharvest.ui.orders;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -6,8 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-// import androidx.recyclerview.widget.GridLayoutManager; // Ya no se usa GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager; // ****** IMPORTAR ESTE ******
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,7 +26,7 @@ import java.util.List;
 
 import cr.ac.itcr.zsnails.pureharvest.R;
 // Asegúrate que la importación de tu modelo Order es correcta
-// import cr.ac.itcr.zsnails.pureharvest.ui.orders.Order;
+import cr.ac.itcr.zsnails.pureharvest.ui.orders.Order; // Cambiado para apuntar al paquete 'models'
 
 public class companyOrderListFragment extends Fragment implements CompanyOrderAdapter.OnOrderClickListener {
 
@@ -79,6 +79,7 @@ public class companyOrderListFragment extends Fragment implements CompanyOrderAd
         backButtonOrdersList = view.findViewById(R.id.backButtonOrdersList);
         titleTextViewOrders = view.findViewById(R.id.titleTextViewOrders);
 
+        // La lista orderList se pasa al adaptador. El fragmento es responsable de actualizar esta lista.
         orderAdapter = new CompanyOrderAdapter(requireContext(), orderList, this);
 
         setupUI();
@@ -98,7 +99,7 @@ public class companyOrderListFragment extends Fragment implements CompanyOrderAd
                     navController.popBackStack();
                 } else {
                     Log.w(TAG, "Cannot popBackStack, NavController issue or not on expected destination.");
-                    if (getActivity() != null) {
+                    if (getActivity() != null && !getActivity().isFinishing()) {
                         getActivity().onBackPressed();
                     }
                 }
@@ -106,12 +107,9 @@ public class companyOrderListFragment extends Fragment implements CompanyOrderAd
         }
 
         if (recyclerViewOrders != null) {
-            // ****** CAMBIO PRINCIPAL AQUÍ ******
-            // Cambiado de GridLayoutManager a LinearLayoutManager
             recyclerViewOrders.setLayoutManager(new LinearLayoutManager(getContext()));
-            // recyclerViewOrders.setLayoutManager(new GridLayoutManager(getContext(), 2)); // Línea anterior
             recyclerViewOrders.setAdapter(orderAdapter);
-            recyclerViewOrders.setHasFixedSize(true); // Bueno si los ítems no cambian de tamaño
+            recyclerViewOrders.setHasFixedSize(true);
         } else {
             Log.e(TAG, "recyclerViewOrders is null in setupUI");
         }
@@ -130,24 +128,45 @@ public class companyOrderListFragment extends Fragment implements CompanyOrderAd
                 .whereEqualTo("sellerId", TARGET_SELLER_ID)
                 .get()
                 .addOnCompleteListener(task -> {
-                    if (!isAdded()) {
+                    if (!isAdded() || getContext() == null) {
                         return;
                     }
                     showLoading(false);
                     if (task.isSuccessful()) {
                         if (task.getResult() != null) {
-                            List<Order> fetchedOrders = new ArrayList<>();
+                            List<Order> fetchedOrdersLocal = new ArrayList<>(); // Lista temporal local
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 try {
                                     Order order = document.toObject(Order.class);
-                                    order.setDocumentId(document.getId());
-                                    fetchedOrders.add(order);
+                                    // Si NO usas @DocumentId en tu modelo Order.java,
+                                    // Y el campo documentId en el modelo tiene @Exclude,
+                                    // entonces esta línea es NECESARIA:
+                                    // order.setDocumentId(document.getId());
+                                    // Si usas @DocumentId, esta línea es redundante.
+                                    // La dejo por si tu modelo aún no usa @DocumentId correctamente.
+                                    if (order.getDocumentId() == null || order.getDocumentId().isEmpty()) {
+                                        order.setDocumentId(document.getId());
+                                    }
+
+
+                                    // LOG PARA DEPURAR
+                                    Log.d(TAG, "Order Fetched: ID=" + order.getDocumentId() +
+                                            ", UserID=" + order.getUserId() +
+                                            //", ProductIDs=" + (order.getProductIDs() != null ? order.getProductIDs().toString() : "null"));
+
+                                    fetchedOrdersLocal.add(order));
                                 } catch (Exception e) {
                                     Log.e(TAG, "Error converting document to Order: ID=" + document.getId(), e);
                                 }
                             }
-                            orderAdapter.updateOrders(fetchedOrders);
-                            if (fetchedOrders.isEmpty()) {
+                            // Actualizar la lista principal del fragmento y notificar al adaptador
+                            orderList.clear();
+                            orderList.addAll(fetchedOrdersLocal);
+                            orderAdapter.notifyDataSetChanged(); // O usa orderAdapter.updateOrders(orderList); si implementaste ese método para limpiar y añadir.
+                            // Tu adapter tiene updateOrders, usémoslo:
+                            // orderAdapter.updateOrders(orderList); // Esto es más limpio
+
+                            if (orderList.isEmpty()) { // Usar orderList que es la lista del fragmento/adaptador
                                 if (textViewEmptyOrdersList != null) {
                                     textViewEmptyOrdersList.setText(getString(R.string.no_orders_yet_company));
                                     textViewEmptyOrdersList.setVisibility(View.VISIBLE);
@@ -158,7 +177,7 @@ public class companyOrderListFragment extends Fragment implements CompanyOrderAd
                                 if (recyclerViewOrders != null) recyclerViewOrders.setVisibility(View.VISIBLE);
                             }
                         } else {
-                            handleFetchError("Error: Resultado nulo al cargar órdenes.");
+                            handleFetchError(getString(R.string.error_null_result_orders)); // Usa string resource
                         }
                     } else {
                         String errorMessage = getString(R.string.error_loading_orders);
@@ -172,7 +191,7 @@ public class companyOrderListFragment extends Fragment implements CompanyOrderAd
     }
 
     private void handleFetchError(String message) {
-        if (getContext() == null) return;
+        if (getContext() == null || !isAdded()) return;
         Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
         if (textViewEmptyOrdersList != null) {
             textViewEmptyOrdersList.setText(message);
@@ -189,14 +208,14 @@ public class companyOrderListFragment extends Fragment implements CompanyOrderAd
 
     @Override
     public void onOrderClick(Order order) {
-        if (getContext() == null) return;
+        if (getContext() == null || !isAdded()) return;
         Log.d(TAG, "Order clicked: DocID=" + order.getDocumentId() + ", UserID: " + order.getUserId());
-        Toast.makeText(getContext(), "Pedido clickeado: " + order.getDocumentId(), Toast.LENGTH_SHORT).show();
+        // Toast.makeText(getContext(), "Pedido clickeado: " + order.getDocumentId(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onViewDetailsClick(Order order) {
-        if (getContext() == null || !isAdded()) { // Añadir chequeo !isAdded()
+        if (getContext() == null || !isAdded()) {
             Log.w(TAG, "Context is null or fragment not added in onViewDetailsClick");
             return;
         }
@@ -210,24 +229,14 @@ public class companyOrderListFragment extends Fragment implements CompanyOrderAd
         }
 
         Log.d(TAG, "Navigating to details for order: " + orderId);
-        // Quitar el Toast anterior que era solo para debugging si quieres
-        // Toast.makeText(getContext(), String.format(getString(R.string.view_order_details_for), order.getDocumentId()), Toast.LENGTH_SHORT).show();
 
         if (navController != null) {
-            // Crear un Bundle para pasar los argumentos
             Bundle bundle = new Bundle();
-            // La clave "order_id" DEBE COINCIDIR con el nombre del <argument>
-            // definido en tu grafo de navegación para OrderDetailsFragment.
             bundle.putString("order_id", orderId);
 
             try {
-                // Navegar usando la acción definida en el grafo de navegación
-                // y pasar el bundle con los argumentos.
-                // Asegúrate de que R.id.action_companyOrderListFragment_to_orderDetailsFragment
-                // es el ID correcto de la acción en tu nav_graph.xml
                 navController.navigate(R.id.action_companyOrderListFragment_to_orderDetailsFragment, bundle);
             } catch (IllegalArgumentException e) {
-                // Esto puede suceder si el ID de la acción es incorrecto o el destino no se encuentra.
                 Log.e(TAG, "Navigation action/destination not found or other navigation error.", e);
                 Toast.makeText(getContext(), getString(R.string.error_navigation_details), Toast.LENGTH_SHORT).show();
             }
@@ -235,4 +244,5 @@ public class companyOrderListFragment extends Fragment implements CompanyOrderAd
             Log.e(TAG, "NavController is null in onViewDetailsClick. Cannot navigate.");
             Toast.makeText(getContext(), getString(R.string.error_navigation_controller_null), Toast.LENGTH_SHORT).show();
         }
-    }}
+    }
+}

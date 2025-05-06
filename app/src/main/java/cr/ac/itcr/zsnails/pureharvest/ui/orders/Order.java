@@ -1,37 +1,32 @@
-package cr.ac.itcr.zsnails.pureharvest.ui.orders; // O el paquete correcto de tu modelo
+// File: cr.ac.itcr.zsnails.pureharvest.ui.orders.Order.java
+package cr.ac.itcr.zsnails.pureharvest.ui.orders;
 
 import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.Exclude;
-import java.util.List; // Importar List
+import com.google.firebase.firestore.DocumentId;
+// Ya no necesitas java.util.List si solo tienes un String
 
 public class Order {
-    @Exclude
-    private String documentId; // Para almacenar el ID del documento de Firestore
+    @DocumentId
+    private String documentId;
 
     private Timestamp date;
     private String userId;
-    // private String productId; // Este campo parece redundante si vas a usar productIDs.
-    // Si tiene otro propósito, puedes mantenerlo.
-    // Si era para un solo ID de producto, y ahora necesitas una lista,
-    // entonces productIDs es el reemplazo.
     private String sellerId;
-    private List<String> productIDs; // NUEVO CAMPO: Lista de IDs de productos
+    private String productId; // CAMBIO: De List<String> productIDs a String productId
 
     public Order() {
         // Constructor vacío requerido por Firestore
     }
 
-    // Constructor actualizado (opcional, el constructor vacío es el más importante para Firestore)
-    // Si actualizas el constructor, considera incluir productIDs
-    public Order(Timestamp date, String userId, String sellerId, List<String> productIDs) {
+    // Constructor actualizado (opcional)
+    public Order(Timestamp date, String userId, String sellerId, String productId) {
         this.date = date;
         this.userId = userId;
         this.sellerId = sellerId;
-        this.productIDs = productIDs; // Inicializar el nuevo campo
+        this.productId = productId; // CAMBIO
     }
 
-    // Getter y Setter para documentId (como los tienes)
-    @Exclude
+    // Getters y Setters
     public String getDocumentId() {
         return documentId;
     }
@@ -40,7 +35,6 @@ public class Order {
         this.documentId = documentId;
     }
 
-    // Getters y Setters existentes
     public Timestamp getDate() {
         return date;
     }
@@ -57,17 +51,6 @@ public class Order {
         this.userId = userId;
     }
 
-    /*
-    // Comentado o eliminado si productId ya no se usa para este propósito
-    public String getProductId() {
-        return productId;
-    }
-
-    public void setProductId(String productId) {
-        this.productId = productId;
-    }
-    */
-
     public String getSellerId() {
         return sellerId;
     }
@@ -76,12 +59,12 @@ public class Order {
         this.sellerId = sellerId;
     }
 
-    // Getter y Setter para el nuevo campo productIDs
-    public List<String> getProductIDs() {
-        return productIDs;
+    // CAMBIO: Getters y Setters para el String productId
+    public String getProductId() {
+        return productId;
     }
 
-    public void setProductIDs(List<String> productIDs) {
-        this.productIDs = productIDs;
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 }
