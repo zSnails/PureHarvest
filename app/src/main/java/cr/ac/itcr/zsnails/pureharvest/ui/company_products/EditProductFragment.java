@@ -4,15 +4,19 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils; // Import TextUtils
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+// Import ImageButton if finding manually, not needed if using binding directly
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController; // Import NavController
+import androidx.navigation.Navigation; // Import Navigation
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -20,15 +24,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-// Imports necesarios para List
-import java.util.List;
-import java.util.ArrayList; // Opcional, pero común en Firestore
-
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import cr.ac.itcr.zsnails.pureharvest.R; // Asegúrate que R está importado
+import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentEditProductBinding;
 
 public class EditProductFragment extends Fragment {
@@ -38,7 +40,7 @@ public class EditProductFragment extends Fragment {
     private FirebaseStorage storage;
 
     private String productId;
-    private Uri imageUri;
+    private Uri imageUri; // Store selected image URI
 
     private static final String TAG = "EditProductFragment";
     private static final String ARG_PRODUCT_ID = "productId";
@@ -52,6 +54,7 @@ public class EditProductFragment extends Fragment {
 
         if (getArguments() != null) {
             productId = getArguments().getString(ARG_PRODUCT_ID);
+            Log.d(TAG, "Received Product ID: " + productId);
         } else {
             Log.e(TAG, "Product ID not provided in arguments.");
         }
@@ -64,147 +67,137 @@ public class EditProductFragment extends Fragment {
         return binding.getRoot();
     }
 
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+
+        binding.backButtonEditProduct.setOnClickListener(v -> {
+            NavController navController = Navigation.findNavController(v);
+            navController.navigateUp();
+        });
+
 
         if (productId != null && !productId.isEmpty()) {
             loadProductData();
         } else {
             Log.e(TAG, "Cannot load data: Product ID is null or empty.");
-            if (getContext() != null) {
-                Toast.makeText(getContext(), "Error: ID de producto inválido.", Toast.LENGTH_LONG).show();
-
-            }
+            showErrorState("Error: ID de producto inválido.");
         }
+
 
         binding.buttonChangeImage.setOnClickListener(v -> handleChangeImage());
         binding.buttonSave.setOnClickListener(v -> handleSaveChanges());
-        binding.buttonCancel.setOnClickListener(v -> handleCancel());
+        binding.buttonCancel.setOnClickListener(v -> handleCancel()); // Consider navigateUp() here too
     }
 
     private void loadProductData() {
+        if (productId == null || productId.isEmpty()) return; // Guard clause
+
         showLoading(true);
         firestore.collection("products").document(productId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
-                    // Verifica si el fragment todavía está adjunto y la vista existe
                     if (!isAdded() || binding == null) {
-                        Log.w(TAG, "Fragment not attached or binding is null after Firestore success.");
-                        showLoading(false);
+                        Log.w(TAG, "Fragment not attached or binding null after Firestore success.");
+                        // No need to call showLoading(false) if binding is null
                         return;
                     }
-
                     showLoading(false);
+
                     if (documentSnapshot.exists()) {
-                        Map<String, Object> data = documentSnapshot.getData();
-                        if (data != null) {
-
-                            binding.editProductName.setText(getStringValue(data, "name"));
-                            binding.editProductType.setText(getStringValue(data, "type"));
-                            binding.editProductDescription.setText(getStringValue(data, "description"));
-                            binding.editProductIngredients.setText(getStringValue(data, "ingredients"));
-                            binding.editProductPreparation.setText(getStringValue(data, "preparation"));
-                            binding.editProductAcidity.setText(getStringValue(data, "acidity"));
-                            binding.editProductBody.setText(getStringValue(data, "body"));
-                            binding.editProductAftertaste.setText(getStringValue(data, "aftertaste"));
-
-                            Object priceObj = data.get("price");
-                            if (priceObj instanceof Number) {
-                                binding.editProductPrice.setText(String.format("%.2f", ((Number) priceObj).doubleValue()));
-                            } else {
-                                binding.editProductPrice.setText(getStringValue(data, "price")); // O manejar como string
-                            }
-
-                            Object imageUrlsObj = data.get("imageUrls");
-                            String imageUrlToLoad = null;
-
-                            if (imageUrlsObj instanceof String) {
-                                // Caso 1: Es un String simple
-                                imageUrlToLoad = (String) imageUrlsObj;
-                                Log.d(TAG, "Image URL found (String): " + imageUrlToLoad);
-                            } else if (imageUrlsObj instanceof List) {
-                                // Caso 2: Es una Lista
-                                @SuppressWarnings("unchecked")
-                                List<Object> urlList = (List<Object>) imageUrlsObj;
-                                if (!urlList.isEmpty()) {
-                                    Object firstElement = urlList.get(0);
-                                    if (firstElement instanceof String) {
-                                        imageUrlToLoad = (String) firstElement;
-                                        Log.d(TAG, "Image URL found (List, first element): " + imageUrlToLoad);
-                                    } else {
-                                        Log.w(TAG, "First element in imageUrls List is not a String: " + firstElement);
-                                    }
-                                } else {
-                                    Log.w(TAG, "imageUrls field is an empty List.");
-                                }
-                            } else if (imageUrlsObj != null) {
-                                // Caso 3: Es otro tipo, o nulo (ya cubierto abajo)
-                                Log.w(TAG, "imageUrls field is not a String or List, type: " + imageUrlsObj.getClass().getName());
-                            } else {
-                                Log.w(TAG, "imageUrls field is null or missing.");
-                            }
-
-
-                            if (imageUrlToLoad != null && !imageUrlToLoad.trim().isEmpty()) {
-                                Glide.with(requireContext()) // requireContext() es seguro aquí porque verificamos isAdded()
-                                        .load(imageUrlToLoad.trim()) // trim() por si acaso hay espacios
-                                        .placeholder(R.drawable.ic_placeholder_image) // ¡Añade un placeholder!
-                                        .error(R.drawable.ic_error_image)       // ¡Añade una imagen de error!
-                                        .into(binding.imageProduct);
-                            } else {
-                                Log.w(TAG, "No valid image URL to load. Setting placeholder.");
-                                binding.imageProduct.setImageResource(R.drawable.ic_placeholder_image);
-                            }
-
-                        } else {
-                            Log.e(TAG, "Product data is null for ID: " + productId);
-                            Toast.makeText(getContext(), "No se encontraron datos para este producto.", Toast.LENGTH_SHORT).show();
-                        }
+                        populateFields(documentSnapshot);
                     } else {
                         Log.e(TAG, "Product document does not exist for ID: " + productId);
-                        if (getContext() != null) { // getContext() puede ser null si el fragment se desvincula
-                            Toast.makeText(getContext(), "El producto no existe.", Toast.LENGTH_SHORT).show();
-                        }
+                        showErrorState("El producto no existe.");
                     }
                 })
                 .addOnFailureListener(e -> {
-                    if (!isAdded()) {
-                        Log.w(TAG, "Fragment not attached during Firestore failure.");
+                    if (!isAdded() || binding == null) {
+                        Log.w(TAG, "Fragment not attached or binding null during Firestore failure.");
                         return;
                     }
                     showLoading(false);
                     Log.e(TAG, "Error fetching product data for ID: " + productId, e);
-                    if (getContext() != null) {
-                        Toast.makeText(getContext(), "Error al cargar datos: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                    if(binding != null) {
-                        binding.imageProduct.setImageResource(R.drawable.ic_error_image);
-                    }
+                    showErrorState("Error al cargar datos: " + e.getMessage());
+                    // Set error image if load fails
+                    binding.imageProduct.setImageResource(R.drawable.ic_error_image);
                 });
     }
 
-    private String getStringValue(Map<String, Object> map, String key) {
-        Object value = map.get(key);
 
-        if (value == null) return "";
-        return String.valueOf(value);
+    private void populateFields(DocumentSnapshot doc) {
+        if (binding == null) return; // Extra check
+
+        binding.editProductName.setText(doc.getString("name"));
+        binding.editProductType.setText(doc.getString("type"));
+        binding.editProductDescription.setText(doc.getString("description"));
+        binding.editProductIngredients.setText(doc.getString("ingredients"));
+        binding.editProductPreparation.setText(doc.getString("preparation"));
+        binding.editProductAcidity.setText(doc.getString("acidity"));
+        binding.editProductBody.setText(doc.getString("body"));
+        binding.editProductAftertaste.setText(doc.getString("aftertaste"));
+
+
+        Double price = doc.getDouble("price");
+        if (price != null) {
+            binding.editProductPrice.setText(String.format("%.2f", price)); // Format for display
+        } else {
+            binding.editProductPrice.setText(""); // Or "0.00" or handle error
+            Log.w(TAG, "Price field is missing or not a number for ID: " + productId);
+        }
+
+
+        Object imageUrlsObj = doc.get("imageUrls");
+        String imageUrlToLoad = null;
+
+        if (imageUrlsObj instanceof List) {
+            @SuppressWarnings("unchecked")
+            List<Object> urlList = (List<Object>) imageUrlsObj;
+            if (!urlList.isEmpty() && urlList.get(0) instanceof String && !TextUtils.isEmpty((String) urlList.get(0))) {
+                imageUrlToLoad = (String) urlList.get(0);
+                Log.d(TAG, "Image URL found (List, first element): " + imageUrlToLoad);
+            } else {
+                Log.w(TAG, "imageUrls field is an empty List or first element is not a valid String.");
+            }
+        } else if (imageUrlsObj instanceof String && !TextUtils.isEmpty((String) imageUrlsObj)) {
+            imageUrlToLoad = (String) imageUrlsObj;
+            Log.d(TAG, "Image URL found (String): " + imageUrlToLoad);
+        } else {
+            Log.w(TAG, "imageUrls field is null, missing, or not a List/String.");
+        }
+
+
+        if (imageUrlToLoad != null && getContext() != null) {
+            Glide.with(requireContext())
+                    .load(imageUrlToLoad)
+                    .placeholder(R.drawable.ic_placeholder_image)
+                    .error(R.drawable.ic_error_image)
+                    .into(binding.imageProduct);
+        } else {
+            Log.w(TAG, "No valid image URL to load. Setting placeholder.");
+            binding.imageProduct.setImageResource(R.drawable.ic_placeholder_image);
+        }
     }
+
 
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE && data != null && data.getData() != null && binding != null && getContext() != null ) {
-            imageUri = data.getData();
+            imageUri = data.getData(); // Store the selected image URI
+            Log.d(TAG, "Image selected: " + imageUri.toString());
             Glide.with(requireContext())
                     .load(imageUri)
                     .placeholder(R.drawable.ic_placeholder_image)
                     .error(R.drawable.ic_error_image)
                     .into(binding.imageProduct);
+        } else {
+            Log.d(TAG, "onActivityResult: No image selected or fragment/binding/context is null.");
         }
     }
+
 
     @Override
     public void onDestroyView() {
@@ -219,52 +212,65 @@ public class EditProductFragment extends Fragment {
     }
 
     private void handleSaveChanges() {
-        if (binding == null) return;
-
+        if (binding == null) {
+            Log.e(TAG, "handleSaveChanges: Binding is null!");
+            return;
+        }
         if (productId == null || productId.isEmpty()) {
-            if(getContext() != null) Toast.makeText(getContext(), "Error: ID de producto inválido.", Toast.LENGTH_SHORT).show();
+            showErrorState("Error: ID de producto inválido.");
             return;
         }
 
-        showLoading(true);
 
         String name = binding.editProductName.getText().toString().trim();
-        String type = binding.editProductType.getText().toString().trim();
-        String description = binding.editProductDescription.getText().toString().trim();
-        String ingredients = binding.editProductIngredients.getText().toString().trim();
-        String preparation = binding.editProductPreparation.getText().toString().trim();
         String priceStr = binding.editProductPrice.getText().toString().trim();
-        String acidity = binding.editProductAcidity.getText().toString().trim();
-        String body = binding.editProductBody.getText().toString().trim();
-        String aftertaste = binding.editProductAftertaste.getText().toString().trim();
 
-        if (name.isEmpty() || priceStr.isEmpty()) {
-            if(getContext() != null) Toast.makeText(getContext(), "Nombre y Precio son requeridos.", Toast.LENGTH_SHORT).show();
-            showLoading(false);
+        if (name.isEmpty()) {
+            binding.layoutProductName.setError("Nombre es requerido");
             return;
+        } else {
+            binding.layoutProductName.setError(null); // Clear error
+        }
+
+        if (priceStr.isEmpty()) {
+            binding.layoutProductPrice.setError("Precio es requerido");
+            return;
+        } else {
+            binding.layoutProductPrice.setError(null);
         }
 
         double price;
         try {
+
             price = Double.parseDouble(priceStr.replace(',', '.'));
+            if (price < 0) throw new NumberFormatException("Price cannot be negative");
+            binding.layoutProductPrice.setError(null); // Clear error on success
         } catch (NumberFormatException e) {
-            if(getContext() != null) Toast.makeText(getContext(), "Precio inválido.", Toast.LENGTH_SHORT).show();
-            showLoading(false);
+            binding.layoutProductPrice.setError("Precio inválido");
+            Log.e(TAG, "Invalid price format: " + priceStr, e);
             return;
         }
 
+
+        showLoading(true);
+
+
         Map<String, Object> productUpdates = new HashMap<>();
         productUpdates.put("name", name);
-        productUpdates.put("type", type);
-        productUpdates.put("description", description);
-        productUpdates.put("ingredients", ingredients);
-        productUpdates.put("preparation", preparation);
+        productUpdates.put("type", binding.editProductType.getText().toString().trim());
+        productUpdates.put("description", binding.editProductDescription.getText().toString().trim());
+        productUpdates.put("ingredients", binding.editProductIngredients.getText().toString().trim());
+        productUpdates.put("preparation", binding.editProductPreparation.getText().toString().trim());
         productUpdates.put("price", price);
-        productUpdates.put("acidity", acidity);
-        productUpdates.put("body", body);
-        productUpdates.put("aftertaste", aftertaste);
+        productUpdates.put("acidity", binding.editProductAcidity.getText().toString().trim());
+        productUpdates.put("body", binding.editProductBody.getText().toString().trim());
+        productUpdates.put("aftertaste", binding.editProductAftertaste.getText().toString().trim());
+
+
+
 
         if (imageUri != null) {
+
             uploadImageAndUpdateProduct(productUpdates);
         } else {
 
@@ -275,50 +281,66 @@ public class EditProductFragment extends Fragment {
     private void uploadImageAndUpdateProduct(Map<String, Object> productUpdates) {
         if (imageUri == null) {
             Log.w(TAG, "uploadImageAndUpdateProduct called with null imageUri");
-            updateProductFirestore(productUpdates); // Actualiza el resto de datos
+            updateProductFirestore(productUpdates); // Still update other fields
+            return;
+        }
+        if (storage == null) {
+            Log.e(TAG, "FirebaseStorage instance is null!");
+            showErrorState("Error de almacenamiento.");
+            showLoading(false);
             return;
         }
 
-        showLoading(true); // Asegúrate que el loading está activo
+        showLoading(true);
+
         StorageReference storageRef = storage.getReference();
-        String fileName = UUID.randomUUID().toString();
-        StorageReference imageRef = storageRef.child("product_images/" + fileName); // Simplificado, podrías usar productId si es único y estable
+        // Create a unique path/filename for the image
+        String imagePath = "product_images/" + productId + "/" + UUID.randomUUID().toString() + ".jpg";
+        StorageReference imageRef = storageRef.child(imagePath);
+
+        Log.d(TAG, "Uploading image to: " + imagePath);
 
         imageRef.putFile(imageUri)
-                .addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl()
-                        .addOnSuccessListener(uri -> {
-                            Log.d(TAG, "Image uploaded successfully. URL: " + uri.toString());
+                .addOnSuccessListener(taskSnapshot -> {
+                    Log.d(TAG, "Image upload SUCCESS.");
+                    imageRef.getDownloadUrl()
+                            .addOnSuccessListener(uri -> {
+                                Log.d(TAG, "Image download URL obtained: " + uri.toString());
 
-                            List<String> imageUrlsList = new ArrayList<>();
-                            imageUrlsList.add(uri.toString());
-                            productUpdates.put("imageUrls", imageUrlsList);
 
-                            updateProductFirestore(productUpdates);
-                        })
-                        .addOnFailureListener(e -> {
-                            showLoading(false);
-                            Log.e(TAG, "Error getting download URL", e);
-                            if (getContext() != null) {
-                                Toast.makeText(getContext(), "Error al obtener URL de imagen: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                            }
+                                List<String> imageUrlsList = new ArrayList<>();
+                                imageUrlsList.add(uri.toString());
+                                productUpdates.put("imageUrls", imageUrlsList);
 
-                        }))
+
+                                updateProductFirestore(productUpdates);
+                            })
+                            .addOnFailureListener(e -> {
+
+                                showLoading(false);
+                                Log.e(TAG, "Error getting download URL", e);
+                                showErrorState("Error al obtener URL de imagen: " + e.getMessage());
+                            });
+                })
                 .addOnFailureListener(e -> {
+                    // Failed to upload the image file
                     showLoading(false);
                     Log.e(TAG, "Error uploading image", e);
-                    if (getContext() != null) {
-                        Toast.makeText(getContext(), "Error al subir imagen: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
+                    showErrorState("Error al subir imagen: " + e.getMessage());
+                })
+                .addOnProgressListener(snapshot -> {
+
+                    double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
+                    Log.d(TAG, "Upload is " + progress + "% done");
 
                 });
     }
 
-
     private void updateProductFirestore(Map<String, Object> productUpdates) {
-        if (productId == null || productId.isEmpty()) {
-            Log.e(TAG, "Cannot update Firestore, product ID is invalid.");
+        if (productId == null || productId.isEmpty() || firestore == null) {
+            Log.e(TAG, "Cannot update Firestore, invalid state (productId/firestore null/empty).");
             showLoading(false);
-            if(getContext() != null) Toast.makeText(getContext(), "Error interno: ID de producto no válido.", Toast.LENGTH_SHORT).show();
+            showErrorState("Error interno al guardar.");
             return;
         }
 
@@ -327,45 +349,72 @@ public class EditProductFragment extends Fragment {
                 .update(productUpdates)
                 .addOnSuccessListener(aVoid -> {
                     showLoading(false);
-                    Log.d(TAG, "Product updated successfully in Firestore.");
-                    if (getContext() != null) {
-                        Toast.makeText(getContext(), "Producto actualizado con éxito.", Toast.LENGTH_SHORT).show();
-                    }
+                    Log.d(TAG, "Product updated successfully in Firestore for ID: " + productId);
+                    showSuccessMessage("Producto actualizado con éxito.");
                     imageUri = null;
-                    if (getActivity() != null) {
+
+
+                    if (getView() != null) {
+                        Navigation.findNavController(requireView()).navigateUp();
+                    } else if (getActivity() != null) {
+
                         getActivity().getSupportFragmentManager().popBackStack();
                     }
                 })
                 .addOnFailureListener(e -> {
                     showLoading(false);
-                    Log.e(TAG, "Error updating product in Firestore", e);
-                    if (getContext() != null) {
-                        Toast.makeText(getContext(), "Error al actualizar producto: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
+                    Log.e(TAG, "Error updating product in Firestore for ID: " + productId, e);
+                    showErrorState("Error al actualizar producto: " + e.getMessage());
                 });
     }
 
     private void handleCancel() {
-        if (getContext() != null) {
-            Toast.makeText(getContext(), "Operación Cancelada", Toast.LENGTH_SHORT).show();
-        }
+
         imageUri = null;
-        if (getActivity() != null) {
+        if (getView() != null) {
+            Navigation.findNavController(requireView()).navigateUp();
+        } else if (getActivity() != null) {
+
             getActivity().getSupportFragmentManager().popBackStack();
         }
     }
 
+
     private void showLoading(boolean isLoading) {
-        if (binding != null) {
+        if (binding == null) {
+            Log.w(TAG, "showLoading called but binding is null.");
+            return;
+        }
+        Log.d(TAG, "Setting loading state: " + isLoading);
 
+        binding.progressBarEdit.setVisibility(isLoading ? View.VISIBLE : View.GONE);
 
-            binding.buttonSave.setEnabled(!isLoading);
-            binding.buttonCancel.setEnabled(!isLoading);
-            binding.buttonChangeImage.setEnabled(!isLoading);
-            binding.editProductName.setEnabled(!isLoading);
-            binding.editProductType.setEnabled(!isLoading);
-        } else {
-            Log.w(TAG, "showLoading called but binding is null. State: " + isLoading);
+        // Disable/Enable interactive elements
+        binding.buttonSave.setEnabled(!isLoading);
+        binding.buttonCancel.setEnabled(!isLoading);
+        binding.buttonChangeImage.setEnabled(!isLoading);
+        binding.editProductName.setEnabled(!isLoading);
+        binding.editProductType.setEnabled(!isLoading);
+        binding.editProductDescription.setEnabled(!isLoading);
+        binding.editProductIngredients.setEnabled(!isLoading);
+        binding.editProductPreparation.setEnabled(!isLoading);
+        binding.editProductPrice.setEnabled(!isLoading);
+        binding.editProductAcidity.setEnabled(!isLoading);
+        binding.editProductBody.setEnabled(!isLoading);
+        binding.editProductAftertaste.setEnabled(!isLoading);
+
+    }
+
+    private void showErrorState(String message) {
+        if(getContext() != null) {
+            Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
         }
     }
+    
+    private void showSuccessMessage(String message) {
+        if(getContext() != null) {
+            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }
