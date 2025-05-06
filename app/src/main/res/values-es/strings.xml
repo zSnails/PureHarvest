@@ -250,9 +250,20 @@
     <!-- Nuevas etiquetas para el layout -->
     <string name="label_product_id_from_order">ID Producto Pedido:</string>
 
+    <string name="error_null_result_orders">Error: Resultado nulo al carhar las ordenes.</string>
+
 
     <string name="label_seller_info">Vendedor (Empresa):</string>
     <string name="label_user_info">Cliente (Usuario):</string>
+
+    <string name="order_details_title">Detalles del Pedido</string>
+    <string name="order_id">ID Pedido:</string>
+    <string name="order_date">Fecha:</string>
+    <string name="sold_by">Vendido por:</string>
+    <string name="customer">Cliente:</string>
+    <string name="product_included">Producto Incluido</string>
+    <string name="product_id">ID Producto:</string>
+
 
 
 

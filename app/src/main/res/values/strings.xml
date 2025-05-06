@@ -245,12 +245,21 @@
     <string name="error_fetching_product_details">Error fetching product details.</string>
 
 
-    <!-- New labels for the layout -->
+
     <string name="label_product_id_from_order">Ordered Product ID:</string>
 
 
     <string name="label_seller_info">Seller (Company):</string>
     <string name="label_user_info">Customer (User):</string>
+
+    <string name="order_details_title">Order Details</string>
+    <string name="order_id">Order ID:</string>
+    <string name="order_date">Date:</string>
+    <string name="sold_by">Sold by:</string>
+    <string name="customer">Customer:</string>
+    <string name="product_included">Product Included</string>
+    <string name="product_id">Product ID:</string>
+
 
 
 
