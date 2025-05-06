@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <drawable name="ic_image_error_placeholder" />
+    <drawable name="ic_placeholder_image" />
+</resources>

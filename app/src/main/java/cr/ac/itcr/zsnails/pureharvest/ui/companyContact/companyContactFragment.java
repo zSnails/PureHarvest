@@ -9,22 +9,26 @@ import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog; // Para el diálogo de opciones
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
-import java.util.ArrayList; // Para las opciones del diálogo
+import java.util.ArrayList;
 
 import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentCompanyContactBinding;
@@ -36,9 +40,15 @@ public class companyContactFragment extends Fragment {
 
     private FragmentCompanyContactBinding binding;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseStorage storage = FirebaseStorage.getInstance();
+
     private String mapAddressValue;
     private String companyEmailAddress;
-    private String companyPhoneNumber; // Para almacenar el número de teléfono
+    private String companyPhoneNumber;
+
+    private static final String COMPANY_ID_FOR_IMAGE = "1";
+    private static final String COMPANY_IMAGE_FOLDER_IN_STORAGE = "companyImages";
+    private static final String COMPANY_IMAGE_FILE_EXTENSION = ".jpg";
 
     private static final String WHATSAPP_PACKAGE_NAME = "com.whatsapp";
     private static final String WHATSAPP_BUSINESS_PACKAGE_NAME = "com.whatsapp.w4b";
@@ -57,11 +67,10 @@ public class companyContactFragment extends Fragment {
         Log.d(TAG, "onViewCreated: View created, starting data fetch.");
 
         setInitialUIState();
-        fetchCompanyData();
+        fetchCompanyDataAndImage();
 
         if (binding != null) {
             binding.buttonSeeLocation.setOnClickListener(v -> openMapWithChooser());
-            // Los listeners para email y teléfono se configuran en fetchCompanyData
         }
     }
 
@@ -69,28 +78,32 @@ public class companyContactFragment extends Fragment {
         if (binding == null) return;
         binding.NameT.setText("Loading...");
         binding.sloganT.setText("Loading...");
-        binding.phoneT.setText("Loading..."); // Texto inicial para teléfono
+        binding.phoneT.setText("Loading...");
         binding.emailT.setText("Loading...");
         binding.adressT.setText("Loading...");
         binding.buttonSeeLocation.setEnabled(false);
 
-        // Email
         binding.emailT.setOnClickListener(null);
         if (getContext() != null) {
             binding.emailT.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.tab_indicator_text));
         }
         binding.emailT.setPaintFlags(binding.emailT.getPaintFlags() & (~Paint.UNDERLINE_TEXT_FLAG));
 
-        // Teléfono
         binding.phoneT.setOnClickListener(null);
         if (getContext() != null) {
             binding.phoneT.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.tab_indicator_text));
         }
         binding.phoneT.setPaintFlags(binding.phoneT.getPaintFlags() & (~Paint.UNDERLINE_TEXT_FLAG));
+
+        if (getContext() != null && binding.profileImagePlaceholder != null) {
+            Glide.with(requireContext())
+                    .load(R.mipmap.ic_launcher) // Usar un drawable existente
+                    .circleCrop()
+                    .into(binding.profileImagePlaceholder);
+        }
     }
 
     private void openMapWithChooser() {
-        // ... (sin cambios)
         if (getContext() == null) return;
         if (mapAddressValue == null || mapAddressValue.trim().isEmpty()) {
             Toast.makeText(getContext(), "No address available to open in map.", Toast.LENGTH_SHORT).show();
@@ -112,7 +125,6 @@ public class companyContactFragment extends Fragment {
     }
 
     private void sendEmail(String recipientEmail) {
-        // ... (sin cambios)
         if (getContext() == null) return;
         if (recipientEmail == null || recipientEmail.trim().isEmpty()) {
             Toast.makeText(getContext(), "No email address available.", Toast.LENGTH_SHORT).show();
@@ -133,33 +145,27 @@ public class companyContactFragment extends Fragment {
         }
     }
 
-    // --- Nuevos métodos para acciones de teléfono ---
     private void showPhoneOptionsDialog(final String phoneNumber) {
         if (getContext() == null || phoneNumber == null || phoneNumber.trim().isEmpty()) {
             Toast.makeText(getContext(), getString(R.string.no_phone_number_available), Toast.LENGTH_SHORT).show();
             return;
         }
-
         final ArrayList<String> options = new ArrayList<>();
         options.add(getString(R.string.action_call));
         options.add(getString(R.string.action_sms));
         if (isWhatsAppInstalled()) {
             options.add(getString(R.string.action_whatsapp));
         }
-
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle(getString(R.string.contact_via_phone_title));
-        builder.setItems(options.toArray(new String[0]), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String selectedOption = options.get(which);
-                if (selectedOption.equals(getString(R.string.action_call))) {
-                    dialPhoneNumber(phoneNumber);
-                } else if (selectedOption.equals(getString(R.string.action_sms))) {
-                    sendSms(phoneNumber);
-                } else if (selectedOption.equals(getString(R.string.action_whatsapp))) {
-                    sendWhatsAppMessage(phoneNumber);
-                }
+        builder.setItems(options.toArray(new String[0]), (dialog, which) -> {
+            String selectedOption = options.get(which);
+            if (selectedOption.equals(getString(R.string.action_call))) {
+                dialPhoneNumber(phoneNumber);
+            } else if (selectedOption.equals(getString(R.string.action_sms))) {
+                sendSms(phoneNumber);
+            } else if (selectedOption.equals(getString(R.string.action_whatsapp))) {
+                sendWhatsAppMessage(phoneNumber);
             }
         });
         builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
@@ -185,8 +191,6 @@ public class companyContactFragment extends Fragment {
         try {
             Intent smsIntent = new Intent(Intent.ACTION_SENDTO);
             smsIntent.setData(Uri.parse("smsto:" + phoneNumber));
-            // Opcional: pre-rellenar mensaje
-            // smsIntent.putExtra("sms_body", "Hola, ");
             if (smsIntent.resolveActivity(getContext().getPackageManager()) != null) {
                 startActivity(smsIntent);
             } else {
@@ -199,35 +203,23 @@ public class companyContactFragment extends Fragment {
     }
 
     private void sendWhatsAppMessage(String phoneNumber) {
-        // Limpiar el número: quitar espacios, guiones, paréntesis. Wpp necesita solo dígitos.
-        // Y a veces el código de país si no está ya. Asumimos que el número de Firebase es correcto para Wpp.
         String cleanedNumber = phoneNumber.replaceAll("[^0-9]", "");
-
         PackageManager packageManager = getContext().getPackageManager();
         Intent whatsappIntent = new Intent(Intent.ACTION_VIEW);
-        String url = "https://api.whatsapp.com/send?phone=" + cleanedNumber; // No necesita Uri.encode para este URL de api.whatsapp
-        // El código de país debe estar incluido en cleanedNumber
-
+        String url = "https://api.whatsapp.com/send?phone=" + cleanedNumber;
         try {
-            // Intentar con WhatsApp normal primero
             whatsappIntent.setPackage(WHATSAPP_PACKAGE_NAME);
             whatsappIntent.setData(Uri.parse(url));
             if (whatsappIntent.resolveActivity(packageManager) != null) {
                 startActivity(whatsappIntent);
-                return; // Éxito con WhatsApp normal
+                return;
             }
-
-            // Si falla, intentar con WhatsApp Business
             whatsappIntent.setPackage(WHATSAPP_BUSINESS_PACKAGE_NAME);
-            // No es necesario cambiar el setData(Uri.parse(url)) ya que la URL es la misma
             if (whatsappIntent.resolveActivity(packageManager) != null) {
                 startActivity(whatsappIntent);
-                return; // Éxito con WhatsApp Business
+                return;
             }
-
-            // Si ambos fallan (no debería pasar si isWhatsAppInstalled fue true)
             Toast.makeText(getContext(), getString(R.string.whatsapp_not_installed), Toast.LENGTH_SHORT).show();
-
         } catch (Exception e) {
             Log.e(TAG, "Error sending WhatsApp message: ", e);
             Toast.makeText(getContext(), getString(R.string.error_opening_whatsapp) + ": " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -241,123 +233,136 @@ public class companyContactFragment extends Fragment {
             pm.getPackageInfo(WHATSAPP_PACKAGE_NAME, PackageManager.GET_ACTIVITIES);
             return true;
         } catch (PackageManager.NameNotFoundException e) {
-            // WhatsApp normal no instalado, verificar Business
             try {
                 pm.getPackageInfo(WHATSAPP_BUSINESS_PACKAGE_NAME, PackageManager.GET_ACTIVITIES);
                 return true;
             } catch (PackageManager.NameNotFoundException e2) {
-                return false; // Ninguno instalado
+                return false;
             }
         }
     }
 
+    private void loadCompanyImageFromFirebase() {
+        if (getContext() == null || !isAdded() || binding == null || binding.profileImagePlaceholder == null) {
+            Log.w(TAG, "loadCompanyImageFromFirebase: Cannot load image - context, fragment not added, or view is null.");
+            return;
+        }
 
-    private void fetchCompanyData() {
-        Log.d(TAG, "fetchCompanyData: Attempting to get document Company/1");
+        String fileNameWithExtension = COMPANY_ID_FOR_IMAGE + COMPANY_IMAGE_FILE_EXTENSION;
+        StorageReference fileRef = storage.getReference().child(COMPANY_IMAGE_FOLDER_IN_STORAGE + "/" + fileNameWithExtension);
 
+        Log.d(TAG, "Attempting to load image from Storage path: " + fileRef.getPath());
+
+        fileRef.getDownloadUrl()
+                .addOnSuccessListener(downloadUri -> {
+                    if (getContext() != null && isAdded() && binding != null && binding.profileImagePlaceholder != null) {
+                        Glide.with(companyContactFragment.this)
+                                .load(downloadUri)
+                                .placeholder(R.mipmap.ic_launcher) // Usar un drawable existente
+                                .error(R.mipmap.ic_launcher_round)   // Usar un drawable existente
+                                .circleCrop()
+                                .into(binding.profileImagePlaceholder);
+                        Log.d(TAG, "Image loaded successfully from URL: " + downloadUri.toString());
+                    } else {
+                        Log.w(TAG, "loadCompanyImageFromFirebase: onSuccess - Context, fragment, or view became null.");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Failed to load company image from " + fileRef.getPath(), e);
+                    if (getContext() != null && isAdded() && binding != null && binding.profileImagePlaceholder != null) {
+                        Glide.with(companyContactFragment.this)
+                                .load(R.mipmap.ic_launcher_round) // Usar un drawable existente
+                                .circleCrop()
+                                .into(binding.profileImagePlaceholder);
+                    }
+                });
+    }
+
+    private void fetchCompanyDataAndImage() {
+        Log.d(TAG, "fetchCompanyDataAndImage: Starting all data fetch.");
         if (binding != null) {
             binding.buttonSeeLocation.setEnabled(false);
         }
 
+        loadCompanyImageFromFirebase();
+
         if (db == null) {
-            Log.e(TAG, "fetchCompanyData: Firestore db instance is null!");
+            Log.e(TAG, "fetchCompanyDataAndImage: Firestore db instance is null!");
             if (getContext() != null) Toast.makeText(getContext(), "Database Error", Toast.LENGTH_SHORT).show();
             setErrorUIState("DB Error");
             return;
         }
 
         db.collection("Company").document("1").get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        Log.d(TAG, "fetchCompanyData: onSuccess triggered.");
-                        if (binding == null) {
-                            Log.w(TAG, "fetchCompanyData: Binding became null before success processed.");
-                            return;
-                        }
+                .addOnSuccessListener(documentSnapshot -> {
+                    Log.d(TAG, "fetchCompanyDataAndImage: Firestore onSuccess triggered.");
+                    if (binding == null || getContext() == null) {
+                        Log.w(TAG, "fetchCompanyDataAndImage: Binding or Context became null.");
+                        return;
+                    }
+                    if (documentSnapshot.exists()) {
+                        Log.d(TAG, "fetchCompanyDataAndImage: Document 'Company/1' exists.");
+                        String name = documentSnapshot.getString("name");
+                        String slogan = documentSnapshot.getString("slogan");
+                        companyPhoneNumber = documentSnapshot.getString("number");
+                        companyEmailAddress = documentSnapshot.getString("email");
+                        mapAddressValue = documentSnapshot.getString("mapAdress");
+                        String address = documentSnapshot.getString("adress");
 
-                        if (documentSnapshot.exists()) {
-                            Log.d(TAG, "fetchCompanyData: Document exists.");
+                        binding.NameT.setText(name != null ? name : "Name N/A");
+                        binding.sloganT.setText(slogan != null ? slogan : "Slogan N/A");
+                        binding.adressT.setText(address != null ? address : "Address N/A");
 
-                            String name = documentSnapshot.getString("name");
-                            String slogan = documentSnapshot.getString("slogan");
-                            companyPhoneNumber = documentSnapshot.getString("number"); // Guardar número
-                            companyEmailAddress = documentSnapshot.getString("email");
-                            mapAddressValue = documentSnapshot.getString("mapAdress");
-                            String address = documentSnapshot.getString("adress");
-
-                            binding.NameT.setText(name != null ? name : "Name N/A");
-                            binding.sloganT.setText(slogan != null ? slogan : "Slogan N/A");
-                            binding.adressT.setText(address != null ? address : "Address N/A");
-
-                            // Configurar TextView de Email
-                            if (companyEmailAddress != null && !companyEmailAddress.trim().isEmpty()) {
-                                binding.emailT.setText(companyEmailAddress);
-                                binding.emailT.setOnClickListener(v -> sendEmail(companyEmailAddress));
-                                if (getContext() != null) {
-                                    binding.emailT.setTextColor(ContextCompat.getColor(requireContext(), R.color.purple_500));
-                                }
-                                binding.emailT.setPaintFlags(binding.emailT.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-                            } else {
-                                binding.emailT.setText("Email N/A");
-                                binding.emailT.setOnClickListener(null);
-                                if (getContext() != null) {
-                                    binding.emailT.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.tab_indicator_text));
-                                }
-                                binding.emailT.setPaintFlags(binding.emailT.getPaintFlags() & (~Paint.UNDERLINE_TEXT_FLAG));
-                            }
-
-                            // Configurar TextView de Teléfono
-                            if (companyPhoneNumber != null && !companyPhoneNumber.trim().isEmpty()) {
-                                binding.phoneT.setText(companyPhoneNumber);
-                                binding.phoneT.setOnClickListener(v -> showPhoneOptionsDialog(companyPhoneNumber));
-                                // Estilo de enlace para el teléfono
-                                if (getContext() != null) {
-                                    binding.phoneT.setTextColor(ContextCompat.getColor(requireContext(), R.color.purple_500));
-                                }
-                                binding.phoneT.setPaintFlags(binding.phoneT.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-                            } else {
-                                binding.phoneT.setText("Phone N/A");
-                                binding.phoneT.setOnClickListener(null);
-                                if (getContext() != null) {
-                                    binding.phoneT.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.tab_indicator_text));
-                                }
-                                binding.phoneT.setPaintFlags(binding.phoneT.getPaintFlags() & (~Paint.UNDERLINE_TEXT_FLAG));
-                            }
-
-                            binding.buttonSeeLocation.setEnabled(mapAddressValue != null && !mapAddressValue.trim().isEmpty());
-                            Log.d(TAG, "fetchCompanyData: UI Updated successfully.");
-
+                        if (companyEmailAddress != null && !companyEmailAddress.trim().isEmpty()) {
+                            binding.emailT.setText(companyEmailAddress);
+                            binding.emailT.setOnClickListener(v -> sendEmail(companyEmailAddress));
+                            binding.emailT.setTextColor(ContextCompat.getColor(requireContext(), R.color.link_blue));
+                            binding.emailT.setPaintFlags(binding.emailT.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         } else {
-                            Log.w(TAG, "fetchCompanyData: Document Company/1 does not exist.");
-                            setErrorUIState("Not Found");
-                            if (getContext() != null)
-                                Toast.makeText(getContext(), "Company information not found.", Toast.LENGTH_SHORT).show();
+                            binding.emailT.setText("Email N/A");
+                            binding.emailT.setOnClickListener(null);
+                            binding.emailT.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.tab_indicator_text));
+                            binding.emailT.setPaintFlags(binding.emailT.getPaintFlags() & (~Paint.UNDERLINE_TEXT_FLAG));
                         }
+
+                        if (companyPhoneNumber != null && !companyPhoneNumber.trim().isEmpty()) {
+                            binding.phoneT.setText(companyPhoneNumber);
+                            binding.phoneT.setOnClickListener(v -> showPhoneOptionsDialog(companyPhoneNumber));
+                            binding.phoneT.setTextColor(ContextCompat.getColor(requireContext(), R.color.link_blue));
+                            binding.phoneT.setPaintFlags(binding.phoneT.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                        } else {
+                            binding.phoneT.setText("Phone N/A");
+                            binding.phoneT.setOnClickListener(null);
+                            binding.phoneT.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.tab_indicator_text));
+                            binding.phoneT.setPaintFlags(binding.phoneT.getPaintFlags() & (~Paint.UNDERLINE_TEXT_FLAG));
+                        }
+                        binding.buttonSeeLocation.setEnabled(mapAddressValue != null && !mapAddressValue.trim().isEmpty());
+                        Log.d(TAG, "fetchCompanyDataAndImage: Firestore UI Updated successfully.");
+                    } else {
+                        Log.w(TAG, "fetchCompanyDataAndImage: Document 'Company/1' does not exist.");
+                        setErrorUIState("Not Found");
+                        if (getContext() != null)
+                            Toast.makeText(getContext(), "Company information not found.", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e(TAG, "fetchCompanyData: onFailure triggered.", e);
-                        if (binding == null) {
-                            Log.w(TAG, "fetchCompanyData: Binding became null before failure processed.");
-                            return;
-                        }
-                        setErrorUIState("Error");
-                        if (getContext() != null) {
-                            Toast.makeText(getContext(), "Error fetching data: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                        if (e instanceof FirebaseFirestoreException) {
-                            // ... (manejo de error de Firebase)
-                            FirebaseFirestoreException firestoreEx = (FirebaseFirestoreException) e;
-                            Log.e(TAG, "Firestore Error Code: " + firestoreEx.getCode());
-                            if (firestoreEx.getCode() == FirebaseFirestoreException.Code.UNAVAILABLE ||
-                                    (firestoreEx.getMessage() != null && firestoreEx.getMessage().toLowerCase().contains("client is offline"))) {
-                                setErrorUIState("Offline");
-                                if (getContext() != null)
-                                    Toast.makeText(getContext(), "Error: Client is offline. Check connection.", Toast.LENGTH_LONG).show();
-                            }
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "fetchCompanyDataAndImage: Firestore onFailure triggered.", e);
+                    if (binding == null) {
+                        Log.w(TAG, "fetchCompanyDataAndImage: Binding became null.");
+                        return;
+                    }
+                    setErrorUIState("Error");
+                    if (getContext() != null) {
+                        Toast.makeText(getContext(), "Error fetching data: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                    if (e instanceof FirebaseFirestoreException) {
+                        FirebaseFirestoreException firestoreEx = (FirebaseFirestoreException) e;
+                        Log.e(TAG, "Firestore Error Code: " + firestoreEx.getCode());
+                        if (firestoreEx.getCode() == FirebaseFirestoreException.Code.UNAVAILABLE ||
+                                (firestoreEx.getMessage() != null && firestoreEx.getMessage().toLowerCase().contains("client is offline"))) {
+                            setErrorUIState("Offline");
+                            if (getContext() != null)
+                                Toast.makeText(getContext(), "Error: Client is offline. Check connection.", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -367,30 +372,40 @@ public class companyContactFragment extends Fragment {
         if (binding == null) return;
         binding.NameT.setText(errorType);
         binding.sloganT.setText(errorType);
-        binding.phoneT.setText(errorType); // Teléfono
+        binding.phoneT.setText(errorType);
         binding.emailT.setText(errorType);
         binding.adressT.setText(errorType);
         binding.buttonSeeLocation.setEnabled(false);
 
-        // Email no clickeable
         binding.emailT.setOnClickListener(null);
         if (getContext() != null) {
             binding.emailT.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.tab_indicator_text));
         }
         binding.emailT.setPaintFlags(binding.emailT.getPaintFlags() & (~Paint.UNDERLINE_TEXT_FLAG));
 
-        // Teléfono no clickeable
         binding.phoneT.setOnClickListener(null);
         if (getContext() != null) {
             binding.phoneT.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.tab_indicator_text));
         }
         binding.phoneT.setPaintFlags(binding.phoneT.getPaintFlags() & (~Paint.UNDERLINE_TEXT_FLAG));
+
+        if (getContext() != null && binding.profileImagePlaceholder != null) {
+            Glide.with(requireContext())
+                    .load(R.mipmap.ic_launcher_round) // Usar un drawable existente
+                    .circleCrop()
+                    .into(binding.profileImagePlaceholder);
+        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         Log.d(TAG, "onDestroyView: Setting binding to null.");
+        if (binding != null && binding.profileImagePlaceholder != null && getContext() != null) {
+            if(isAdded()){
+                Glide.with(requireContext()).clear(binding.profileImagePlaceholder);
+            }
+        }
         binding = null;
     }
 }

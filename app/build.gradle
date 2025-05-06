@@ -41,6 +41,7 @@ dependencies {
     implementation libs.activity
     implementation libs.navigation.ui
     implementation libs.firebase.firestore
+    implementation libs.firebase.storage
     annotationProcessor libs.hilt.compiler
 
     implementation platform(libs.firebase.bom)
@@ -51,4 +52,5 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
+    implementation libs.glide
 }
