@@ -22,7 +22,7 @@ public class ProductsOptionsFragment extends Fragment {
 
         ImageButton backButton = root.findViewById(R.id.backButtonOptions);
         Button cProductsBtn = root.findViewById(R.id.cProductsBtn);
-        Button addProductBtn = root.findViewById(R.id.addProductBtn);
+
 
         backButton.setOnClickListener(v -> {
             NavController navController = Navigation.findNavController(v);
@@ -35,11 +35,7 @@ public class ProductsOptionsFragment extends Fragment {
             }
         });
 
-        addProductBtn.setOnClickListener(v -> {
-            if(getView() != null) {
-                Navigation.findNavController(v).navigate(R.id.action_navigation_account_to_companyOrderListFragment);
-            }
-        });
+       
 
         return root;
     }

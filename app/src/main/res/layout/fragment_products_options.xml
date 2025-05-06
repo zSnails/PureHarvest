@@ -7,7 +7,6 @@
     android:padding="16dp"
     tools:context=".ui.company_products.ProductsOptionsFragment">
 
-    <!-- Back Button -->
     <ImageButton
         android:id="@+id/backButtonOptions"
         android:layout_width="48dp"
@@ -19,9 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginStart="0dp"
         android:layout_marginTop="0dp" />
-    <!-- Optional: android:tint="@color/your_icon_color" -->
 
-    <!-- Title -->
     <TextView
         android:id="@+id/textViewOptionsTitle"
         android:layout_width="wrap_content"
@@ -33,7 +30,6 @@
         app:layout_constraintStart_toStartOf="@+id/cProductsBtn"
         app:layout_constraintEnd_toEndOf="@+id/cProductsBtn" />
 
-    <!-- Buttons -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/cProductsBtn"
         style="@style/Widget.MaterialComponents.Button"
@@ -46,25 +42,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/addProductBtn"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintVertical_bias="0.5" />
-    <!-- Adjusted bias slightly for centering after title moves -->
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/addProductBtn"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="24dp"
-        android:text="@string/button_see_company_orders"
-        android:paddingVertical="12dp"
-        android:textColor="@color/leaf_green"
-        app:strokeColor="@color/leaf_green"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cProductsBtn"
-        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
