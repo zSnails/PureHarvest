@@ -78,5 +78,14 @@
         android:id="@+id/editProductFragment"
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.company_products.EditProductFragment"
         android:label="fragment_edit_product"
-        tools:layout="@layout/fragment_edit_product" />
+        tools:layout="@layout/fragment_edit_product" >
+        <action
+            android:id="@+id/action_editProductFragment_to_manageImagesFragment"
+            app:destination="@id/manageImagesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/manageImagesFragment"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.company_products.ManageImagesFragment"
+        android:label="fragment_manage_images"
+        tools:layout="@layout/fragment_manage_images" />
 </navigation>

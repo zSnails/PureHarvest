@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".ui.company_products.ManageImagesFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Back Button -->
+        <ImageButton
+            android:id="@+id/backButtonManageImages"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_arrow_back_24"
+            android:background="?attr/selectableItemBackgroundBorderless"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/titleManageImages"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Administrar Imágenes"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            android:gravity="center_horizontal"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="48dp"
+            app:layout_constraintTop_toTopOf="@id/backButtonManageImages"
+            app:layout_constraintBottom_toBottomOf="@id/backButtonManageImages"
+            app:layout_constraintStart_toEndOf="@id/backButtonManageImages"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Image Slot 1 -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardSlot1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            app:layout_constraintTop_toBottomOf="@id/backButtonManageImages"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp">
+
+                <ImageView
+                    android:id="@+id/imageSlot1"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:scaleType="centerCrop"
+                    android:background="@color/placeholder_grey"
+                    android:contentDescription="Imagen 1"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:srcCompat="@tools:sample/backgrounds/scenic"/>
+
+                <TextView
+                    android:id="@+id/textEmpty1"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:text="Vacío"
+                    android:gravity="center"
+                    android:background="#E0E0E0"
+                    android:visibility="visible"
+                    app:layout_constraintTop_toTopOf="@id/imageSlot1"
+                    app:layout_constraintBottom_toBottomOf="@id/imageSlot1"
+                    app:layout_constraintStart_toStartOf="@id/imageSlot1"
+                    app:layout_constraintEnd_toEndOf="@id/imageSlot1"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonChange1"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cambiar"
+                    android:layout_marginStart="16dp"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toTopOf="@id/imageSlot1"
+                    app:layout_constraintStart_toEndOf="@id/imageSlot1"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonDelete1"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Eliminar"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:layout_marginStart="16dp"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@id/buttonChange1"
+                    app:layout_constraintStart_toEndOf="@id/imageSlot1"
+                    app:layout_constraintBottom_toBottomOf="@id/imageSlot1" />
+
+                <ProgressBar
+                    android:id="@+id/progressSlot1"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toTopOf="@id/imageSlot1"
+                    app:layout_constraintBottom_toBottomOf="@id/imageSlot1"
+                    app:layout_constraintStart_toStartOf="@id/imageSlot1"
+                    app:layout_constraintEnd_toEndOf="@id/imageSlot1"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Image Slot 2 (Copy of Slot 1 with IDs changed) -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardSlot2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            app:layout_constraintTop_toBottomOf="@id/cardSlot1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp">
+                <ImageView android:id="@+id/imageSlot2" android:layout_width="100dp" android:layout_height="100dp" android:scaleType="centerCrop" android:background="@color/placeholder_grey" android:contentDescription="Imagen 2" app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent" tools:srcCompat="@tools:sample/backgrounds/scenic"/>
+                <TextView android:id="@+id/textEmpty2" android:layout_width="0dp" android:layout_height="0dp" android:text="Vacío" android:gravity="center" android:background="#E0E0E0" android:visibility="visible" app:layout_constraintTop_toTopOf="@id/imageSlot2" app:layout_constraintBottom_toBottomOf="@id/imageSlot2" app:layout_constraintStart_toStartOf="@id/imageSlot2" app:layout_constraintEnd_toEndOf="@id/imageSlot2"/>
+                <com.google.android.material.button.MaterialButton android:id="@+id/buttonChange2" style="@style/Widget.MaterialComponents.Button.OutlinedButton" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Cambiar" android:layout_marginStart="16dp" android:visibility="gone" app:layout_constraintTop_toTopOf="@id/imageSlot2" app:layout_constraintStart_toEndOf="@id/imageSlot2"/>
+                <com.google.android.material.button.MaterialButton android:id="@+id/buttonDelete2" style="@style/Widget.MaterialComponents.Button.TextButton" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Eliminar" android:textColor="@android:color/holo_red_dark" android:layout_marginStart="16dp" android:visibility="gone" app:layout_constraintTop_toBottomOf="@id/buttonChange2" app:layout_constraintStart_toEndOf="@id/imageSlot2" app:layout_constraintBottom_toBottomOf="@id/imageSlot2" />
+                <ProgressBar android:id="@+id/progressSlot2" style="?android:attr/progressBarStyleSmall" android:layout_width="wrap_content" android:layout_height="wrap_content" android:visibility="gone" app:layout_constraintTop_toTopOf="@id/imageSlot2" app:layout_constraintBottom_toBottomOf="@id/imageSlot2" app:layout_constraintStart_toStartOf="@id/imageSlot2" app:layout_constraintEnd_toEndOf="@id/imageSlot2"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Image Slot 3 (Copy of Slot 1 with IDs changed) -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardSlot3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            app:layout_constraintTop_toBottomOf="@id/cardSlot2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp">
+                <ImageView android:id="@+id/imageSlot3" android:layout_width="100dp" android:layout_height="100dp" android:scaleType="centerCrop" android:background="@color/placeholder_grey" android:contentDescription="Imagen 3" app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent" tools:srcCompat="@tools:sample/backgrounds/scenic"/>
+                <TextView android:id="@+id/textEmpty3" android:layout_width="0dp" android:layout_height="0dp" android:text="Vacío" android:gravity="center" android:background="#E0E0E0" android:visibility="visible" app:layout_constraintTop_toTopOf="@id/imageSlot3" app:layout_constraintBottom_toBottomOf="@id/imageSlot3" app:layout_constraintStart_toStartOf="@id/imageSlot3" app:layout_constraintEnd_toEndOf="@id/imageSlot3"/>
+                <com.google.android.material.button.MaterialButton android:id="@+id/buttonChange3" style="@style/Widget.MaterialComponents.Button.OutlinedButton" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Cambiar" android:layout_marginStart="16dp" android:visibility="gone" app:layout_constraintTop_toTopOf="@id/imageSlot3" app:layout_constraintStart_toEndOf="@id/imageSlot3"/>
+                <com.google.android.material.button.MaterialButton android:id="@+id/buttonDelete3" style="@style/Widget.MaterialComponents.Button.TextButton" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Eliminar" android:textColor="@android:color/holo_red_dark" android:layout_marginStart="16dp" android:visibility="gone" app:layout_constraintTop_toBottomOf="@id/buttonChange3" app:layout_constraintStart_toEndOf="@id/imageSlot3" app:layout_constraintBottom_toBottomOf="@id/imageSlot3" />
+                <ProgressBar android:id="@+id/progressSlot3" style="?android:attr/progressBarStyleSmall" android:layout_width="wrap_content" android:layout_height="wrap_content" android:visibility="gone" app:layout_constraintTop_toTopOf="@id/imageSlot3" app:layout_constraintBottom_toBottomOf="@id/imageSlot3" app:layout_constraintStart_toStartOf="@id/imageSlot3" app:layout_constraintEnd_toEndOf="@id/imageSlot3"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Image Slot 4 (Copy of Slot 1 with IDs changed) -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardSlot4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            app:layout_constraintTop_toBottomOf="@id/cardSlot3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp">
+                <ImageView android:id="@+id/imageSlot4" android:layout_width="100dp" android:layout_height="100dp" android:scaleType="centerCrop" android:background="@color/placeholder_grey" android:contentDescription="Imagen 4" app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent" tools:srcCompat="@tools:sample/backgrounds/scenic"/>
+                <TextView android:id="@+id/textEmpty4" android:layout_width="0dp" android:layout_height="0dp" android:text="Vacío" android:gravity="center" android:background="#E0E0E0" android:visibility="visible" app:layout_constraintTop_toTopOf="@id/imageSlot4" app:layout_constraintBottom_toBottomOf="@id/imageSlot4" app:layout_constraintStart_toStartOf="@id/imageSlot4" app:layout_constraintEnd_toEndOf="@id/imageSlot4"/>
+                <com.google.android.material.button.MaterialButton android:id="@+id/buttonChange4" style="@style/Widget.MaterialComponents.Button.OutlinedButton" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Cambiar" android:layout_marginStart="16dp" android:visibility="gone" app:layout_constraintTop_toTopOf="@id/imageSlot4" app:layout_constraintStart_toEndOf="@id/imageSlot4"/>
+                <com.google.android.material.button.MaterialButton android:id="@+id/buttonDelete4" style="@style/Widget.MaterialComponents.Button.TextButton" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Eliminar" android:textColor="@android:color/holo_red_dark" android:layout_marginStart="16dp" android:visibility="gone" app:layout_constraintTop_toBottomOf="@id/buttonChange4" app:layout_constraintStart_toEndOf="@id/imageSlot4" app:layout_constraintBottom_toBottomOf="@id/imageSlot4" />
+                <ProgressBar android:id="@+id/progressSlot4" style="?android:attr/progressBarStyleSmall" android:layout_width="wrap_content" android:layout_height="wrap_content" android:visibility="gone" app:layout_constraintTop_toTopOf="@id/imageSlot4" app:layout_constraintBottom_toBottomOf="@id/imageSlot4" app:layout_constraintStart_toStartOf="@id/imageSlot4" app:layout_constraintEnd_toEndOf="@id/imageSlot4"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Image Slot 5 (Copy of Slot 1 with IDs changed) -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardSlot5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            app:layout_constraintTop_toBottomOf="@id/cardSlot4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+            <!-- Added bottom constraint -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp">
+                <ImageView android:id="@+id/imageSlot5" android:layout_width="100dp" android:layout_height="100dp" android:scaleType="centerCrop" android:background="@color/placeholder_grey" android:contentDescription="Imagen 5" app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent" tools:srcCompat="@tools:sample/backgrounds/scenic"/>
+                <TextView android:id="@+id/textEmpty5" android:layout_width="0dp" android:layout_height="0dp" android:text="Vacío" android:gravity="center" android:background="#E0E0E0" android:visibility="visible" app:layout_constraintTop_toTopOf="@id/imageSlot5" app:layout_constraintBottom_toBottomOf="@id/imageSlot5" app:layout_constraintStart_toStartOf="@id/imageSlot5" app:layout_constraintEnd_toEndOf="@id/imageSlot5"/>
+                <com.google.android.material.button.MaterialButton android:id="@+id/buttonChange5" style="@style/Widget.MaterialComponents.Button.OutlinedButton" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Cambiar" android:layout_marginStart="16dp" android:visibility="gone" app:layout_constraintTop_toTopOf="@id/imageSlot5" app:layout_constraintStart_toEndOf="@id/imageSlot5"/>
+                <com.google.android.material.button.MaterialButton android:id="@+id/buttonDelete5" style="@style/Widget.MaterialComponents.Button.TextButton" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Eliminar" android:textColor="@android:color/holo_red_dark" android:layout_marginStart="16dp" android:visibility="gone" app:layout_constraintTop_toBottomOf="@id/buttonChange5" app:layout_constraintStart_toEndOf="@id/imageSlot5" app:layout_constraintBottom_toBottomOf="@id/imageSlot5" />
+                <ProgressBar android:id="@+id/progressSlot5" style="?android:attr/progressBarStyleSmall" android:layout_width="wrap_content" android:layout_height="wrap_content" android:visibility="gone" app:layout_constraintTop_toTopOf="@id/imageSlot5" app:layout_constraintBottom_toBottomOf="@id/imageSlot5" app:layout_constraintStart_toStartOf="@id/imageSlot5" app:layout_constraintEnd_toEndOf="@id/imageSlot5"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
