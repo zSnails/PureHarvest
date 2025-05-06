@@ -1,6 +1,5 @@
 package cr.ac.itcr.zsnails.pureharvest.ui.company_products;
 
-// ... other imports ...
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -29,7 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-// No longer needed: import java.util.UUID;
+
 
 import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentEditProductBinding;
@@ -41,11 +40,9 @@ public class EditProductFragment extends Fragment {
     private FirebaseStorage storage;
 
     private String productId;
-    // private Uri imageUri; // REMOVED - Image handling moved
 
     private static final String TAG = "EditProductFragment";
     private static final String ARG_PRODUCT_ID = "productId";
-    // private static final int IMAGE_PICK_CODE = 1000; // REMOVED
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,14 +79,13 @@ public class EditProductFragment extends Fragment {
             setButtonsEnabled(false);
         }
 
-        // Button under image now navigates to Manage Images
+
         binding.buttonChangeImage.setOnClickListener(v -> handleManageImages());
         binding.buttonSave.setOnClickListener(v -> handleSaveChanges());
         binding.buttonCancel.setOnClickListener(v -> handleCancel());
         binding.buttonDeleteProduct.setOnClickListener(v -> handleDeleteProductConfirmation());
     }
 
-    // --- handleDeleteProductConfirmation, performProductDeletion, deleteProductImagesFromStorage remain the same ---
     private void handleDeleteProductConfirmation() {
         if (getContext() == null || !isAdded() || productId == null || productId.isEmpty()) {
             Log.e(TAG, "Cannot delete: context, fragment state, or productId invalid.");
@@ -173,7 +169,7 @@ public class EditProductFragment extends Fragment {
                 });
     }
 
-    // --- loadProductData and populateFields remain the same ---
+
     private void loadProductData() {
         if (productId == null || productId.isEmpty()) return;
         showLoading(true);
@@ -231,9 +227,6 @@ public class EditProductFragment extends Fragment {
         }
     }
 
-    // REMOVED - No longer picking single image here
-    // @Override
-    // public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) { ... }
 
     @Override
     public void onDestroyView() {
@@ -241,7 +234,6 @@ public class EditProductFragment extends Fragment {
         binding = null;
     }
 
-    // Renamed method to reflect its new action
     private void handleManageImages() {
         if (getContext() != null && isAdded() && getView() != null) {
             if (productId != null && !productId.isEmpty()) {
@@ -256,7 +248,7 @@ public class EditProductFragment extends Fragment {
                     Log.e(TAG, "Navigation action not found. Ensure it's defined in your nav graph.", e);
                     showErrorState("Error de navegación.");
                 }
-                // ------------------------
+
             } else {
                 showErrorState("ID de producto no válido para administrar imágenes.");
             }
@@ -265,8 +257,7 @@ public class EditProductFragment extends Fragment {
         }
     }
 
-    // REMOVED - No longer used here
-    // private void handlePickReplacementImage() { ... }
+
 
     private void handleSaveChanges() {
         if (binding == null || productId == null || productId.isEmpty()) {
@@ -274,7 +265,7 @@ public class EditProductFragment extends Fragment {
             return;
         }
 
-        // --- Validation ---
+
         String name = binding.editProductName.getText().toString().trim();
         String priceStr = binding.editProductPrice.getText().toString().trim();
         boolean valid = true;
@@ -286,7 +277,7 @@ public class EditProductFragment extends Fragment {
             catch (NumberFormatException e) { binding.layoutProductPrice.setError("Precio inválido"); valid = false; }
         }
         if (!valid) return;
-        // --- End Validation ---
+
 
         showLoading(true);
 
@@ -301,15 +292,10 @@ public class EditProductFragment extends Fragment {
         productUpdates.put("body", binding.editProductBody.getText().toString().trim());
         productUpdates.put("aftertaste", binding.editProductAftertaste.getText().toString().trim());
 
-        // REMOVED Image Upload Logic - Only update text fields now
-        // if (imageUri != null) { uploadImageAndUpdateProduct(productUpdates); } else { ... }
+
         updateProductFirestoreOnlyText(productUpdates); // Call dedicated method
     }
 
-    // REMOVED - Image upload handled in ManageImagesFragment
-    // private void uploadImageAndUpdateProduct(Map<String, Object> productUpdates) { ... }
-
-    // Renamed method to clarify it ONLY updates text/non-image fields
     private void updateProductFirestoreOnlyText(Map<String, Object> productUpdates) {
         if (productId == null || productId.isEmpty() || firestore == null) {
             showLoading(false);
@@ -317,8 +303,7 @@ public class EditProductFragment extends Fragment {
             return;
         }
 
-        // Note: Using .update() only modifies the fields provided.
-        // It will NOT delete the 'imageUrls' field if it exists.
+
         firestore.collection("products").document(productId)
                 .update(productUpdates)
                 .addOnSuccessListener(aVoid -> {
@@ -335,11 +320,11 @@ public class EditProductFragment extends Fragment {
     }
 
     private void handleCancel() {
-        // imageUri = null; // No longer needed
+        // imageUri = null;
         navigateBack();
     }
 
-    // --- Helper Methods (navigateBack, setButtonsEnabled, showLoading, showErrorState, showSuccessMessage) remain the same ---
+
     private void navigateBack() {
         if (getView() != null && isAdded()) { Navigation.findNavController(requireView()).navigateUp(); }
         else if (getActivity() != null) { getActivity().getSupportFragmentManager().popBackStack(); }
@@ -348,7 +333,7 @@ public class EditProductFragment extends Fragment {
         if (binding == null) return;
         binding.buttonSave.setEnabled(enabled);
         binding.buttonCancel.setEnabled(enabled);
-        binding.buttonChangeImage.setEnabled(enabled); // Manage Images button
+        binding.buttonChangeImage.setEnabled(enabled);
         binding.buttonDeleteProduct.setEnabled(enabled);
         binding.backButtonEditProduct.setEnabled(enabled);
         binding.editProductName.setEnabled(enabled);
