@@ -3,19 +3,50 @@ package cr.ac.itcr.zsnails.pureharvest.data.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import cr.ac.itcr.zsnails.pureharvest.ui.cart.Item;
-
 public class Product {
     private String id;
     private String name;
-    private Double price;
     private String type;
+    private double rating;
+    private double price;
+    private String description;
     private List<String> imageUrls = new ArrayList<>();
+    private String sellerId;
+
+    // Optionals for coffee
+    private String certifications;
+    private String flavors;
+    private String acidity;
+    private String body;
+    private String aftertaste;
+    private String ingredients;
+    private String preparation;
 
     public Product() {
         // Required empty constructor for Firebase
     }
 
+    public Product(String name, String type, double rating, double price, String description,
+                   List<String> imageUrls, String sellerId,
+                   String certifications, String flavors, String acidity, String body,
+                   String aftertaste, String ingredients, String preparation) {
+        this.name = name;
+        this.type = type;
+        this.rating = rating;
+        this.price = price;
+        this.description = description;
+        this.imageUrls = (imageUrls != null) ? imageUrls : new ArrayList<>();
+        this.sellerId = sellerId;
+        this.certifications = certifications;
+        this.flavors = flavors;
+        this.acidity = acidity;
+        this.body = body;
+        this.aftertaste = aftertaste;
+        this.ingredients = ingredients;
+        this.preparation = preparation;
+    }
+
+    // --- Getters y Setters ---
     public String getId() { return id; }
 
     public void setId(String id) { this.id = id; }
@@ -24,19 +55,59 @@ public class Product {
 
     public void setName(String name) { this.name = name; }
 
-    public Double getPrice() { return price != null ? price : 0.0; }
-
-    public void setPrice(Double price) { this.price = price; }
-
     public String getType() { return type; }
 
     public void setType(String type) { this.type = type; }
+
+    public double getRating() { return rating; }
+
+    public void setRating(double rating) { this.rating = rating; }
+
+    public double getPrice() { return price; }
+
+    public void setPrice(double price) { this.price = price; }
+
+    public String getDescription() { return description; }
+
+    public void setDescription(String description) { this.description = description; }
 
     public List<String> getImageUrls() { return imageUrls; }
 
     public void setImageUrls(List<String> imageUrls) {
         this.imageUrls = (imageUrls != null) ? imageUrls : new ArrayList<>();
     }
+
+    public String getSellerId() { return sellerId; }
+
+    public void setSellerId(String sellerId) { this.sellerId = sellerId; }
+
+    public String getCertifications() { return certifications; }
+
+    public void setCertifications(String certifications) { this.certifications = certifications; }
+
+    public String getFlavors() { return flavors; }
+
+    public void setFlavors(String flavors) { this.flavors = flavors; }
+
+    public String getAcidity() { return acidity; }
+
+    public void setAcidity(String acidity) { this.acidity = acidity; }
+
+    public String getBody() { return body; }
+
+    public void setBody(String body) { this.body = body; }
+
+    public String getAftertaste() { return aftertaste; }
+
+    public void setAftertaste(String aftertaste) { this.aftertaste = aftertaste; }
+
+    public String getIngredients() { return ingredients; }
+
+    public void setIngredients(String ingredients) { this.ingredients = ingredients; }
+
+    public String getPreparation() { return preparation; }
+
+    public void setPreparation(String preparation) { this.preparation = preparation; }
 
     public String getFirstImageUrl() {
         return (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;

@@ -1,6 +1,7 @@
 package cr.ac.itcr.zsnails.pureharvest.ui.home;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,15 +18,18 @@ import java.util.List;
 import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.data.model.Product;
 import cr.ac.itcr.zsnails.pureharvest.databinding.ItemProductBinding;
+import cr.ac.itcr.zsnails.pureharvest.ui.client.ViewProductActivity;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
 
     private List<Product> products;
     private AddToCartListener listener;
+    private OnProductClickListener productClickListener;
 
-    public ProductAdapter(List<Product> products, AddToCartListener listener) {
+    public ProductAdapter(List<Product> products, AddToCartListener listener, OnProductClickListener productClickListener) {
         this.products = products;
         this.listener = listener;
+        this.productClickListener = productClickListener;
     }
 
     public void updateData(List<Product> newProducts) {
@@ -55,6 +59,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         void onClick(Product product);
     }
 
+    public interface OnProductClickListener {
+        void onProductClick(Product product);
+    }
+
     public class ProductViewHolder extends RecyclerView.ViewHolder {
 
         private final ImageView productImage;
@@ -76,7 +84,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             addToCart.setOnClickListener(v -> cb.onClick(me));
 
             itemView.setOnClickListener(v -> {
-                // TODO: Navigate to product detail activity
+                if (productClickListener != null && me != null) {
+                    productClickListener.onProductClick(me);
+                }
             });
         }
 
