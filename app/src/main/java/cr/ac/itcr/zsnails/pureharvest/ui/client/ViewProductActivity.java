@@ -5,6 +5,7 @@ import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -13,7 +14,11 @@ import java.util.List;
 
 import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.data.model.Product;
+import cr.ac.itcr.zsnails.pureharvest.entities.CartItem;
+import cr.ac.itcr.zsnails.pureharvest.ui.cart.ShoppingCartViewModel;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class ViewProductActivity extends AppCompatActivity {
 
     private ImageView imageMain;
@@ -31,11 +36,13 @@ public class ViewProductActivity extends AppCompatActivity {
     private ImageButton btnFavorite;
     private boolean isFavorite = false;
     private LinearLayout optionalFieldsContainer;
+    private ShoppingCartViewModel shoppingCartViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_product);
+        shoppingCartViewModel = new ViewModelProvider(this).get(ShoppingCartViewModel.class);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -116,6 +123,16 @@ public class ViewProductActivity extends AppCompatActivity {
                 updateQuantityAndPrice();
             }
         });
+
+        btnAddToCart.setOnClickListener(v -> {
+            CartItem item = new CartItem();
+            item.productId = product.getId();
+            item.amount = quantity;
+
+            shoppingCartViewModel.insertItem(item);
+            Toast.makeText(this, "Producto agregado al carrito", Toast.LENGTH_SHORT).show();
+        });
+
         // Main image
         if (product.getImageUrls() != null && !product.getImageUrls().isEmpty()) {
             Glide.with(this).load(product.getImageUrls().get(0)).into(imageMain);

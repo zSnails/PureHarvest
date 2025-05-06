@@ -18,7 +18,6 @@ import java.util.List;
 import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.data.model.Product;
 import cr.ac.itcr.zsnails.pureharvest.databinding.ItemProductBinding;
-import cr.ac.itcr.zsnails.pureharvest.ui.client.ViewProductActivity;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
 
