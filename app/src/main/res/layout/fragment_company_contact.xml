@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.companyContact.companyContactFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp">
+
+            <ImageView
+                android:id="@+id/profileImagePlaceholder"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_marginTop="16dp"
+                android:clipToOutline="true"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <TextView
+                android:id="@+id/NameT"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/company_name"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="?android:attr/textColorPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/profileImagePlaceholder" />
+
+            <TextView
+                android:id="@+id/sloganT"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="@string/company_slogan"
+                android:textSize="16sp"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textStyle="italic"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/NameT"
+                app:layout_constraintWidth_max="300dp" />
+
+            <!-- Teléfono -->
+            <TextView
+                android:id="@+id/phoneLabelT"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/label_phone"
+                android:textSize="14sp"
+                android:textColor="?android:attr/textColorSecondary"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sloganT"/>
+
+            <TextView
+                android:id="@+id/phoneT"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/sample_phone"
+                android:textSize="18sp"
+                android:textColor="?android:attr/textColorPrimary"
+                android:layout_marginTop="2dp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/phoneLabelT"
+                app:layout_constraintTop_toBottomOf="@+id/phoneLabelT"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <View
+                android:id="@+id/divider1"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginTop="12dp"
+                app:layout_constraintTop_toBottomOf="@+id/phoneT"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <!-- Email -->
+            <TextView
+                android:id="@+id/emailLabelT"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/label_email"
+                android:textSize="14sp"
+                android:textColor="?android:attr/textColorSecondary"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider1"/>
+
+            <TextView
+                android:id="@+id/emailT"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/sample_email"
+                android:textSize="18sp"
+                android:textColor="?android:attr/textColorPrimary"
+                android:layout_marginTop="2dp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/emailLabelT"
+                app:layout_constraintTop_toBottomOf="@+id/emailLabelT"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginTop="12dp"
+                app:layout_constraintTop_toBottomOf="@+id/emailT"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <!-- Dirección -->
+            <TextView
+                android:id="@+id/addressLabelT"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/label_address"
+                android:textSize="14sp"
+                android:textColor="?android:attr/textColorSecondary"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider2"/>
+
+            <TextView
+                android:id="@+id/adressT"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/sample_address"
+                android:textSize="16sp"
+                android:textColor="?android:attr/textColorPrimary"
+                android:layout_marginTop="2dp"
+                app:layout_constraintStart_toStartOf="@+id/addressLabelT"
+                app:layout_constraintTop_toBottomOf="@+id/addressLabelT"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <Button
+                android:id="@+id/buttonSeeLocation"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/button_see_location"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:backgroundTint="@color/leaf_green"
+                android:textColor="?attr/colorOnPrimary"
+                app:layout_constraintTop_toBottomOf="@+id/adressT"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

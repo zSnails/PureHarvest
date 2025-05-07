@@ -4,4 +4,6 @@
     <drawable name="error_image" />
     <drawable name="placeholder_image" />
     <drawable name="ic_error_image" />
+    <drawable name="ic_image_error_placeholder" />
+    <drawable name="ic_placeholder_image" />
 </resources>

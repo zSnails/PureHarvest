@@ -96,5 +96,5 @@ dependencies {
     annotationProcessor libs.compiler
     implementation libs.androidx.lifecycle.viewmodel
     implementation libs.androidx.lifecycle.livedata
-
+    implementation libs.glide
 }

@@ -1,10 +1,9 @@
 [versions]
-agp = "8.9.1"
 compiler = "4.16.0"
 firebaseAuth = "23.2.0"
-firebaseStorage = "21.0.1"
+agp = "8.8.2"
+firebaseBom = "33.11.0"
 glide = "4.16.0"
-firebaseBom = "33.13.0"
 hiltAndroid = "2.51.1"
 hiltCompiler = "2.56"
 junit = "4.13.2"
@@ -28,6 +27,8 @@ lifecycleViewmodelKtx = "2.8.7"
 roomCompiler = "2.7.1"
 roomRuntime = "2.7.1"
 lifecycle = "2.8.7"
+firebaseFirestore = "25.1.4"
+firebaseStorage = "21.0.1"
 
 [libraries]
 compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compiler" }
@@ -46,7 +47,6 @@ constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayo
 navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
 navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
-firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 
 lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -67,7 +67,8 @@ room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCom
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycle" }
 androidx-lifecycle-livedata = { module = "androidx.lifecycle:lifecycle-livedata", version.ref = "lifecycle" }
-firebase-firestore = { module = "com.google.firebase:firebase-firestore", version = "25.1.4" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
+firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
