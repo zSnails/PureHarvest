@@ -20,14 +20,9 @@ public class ProductsOptionsFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_products_options, container, false);
 
-        ImageButton backButton = root.findViewById(R.id.backButtonOptions);
+
         Button cProductsBtn = root.findViewById(R.id.cProductsBtn);
 
-
-        backButton.setOnClickListener(v -> {
-            NavController navController = Navigation.findNavController(v);
-            navController.navigateUp();
-        });
 
         cProductsBtn.setOnClickListener(v -> {
             if(getView() != null) {

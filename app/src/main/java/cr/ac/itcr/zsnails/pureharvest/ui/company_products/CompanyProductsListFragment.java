@@ -53,12 +53,6 @@ public class CompanyProductsListFragment extends Fragment {
         binding = FragmentCompnayProductsListBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        // --- Setup Back Button Listener ---
-        binding.backButtonProductList.setOnClickListener(v -> {
-            NavController navController = Navigation.findNavController(v);
-            navController.navigateUp(); // Navigate back up the stack
-        });
-        // ---------------------------------
 
         setupRecyclerView();
         fetchProductsFromFirestore();

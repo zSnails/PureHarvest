@@ -30,9 +30,10 @@ public class DashboardFragment extends Fragment {
         final TextView textView = binding.textDashboard;
         dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
-        Button buttonGo = root.findViewById(R.id.button);
-
-        buttonGo.setOnClickListener(v-> Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_companyContactFragment));
+        binding.buttonSettings.setOnClickListener(v-> Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_settingsFragment));
+        binding.buttonCompanyProfile.setOnClickListener(v-> Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_profileFragment));
+        binding.buttonCompanyProducts.setOnClickListener((v-> Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_productsOptionsFragment)));
+        binding.buttonCompanyOrders.setOnClickListener((v-> Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_companyOrderListFragment)));
 
         return root;
     }

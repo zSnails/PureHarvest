@@ -58,16 +58,17 @@
                 app:layout_constraintWidth_max="300dp" />
 
             <!-- Teléfono -->
+
             <TextView
                 android:id="@+id/phoneLabelT"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="24dp"
                 android:text="@string/label_phone"
-                android:textSize="14sp"
                 android:textColor="?android:attr/textColorSecondary"
+                android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sloganT"/>
+                app:layout_constraintTop_toBottomOf="@+id/sloganT" />
 
             <TextView
                 android:id="@+id/phoneT"
@@ -155,17 +156,19 @@
                 android:id="@+id/buttonSeeLocation"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/button_see_location"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
+                android:backgroundTint="@color/leaf_green"
                 android:paddingTop="12dp"
                 android:paddingBottom="12dp"
-                android:backgroundTint="@color/leaf_green"
+                android:text="@string/button_see_location"
                 android:textColor="?attr/colorOnPrimary"
-                app:layout_constraintTop_toBottomOf="@+id/adressT"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/adressT"
+                app:layout_constraintVertical_bias="0.0" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

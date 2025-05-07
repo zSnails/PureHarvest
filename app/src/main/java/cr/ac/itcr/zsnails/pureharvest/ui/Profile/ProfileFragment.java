@@ -171,7 +171,7 @@ public class ProfileFragment extends Fragment {
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        ImageButton backButton = root.findViewById(R.id.backButtonProfile);
+
         nameT = root.findViewById(R.id.NameT);
         sloganT = root.findViewById(R.id.sloganT);
         phoneT = root.findViewById(R.id.phoneT);
@@ -187,10 +187,7 @@ public class ProfileFragment extends Fragment {
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 
-        backButton.setOnClickListener(v -> {
-            NavController navController = Navigation.findNavController(v);
-            navController.navigateUp();
-        });
+
 
         addPhotoBtn.setOnClickListener(v -> openGallery());
         deletePhotoBtn.setOnClickListener(v -> deleteImageFromFirebase());
