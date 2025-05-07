@@ -17,7 +17,7 @@
             android:id="@+id/editTextProductName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/hint_product_name"
+            android:hint="@string/hint_create_product_name"
             android:inputType="textCapWords"
             android:autofillHints="name"
             android:minHeight="48dp" />
@@ -32,7 +32,7 @@
             android:id="@+id/editTextRating"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/hint_rating"
+            android:hint="@string/hint_create_product_rating"
             android:inputType="numberDecimal"
             android:minHeight="48dp" />
 
@@ -40,7 +40,7 @@
             android:id="@+id/editTextPrice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/hint_price"
+            android:hint="@string/hint_create_product_price"
             android:inputType="numberDecimal"
             android:minHeight="48dp" />
 
@@ -57,7 +57,7 @@
             android:id="@+id/btnSelectImages"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/btn_select_images" />
+            android:text="@string/btn_create_product_select_images" />
 
         <HorizontalScrollView
             android:layout_width="match_parent"
@@ -91,7 +91,7 @@
                 android:id="@+id/editTextFlavors"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/hint_flavors"
+                android:hint="@string/hint_create_product_flavors"
                 android:inputType="textCapWords"
                 android:minHeight="48dp" />
 

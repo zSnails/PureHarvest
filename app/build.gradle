@@ -66,6 +66,9 @@ dependencies {
     implementation libs.lifecycle.livedata.ktx
     implementation libs.lifecycle.viewmodel.ktx
     implementation libs.room.runtime
+    implementation libs.firebase.firestore
+    implementation libs.firebase.storage
+    annotationProcessor libs.hilt.compiler
 
     annotationProcessor libs.room.compiler
     annotationProcessor libs.hilt.compiler
@@ -77,6 +80,7 @@ dependencies {
     implementation libs.firebase.storage
     implementation platform(libs.firebase.bom)
     implementation libs.firebase.analytics
+    implementation libs.glide
 
     implementation libs.appcompat
     implementation libs.material
