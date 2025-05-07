@@ -9,6 +9,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
@@ -77,12 +78,13 @@ public class ShoppingCartViewModel extends ViewModel {
         executor.execute(() -> {
             CartItem found = repo.find(item.productId);
             if (found != null) {
-                CartDisplayItem local = items.getValue()
+                Optional<CartDisplayItem> local = items.getValue()
                         .stream()
                         .filter(a -> a.productId.compareTo(item.productId) == 0)
-                        .findFirst().get();
+                        .findFirst();
+                if (local.isEmpty()) return;
                 int newAmount = item.amount + found.amount;
-                local.setAmount(newAmount);
+                local.get().setAmount(newAmount);
                 repo.setAmount(found.id, newAmount);
             } else {
                 repo.insert(item);
