@@ -42,8 +42,12 @@ public class ShoppingCartRepository {
         dao.deleteById(id);
     }
 
+    public CartItem find(String productId) {
+        return dao.find(productId);
+    }
+
     public long insert(CartItem item) {
-        long id = dao.insertAll(item);
+        long id = dao.insert(item);
         Executors.newSingleThreadExecutor().execute(() -> {
             db.collection("products").document(item.productId)
                     .get()
@@ -98,6 +102,9 @@ public class ShoppingCartRepository {
         return displayItemsLiveData;
     }
 
+    public void setAmount(Long id, int newAmount) {
+        dao.updateAmount(id, newAmount);
+    }
 
     public void updateAmount(Item item) {
         dao.updateAmount(item.getId(), item.getAmount());
