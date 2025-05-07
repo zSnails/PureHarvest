@@ -47,13 +47,11 @@ public class companyContactFragment extends Fragment {
     private String companyPhoneNumber;
 
 
-    private static final String COMPANY_ID_FOR_IMAGE = "2";
     private static final String COMPANY_IMAGE_FOLDER_IN_STORAGE = "companyImages";
     private static final String COMPANY_IMAGE_FILE_EXTENSION = ".jpg";
-
     private static final String WHATSAPP_PACKAGE_NAME = "com.whatsapp";
     private static final String WHATSAPP_BUSINESS_PACKAGE_NAME = "com.whatsapp.w4b";
-
+    private String companyId;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -65,7 +63,14 @@ public class companyContactFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d(TAG, "onViewCreated: View created, starting data fetch for company ID: " + COMPANY_ID_FOR_IMAGE);
+
+        Log.d(TAG, "onViewCreated: View created, starting data fetch");
+
+        if (getArguments() != null) {
+            companyId = getArguments().getString("company_id", "2");
+        } else {
+            companyId = "2"; // fallback
+        }
 
         setInitialUIState();
         fetchCompanyDataAndImage();
@@ -269,7 +274,7 @@ public class companyContactFragment extends Fragment {
             return;
         }
 
-        String fileNameWithExtension = COMPANY_ID_FOR_IMAGE + COMPANY_IMAGE_FILE_EXTENSION;
+        String fileNameWithExtension = companyId  + COMPANY_IMAGE_FILE_EXTENSION;
         StorageReference fileRef = storage.getReference().child(COMPANY_IMAGE_FOLDER_IN_STORAGE + "/" + fileNameWithExtension);
 
         Log.d(TAG, "Attempting to load image from Storage path: " + fileRef.getPath());
@@ -300,7 +305,7 @@ public class companyContactFragment extends Fragment {
     }
 
     private void fetchCompanyDataAndImage() {
-        Log.d(TAG, "fetchCompanyDataAndImage: Starting data fetch for company ID: " + COMPANY_ID_FOR_IMAGE);
+        Log.d(TAG, "fetchCompanyDataAndImage: Starting data fetch for company ID: " + companyId);
         if (binding != null) {
             binding.buttonSeeLocation.setEnabled(false);
         }
@@ -310,19 +315,19 @@ public class companyContactFragment extends Fragment {
         if (db == null) {
             Log.e(TAG, "fetchCompanyDataAndImage: Firestore db instance is null!");
             if (getContext() != null) Toast.makeText(getContext(), getString(R.string.database_error), Toast.LENGTH_SHORT).show();
-            setErrorUIState("DB Error");
+            setErrorUIState("DB Error", companyId);
             return;
         }
 
-        db.collection("Company").document(COMPANY_ID_FOR_IMAGE).get()
+        db.collection("Company").document(companyId).get()
                 .addOnSuccessListener(documentSnapshot -> {
-                    Log.d(TAG, "fetchCompanyDataAndImage: Firestore onSuccess triggered for company ID: " + COMPANY_ID_FOR_IMAGE);
+                    Log.d(TAG, "fetchCompanyDataAndImage: Firestore onSuccess triggered for company ID: " + companyId);
                     if (binding == null || !isAdded() || getContext() == null) {
                         Log.w(TAG, "fetchCompanyDataAndImage: Binding, Context became null or Fragment not added.");
                         return;
                     }
                     if (documentSnapshot.exists()) {
-                        Log.d(TAG, "fetchCompanyDataAndImage: Document 'Company/" + COMPANY_ID_FOR_IMAGE + "' exists.");
+                        Log.d(TAG, "fetchCompanyDataAndImage: Document 'Company/" + companyId + "' exists.");
                         String name = documentSnapshot.getString("name");
                         String slogan = documentSnapshot.getString("slogan");
                         companyPhoneNumber = documentSnapshot.getString("number");
@@ -377,21 +382,21 @@ public class companyContactFragment extends Fragment {
                             binding.phoneT.setVisibility(View.VISIBLE);
                         }
                         binding.buttonSeeLocation.setEnabled(mapAddressValue != null && !mapAddressValue.trim().isEmpty());
-                        Log.d(TAG, "fetchCompanyDataAndImage: Firestore UI Updated successfully for company ID: " + COMPANY_ID_FOR_IMAGE);
+                        Log.d(TAG, "fetchCompanyDataAndImage: Firestore UI Updated successfully for company ID: " + companyId);
                     } else {
-                        Log.w(TAG, "fetchCompanyDataAndImage: Document 'Company/" + COMPANY_ID_FOR_IMAGE + "' does not exist.");
-                        setErrorUIState("Not Found");
+                        Log.w(TAG, "fetchCompanyDataAndImage: Document 'Company/" + companyId + "' does not exist.");
+                        setErrorUIState("Not Found", companyId);
                         if (getContext() != null)
                             Toast.makeText(getContext(), getString(R.string.company_info_not_found), Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(TAG, "fetchCompanyDataAndImage: Firestore onFailure triggered for company ID: " + COMPANY_ID_FOR_IMAGE, e);
+                    Log.e(TAG, "fetchCompanyDataAndImage: Firestore onFailure triggered for company ID: " + companyId, e);
                     if (binding == null) {
                         Log.w(TAG, "fetchCompanyDataAndImage: Binding became null on failure.");
                         return;
                     }
-                    setErrorUIState("Error");
+                    setErrorUIState("Error", companyId);
                     if (getContext() != null) {
                         Toast.makeText(getContext(), getString(R.string.error_fetching_data_detail, e.getMessage()), Toast.LENGTH_LONG).show();
                     }
@@ -400,7 +405,7 @@ public class companyContactFragment extends Fragment {
                         Log.e(TAG, "Firestore Error Code: " + firestoreEx.getCode());
                         if (firestoreEx.getCode() == FirebaseFirestoreException.Code.UNAVAILABLE ||
                                 (firestoreEx.getMessage() != null && firestoreEx.getMessage().toLowerCase().contains("client is offline"))) {
-                            setErrorUIState("Offline");
+                            setErrorUIState("Offline", companyId);
                             if (getContext() != null)
                                 Toast.makeText(getContext(), getString(R.string.client_offline_error), Toast.LENGTH_LONG).show();
                         }
@@ -408,9 +413,9 @@ public class companyContactFragment extends Fragment {
                 });
     }
 
-    private void setErrorUIState(String errorType) {
+    private void setErrorUIState(String errorType, String companyId) {
         if (binding == null) return;
-        String errorMsg = errorType + " (ID: " + COMPANY_ID_FOR_IMAGE + ")";
+        String errorMsg = errorType + " (ID: " + companyId + ")";
         binding.NameT.setText(errorMsg);
         binding.sloganT.setText(errorMsg);
         binding.phoneT.setText(errorMsg);

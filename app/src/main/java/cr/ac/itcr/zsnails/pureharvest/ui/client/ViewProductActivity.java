@@ -40,6 +40,7 @@ public class ViewProductActivity extends AppCompatActivity {
     private LinearLayout optionalFieldsContainer;
     private ShoppingCartViewModel shoppingCartViewModel;
     private Button btnViewProfile;
+    private Product currentProduct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,9 +87,9 @@ public class ViewProductActivity extends AppCompatActivity {
         btnViewProfile.setOnClickListener(v -> {
             Intent intent = new Intent(ViewProductActivity.this, MainActivity.class);
             intent.putExtra("navigate_to", "company_contact");
+            intent.putExtra("company_id", currentProduct.getSellerId()); // usa sellerId como companyId
             startActivity(intent);
         });
-
     }
 
     private void loadProductFromFirestore() {
@@ -117,6 +118,7 @@ public class ViewProductActivity extends AppCompatActivity {
         productRating.setRating((float) product.getRating());
         ratingCount.setText(String.format("(%.1f)", product.getRating()));
         productPrice.setText("₡" + product.getPrice());
+        this.currentProduct = product;
 
         unitPrice = product.getPrice();
         updateQuantityAndPrice();

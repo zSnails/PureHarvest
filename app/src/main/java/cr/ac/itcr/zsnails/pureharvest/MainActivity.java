@@ -31,8 +31,12 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if (intent != null && "company_contact".equals(intent.getStringExtra("navigate_to"))) {
+            String companyId = intent.getStringExtra("company_id");
+
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-            navController.navigate(R.id.companyContactFragment);
+            Bundle bundle = new Bundle();
+            bundle.putString("company_id", companyId);
+            navController.navigate(R.id.companyContactFragment, bundle);
         }
 
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
@@ -63,13 +67,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        setIntent(intent); //update intent
+        setIntent(intent);
 
         if ("company_contact".equals(intent.getStringExtra("navigate_to"))) {
+            String companyId = intent.getStringExtra("company_id");
+
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-            navController.navigate(R.id.companyContactFragment);
+            Bundle bundle = new Bundle();
+            bundle.putString("company_id", companyId);
+            navController.navigate(R.id.companyContactFragment, bundle);
         }
     }
+
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
