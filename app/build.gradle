@@ -59,7 +59,6 @@ dependencies {
     implementation libs.ui.tooling.preview
     implementation libs.material3
     implementation libs.play.services.safetynet
-    implementation "com.google.firebase:firebase-appcheck-playintegrity:16.0.0"
     implementation libs.firebase.inappmessaging
     androidTestImplementation platform(libs.compose.bom)
     androidTestImplementation libs.ui.test.junit4
@@ -67,7 +66,6 @@ dependencies {
     implementation libs.lifecycle.livedata.ktx
     implementation libs.lifecycle.viewmodel.ktx
     implementation libs.room.runtime
-    implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
 
     annotationProcessor libs.room.compiler
     annotationProcessor libs.hilt.compiler
