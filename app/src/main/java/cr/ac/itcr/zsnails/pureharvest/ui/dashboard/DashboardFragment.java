@@ -4,12 +4,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
+import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentDashboardBinding;
 
 public class DashboardFragment extends Fragment {
@@ -26,6 +29,12 @@ public class DashboardFragment extends Fragment {
 
         final TextView textView = binding.textDashboard;
         dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+
+        binding.buttonSettings.setOnClickListener(v-> Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_settingsFragment));
+        binding.buttonCompanyProfile.setOnClickListener(v-> Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_profileFragment));
+        binding.buttonCompanyProducts.setOnClickListener((v-> Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_productsOptionsFragment)));
+        binding.buttonCompanyOrders.setOnClickListener((v-> Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_companyOrderListFragment)));
+
         return root;
     }
 
