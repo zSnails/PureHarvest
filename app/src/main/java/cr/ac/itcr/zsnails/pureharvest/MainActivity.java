@@ -29,6 +29,16 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        Intent intent = getIntent();
+        if (intent != null && "company_contact".equals(intent.getStringExtra("navigate_to"))) {
+            String companyId = intent.getStringExtra("company_id");
+
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+            Bundle bundle = new Bundle();
+            bundle.putString("company_id", companyId);
+            navController.navigate(R.id.companyContactFragment, bundle);
+        }
+
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_account, R.id.navigation_shopping_cart)
                 .build();
@@ -52,6 +62,21 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+
+        if ("company_contact".equals(intent.getStringExtra("navigate_to"))) {
+            String companyId = intent.getStringExtra("company_id");
+
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+            Bundle bundle = new Bundle();
+            bundle.putString("company_id", companyId);
+            navController.navigate(R.id.companyContactFragment, bundle);
+        }
     }
 
     @Override
