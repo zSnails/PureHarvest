@@ -1,7 +1,5 @@
 package cr.ac.itcr.zsnails.pureharvest.ui.cart;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -75,8 +73,20 @@ public class ShoppingCartViewModel extends ViewModel {
     }
 
     public void insertItem(CartItem item) {
+        // TODO: refactor this POS, hacky AF last minute code, I'll find some time to refactor this or not, whatever comes first
         executor.execute(() -> {
-            repo.insert(item);
+            CartItem found = repo.find(item.productId);
+            if (found != null) {
+                CartDisplayItem local = items.getValue()
+                        .stream()
+                        .filter(a -> a.productId.compareTo(item.productId) == 0)
+                        .findFirst().get();
+                int newAmount = item.amount + found.amount;
+                local.setAmount(newAmount);
+                repo.setAmount(found.id, newAmount);
+            } else {
+                repo.insert(item);
+            }
             computeSubTotal();
         });
     }

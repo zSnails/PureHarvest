@@ -20,8 +20,11 @@ public interface CartDao {
     void deleteById(Long id);
 
     @Insert
-    long insertAll(CartItem items);
+    long insert(CartItem item);
 
     @Query("UPDATE cart SET amount = :amt WHERE id = :id AND :amt >= 0")
     void updateAmount(Long id, Integer amt);
+
+    @Query("SELECT * FROM cart WHERE product_id = :productId LIMIT 1")
+    CartItem find(String productId);
 }
