@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
+import android.content.Intent;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -17,6 +18,7 @@ import cr.ac.itcr.zsnails.pureharvest.data.model.Product;
 import cr.ac.itcr.zsnails.pureharvest.entities.CartItem;
 import cr.ac.itcr.zsnails.pureharvest.ui.cart.ShoppingCartViewModel;
 import dagger.hilt.android.AndroidEntryPoint;
+import cr.ac.itcr.zsnails.pureharvest.MainActivity;
 
 @AndroidEntryPoint
 public class ViewProductActivity extends AppCompatActivity {
@@ -37,6 +39,7 @@ public class ViewProductActivity extends AppCompatActivity {
     private boolean isFavorite = false;
     private LinearLayout optionalFieldsContainer;
     private ShoppingCartViewModel shoppingCartViewModel;
+    private Button btnViewProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +81,14 @@ public class ViewProductActivity extends AppCompatActivity {
         btnFavorite = findViewById(R.id.btnFavorite);
         btnFavorite.setOnClickListener(v -> toggleFavorite());
         optionalFieldsContainer = findViewById(R.id.optionalFieldsContainer);
+
+        btnViewProfile = findViewById(R.id.btnViewProfile);
+        btnViewProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(ViewProductActivity.this, MainActivity.class);
+            intent.putExtra("navigate_to", "company_contact");
+            startActivity(intent);
+        });
+
     }
 
     private void loadProductFromFirestore() {
