@@ -42,7 +42,7 @@ public final class Card extends ViewHolder implements OnClickListener, Stateful<
     }
 
     public void bind(@NonNull final Item item) {
-        this.binding.productName.setText(String.format(Locale.getDefault(), "%s - %d", item.getName(), item.getId()));
+        this.binding.productName.setText(item.getName());
         this.binding.cartItemAmount.setText(
                 String.format(Locale.getDefault(), "%d", item.getAmount()));
         this.binding.cartItemAmount.setOnClickListener(
