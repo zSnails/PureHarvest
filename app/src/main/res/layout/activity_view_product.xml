@@ -186,16 +186,5 @@
             android:text="View Company Profile"
             android:textAllCaps="false"
             android:layout_marginTop="8dp" />
-
-        <Button
-            android:id="@+id/btnContactWhatsapp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Contact via WhatsApp"
-            android:textAllCaps="false"
-            android:layout_marginTop="4dp"
-            android:textColor="@color/leaf_green"
-            android:backgroundTint="@android:color/white"
-            android:background="@drawable/whatsapp_border" />
     </LinearLayout>
 </ScrollView>
