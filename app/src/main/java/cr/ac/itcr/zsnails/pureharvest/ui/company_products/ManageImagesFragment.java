@@ -97,8 +97,6 @@ public class ManageImagesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.backButtonManageImages.setOnClickListener(v -> navigateBack());
-
         if (productId != null && !productId.isEmpty()) {
             loadInitialImages();
             setupButtonListeners();

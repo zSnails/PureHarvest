@@ -408,4 +408,9 @@
     <string name="company_info_not_found">Company information not found.</string>
     <string name="error_fetching_data_detail">Error fetching data: %1$s</string>
     <string name="client_offline_error">Error: Client is offline. Check connection.</string>
+
+    <string name="settings">Settings</string>
+    <string name="company_profile">Company Profile</string>
+    <string name="company_products">Company Products</string>
+    <string name="company_orders">Company Orders</string>
 </resources>

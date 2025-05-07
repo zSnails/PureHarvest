@@ -13,17 +13,6 @@
         android:layout_height="wrap_content"
         tools:context=".ui.Profile.EditProfileFragment">
 
-        <ImageButton
-            android:id="@+id/backButtonEdit"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/ic_arrow_back_24"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/cd_back_button_profile"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="0dp" />
 
         <TextView
             android:id="@+id/companyTV"
@@ -34,7 +23,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/backButtonEdit" />
+            />
 
         <EditText
             android:id="@+id/nameInput"

@@ -13,16 +13,6 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <!-- Back Button -->
-        <ImageButton
-            android:id="@+id/backButtonManageImages"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/ic_arrow_back_24"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/cd_back_button_manage_images"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/titleManageImages"
@@ -33,9 +23,6 @@
             android:gravity="center_horizontal"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="48dp"
-            app:layout_constraintTop_toTopOf="@id/backButtonManageImages"
-            app:layout_constraintBottom_toBottomOf="@id/backButtonManageImages"
-            app:layout_constraintStart_toEndOf="@id/backButtonManageImages"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <!-- Image Slot 1 -->
@@ -46,7 +33,6 @@
             android:layout_marginTop="16dp"
             app:cardCornerRadius="8dp"
             app:cardElevation="4dp"
-            app:layout_constraintTop_toBottomOf="@id/backButtonManageImages"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 

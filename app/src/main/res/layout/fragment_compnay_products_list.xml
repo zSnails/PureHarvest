@@ -7,32 +7,18 @@
     android:background="?android:colorBackground"
     tools:context=".ui.company_products.CompanyProductsListFragment">
 
-    <ImageButton
-        android:id="@+id/backButtonProductList"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:src="@drawable/ic_arrow_back_24"
-        android:contentDescription="@string/back_button_content_description"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/titleTextView"
-        android:layout_width="248dp"
-        android:layout_height="28dp"
-        android:layout_marginHorizontal="8dp"
-        android:gravity="center_horizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
         android:text="@string/title_product_list"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-        app:layout_constraintBottom_toBottomOf="@+id/backButtonProductList"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.171"
-        app:layout_constraintStart_toEndOf="@id/backButtonProductList"
-        app:layout_constraintTop_toTopOf="@+id/backButtonProductList"
-        app:layout_constraintVertical_bias="0.6" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewProducts"
@@ -41,11 +27,10 @@
         android:clipToPadding="false"
         android:paddingHorizontal="8dp"
         android:paddingVertical="8dp"
-        android:layout_marginTop="16dp"
         android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="2"
-        app:layout_constraintTop_toBottomOf="@+id/backButtonProductList"
+        app:layout_constraintTop_toBottomOf="@id/titleTextView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -61,10 +46,10 @@
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
         android:textColor="?android:textColorSecondary"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="@+id/recyclerViewProducts"
-        app:layout_constraintBottom_toBottomOf="@+id/recyclerViewProducts"
-        app:layout_constraintStart_toStartOf="@+id/recyclerViewProducts"
-        app:layout_constraintEnd_toEndOf="@+id/recyclerViewProducts" />
+        app:layout_constraintTop_toTopOf="@id/recyclerViewProducts"
+        app:layout_constraintBottom_toBottomOf="@id/recyclerViewProducts"
+        app:layout_constraintStart_toStartOf="@id/recyclerViewProducts"
+        app:layout_constraintEnd_toEndOf="@id/recyclerViewProducts" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -72,9 +57,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="@+id/recyclerViewProducts"
-        app:layout_constraintBottom_toBottomOf="@+id/recyclerViewProducts"
-        app:layout_constraintStart_toStartOf="@+id/recyclerViewProducts"
-        app:layout_constraintEnd_toEndOf="@+id/recyclerViewProducts" />
+        app:layout_constraintTop_toTopOf="@id/recyclerViewProducts"
+        app:layout_constraintBottom_toBottomOf="@id/recyclerViewProducts"
+        app:layout_constraintStart_toStartOf="@id/recyclerViewProducts"
+        app:layout_constraintEnd_toEndOf="@id/recyclerViewProducts" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

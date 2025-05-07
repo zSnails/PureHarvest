@@ -54,11 +54,6 @@ public class EditProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.backButtonEdit.setOnClickListener(v -> {
-            Navigation.findNavController(v).navigateUp();
-        });
-
-
         if (companyIdToUse != null && !companyIdToUse.isEmpty()) {
             loadCompanyData();
         } else {

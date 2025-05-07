@@ -19,6 +19,18 @@
         <action
             android:id="@+id/action_navigation_dashboard_to_companyContactFragment"
             app:destination="@id/companyContactFragment" />
+        <action
+            android:id="@+id/action_navigation_dashboard_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_navigation_dashboard_to_productsOptionsFragment"
+            app:destination="@id/productsOptionsFragment" />
+        <action
+            android:id="@+id/action_navigation_dashboard_to_companyOrderListFragment"
+            app:destination="@id/companyOrderListFragment" />
+        <action
+            android:id="@+id/action_navigation_dashboard_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
 
     <fragment

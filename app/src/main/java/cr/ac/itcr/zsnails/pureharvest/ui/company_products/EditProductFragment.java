@@ -70,8 +70,6 @@ public class EditProductFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.backButtonEditProduct.setOnClickListener(v -> navigateBack());
-
         if (productId != null && !productId.isEmpty()) {
             loadProductData();
         } else {
@@ -348,7 +346,6 @@ public class EditProductFragment extends Fragment {
         binding.buttonCancel.setEnabled(enabled);
         binding.buttonChangeImage.setEnabled(enabled);
         binding.buttonDeleteProduct.setEnabled(enabled);
-        binding.backButtonEditProduct.setEnabled(enabled); // Assuming this is the ID from your layout
         binding.editProductName.setEnabled(enabled);
         binding.editProductType.setEnabled(enabled);
         binding.editProductDescription.setEnabled(enabled);
