@@ -10,7 +10,6 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 
 import cr.ac.itcr.zsnails.pureharvest.LoginActivity;
 import cr.ac.itcr.zsnails.pureharvest.R;
@@ -18,18 +17,12 @@ import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentAccountBinding;
 
 public class AccountFragment extends Fragment {
 
-    private Button settingsBtn;
     private FragmentAccountBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentAccountBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
-        settingsBtn = root.findViewById(R.id.settingsButton);
-
-        settingsBtn.setOnClickListener(v ->
-                Navigation.findNavController(v).navigate(R.id.action_navigation_account_to_settingsFragment));
 
         return root;
     }
