@@ -86,11 +86,11 @@
     <string name="label_product_description">Description</string>
 
 
-    <string name="hint_product_name_edit" tools:ignore="MissingTranslation">Enter product name</string>
-    <string name="hint_product_type">Enter product type</string>
-    <string name="hint_product_price">Enter product price</string>
-    <string name="hint_product_acidity">Enter acidity level</string>
-    <string name="hint_product_description">Enter product description</string>
+    <string name="hint_edit_product_name" tools:ignore="MissingTranslation">Enter product name</string>
+    <string name="hint_edit_product_type">Enter product type</string>
+    <string name="hint_edit_product_price">Enter product price</string>
+    <string name="hint_edit_product_acidity">Enter acidity level</string>
+    <string name="hint_edit_product_description">Enter product description</string>
 
 
     <string name="button_save_product">Save Product</string>
