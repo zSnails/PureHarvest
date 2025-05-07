@@ -127,6 +127,7 @@ public final class ShoppingCartFragment extends Fragment
 
     @Override
     public void onAmountAccepted(CartDisplayItem item, int position, int amount) {
+        if (amount < 1) return;
         item.setAmount(amount);
         shoppingCart.updateItem(item);
     }
