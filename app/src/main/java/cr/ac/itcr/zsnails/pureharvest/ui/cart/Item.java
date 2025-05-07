@@ -15,5 +15,7 @@ public interface Item extends Serializable {
 
     Integer getAmount();
 
+    String getImage();
+
     void setAmount(Integer amount);
 }

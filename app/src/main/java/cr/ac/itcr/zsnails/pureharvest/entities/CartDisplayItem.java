@@ -9,6 +9,7 @@ public class CartDisplayItem implements Item {
     public String name;
     public double price;
     public String type;
+    public String imageUrl;
 
     public int amount;
 
@@ -45,5 +46,10 @@ public class CartDisplayItem implements Item {
     @Override
     public void setAmount(Integer amount) {
         this.amount = amount;
+    }
+
+    @Override
+    public String getImage() {
+        return imageUrl;
     }
 }

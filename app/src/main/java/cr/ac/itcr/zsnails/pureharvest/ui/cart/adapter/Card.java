@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
+import com.bumptech.glide.Glide;
+
 import java.util.Locale;
 
 import cr.ac.itcr.zsnails.pureharvest.R;
@@ -47,6 +49,8 @@ public final class Card extends ViewHolder implements OnClickListener, Stateful<
                 (View view) -> cb.onAmountTap(item, getAdapterPosition()));
         this.binding.productTypeDetail.setText(item.getType());
         this.binding.productPriceDetail.setText(ctx.getString(R.string.colones, item.getPrice()));
+        Glide.with(ctx).load(item.getImage()).into(this.binding.productImageBig);
+        Glide.with(ctx).load(item.getImage()).into(this.binding.productImageSmall);
     }
 
     public void setAmountTapListener(AmountTapListener cb) {

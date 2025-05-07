@@ -60,6 +60,7 @@ public class ShoppingCartRepository {
                         displayItem.name = product.getName();
                         displayItem.price = product.getPrice();
                         displayItem.type = product.getType();
+                        displayItem.imageUrl = product.getFirstImageUrl();
                         displayItem.amount = item.amount;
                         displayItemsLiveData.getValue().add(displayItem);
                         displayItemsLiveData.postValue(displayItemsLiveData.getValue());
@@ -91,6 +92,7 @@ public class ShoppingCartRepository {
                             displayItem.amount = cartItem.amount;
                             displayItem.type = product.getType();
                             displayItem.price = product.getPrice();
+                            displayItem.imageUrl = product.getFirstImageUrl();
                             displayItems.add(displayItem);
 
                             if (displayItems.size() == cartItems.size()) {
