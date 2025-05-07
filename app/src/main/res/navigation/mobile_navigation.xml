@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--suppress ALL -->
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -15,13 +15,17 @@
         android:id="@+id/navigation_dashboard"
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.dashboard.DashboardFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_dashboard">
+        <action
+            android:id="@+id/action_navigation_dashboard_to_companyContactFragment"
+            app:destination="@id/companyContactFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_account"
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.account.AccountFragment"
         android:label="@string/title_account"
-        tools:layout="@layout/fragment_account" >
+        tools:layout="@layout/fragment_account">
         <action
             android:id="@+id/action_navigation_account_to_settingsFragment"
             app:destination="@id/settingsFragment" />
@@ -32,4 +36,98 @@
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.settings.SettingsFragment"
         android:label="Settings"
         tools:layout="@layout/fragment_settings" />
+
+    <fragment
+        android:id="@+id/navigation_shopping_cart"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.cart.ShoppingCartFragment"
+        android:label="@string/title_shopping_cart"
+        tools:layout="@layout/fragment_account">
+        <action
+            android:id="@+id/action_navigation_account_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_navigation_account_to_productsOptionsFragment"
+            app:destination="@id/productsOptionsFragment" />
+        <action
+            android:id="@+id/action_navigation_account_to_companyOrderListFragment"
+            app:destination="@id/companyOrderListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.Profile.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_profileFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.Profile.EditProfileFragment"
+        android:label="Edit profile"
+        tools:layout="@layout/fragment_edit_profile">
+        <action
+            android:id="@+id/action_editProfileFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/CompanyProductsFragment"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.company_products.CompanyProductsFragment"
+        android:label="Products"
+        tools:layout="@layout/products" />
+    <fragment
+        android:id="@+id/companyProductsListFragment"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.company_products.CompanyProductsListFragment"
+        android:label="fragment_compnay_products_list"
+        tools:layout="@layout/fragment_compnay_products_list">
+        <action
+            android:id="@+id/action_companyProductsListFragment_to_editProductFragment"
+            app:destination="@id/editProductFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/productsOptionsFragment"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.company_products.ProductsOptionsFragment"
+        android:label="fragment_products_options"
+        tools:layout="@layout/fragment_products_options">
+        <action
+            android:id="@+id/action_productsOptionsFragment_to_CompanyProductsFragment"
+            app:destination="@id/CompanyProductsFragment" />
+        <action
+            android:id="@+id/action_productsOptionsFragment_to_companyProductsListFragment"
+            app:destination="@id/companyProductsListFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/editProductFragment"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.company_products.EditProductFragment"
+        android:label="fragment_edit_product"
+        tools:layout="@layout/fragment_edit_product">
+        <action
+            android:id="@+id/action_editProductFragment_to_manageImagesFragment"
+            app:destination="@id/manageImagesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/manageImagesFragment"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.company_products.ManageImagesFragment"
+        android:label="fragment_manage_images"
+        tools:layout="@layout/fragment_manage_images" />
+    <fragment
+        android:id="@+id/companyOrderListFragment"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.orders.companyOrderListFragment"
+        android:label="fragment_company_order_list"
+        tools:layout="@layout/fragment_company_order_list">
+        <action
+            android:id="@+id/action_companyOrderListFragment_to_orderDetailsFragment"
+            app:destination="@id/orderDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/orderDetailsFragment"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.orders.OrderDetailsFragment"
+        android:label="fragment_order_details"
+        tools:layout="@layout/fragment_order_details" />
+    <fragment
+        android:id="@+id/companyContactFragment"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.companyContact.companyContactFragment"
+        android:label="fragment_company_contact"
+        tools:layout="@layout/fragment_company_contact" />
 </navigation>
