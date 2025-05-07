@@ -29,7 +29,7 @@ public class CartDisplayItem implements Item {
 
     @Override
     public Double getPrice() {
-        return price;
+        return price * amount;
     }
 
     @Override

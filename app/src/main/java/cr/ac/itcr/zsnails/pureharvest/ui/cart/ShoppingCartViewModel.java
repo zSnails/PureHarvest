@@ -58,7 +58,7 @@ public class ShoppingCartViewModel extends ViewModel {
     private void computeSubTotal() {
         var it = items.getValue();
         if (it == null) return;
-        double total = it.stream().mapToDouble(i -> i.getPrice() * i.getAmount()).sum();
+        double total = it.stream().mapToDouble(CartDisplayItem::getPrice).sum();
         subtotal.postValue(Double.max(total, 0.0));
     }
 
