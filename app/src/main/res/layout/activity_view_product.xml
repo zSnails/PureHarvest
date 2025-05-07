@@ -178,39 +178,6 @@
             android:orientation="vertical"
             android:layout_marginTop="24dp" />
 
-        <!-- Seller Information -->
-        <TextView
-            android:id="@+id/sellerTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Seller Information"
-            android:textStyle="bold"
-            android:layout_marginTop="24dp"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/sellerName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Company Name"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/sellerDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Short description of the company."
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/sellerLocation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="San Carlos, Alajuela"
-            android:textSize="12sp"
-            android:layout_marginTop="4dp" />
-
         <!-- Buttons -->
         <Button
             android:id="@+id/btnViewProfile"
