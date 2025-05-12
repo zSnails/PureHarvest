@@ -9,8 +9,19 @@
     <string name="settingsButton">Ajustes</string>
     <string name="languageTV">Cambiar idioma</string>
 
-    <string name="settings">Configuracion</string>
-    <string name="company_profile">Perfil de la empresa</string>
+
     <string name="company_products">Productos de la empresa</string>
     <string name="company_orders">Ordenes de la empresa</string>
+
+    <string name="settings">Configuraciones</string>
+    <string name="company_profile">Perfil de la empresa</string>
+
+    <string name="edit_company_profile">Editar perfil de la empresa</string>
+    <string name="company_products_list">Lista de productos de la empresa</string>
+    <string name="company_products_options">Opciones de productos</string>
+    <string name="edit_company_product">Editar producto</string>
+
+    <string name="manage_company_product_images">Administrar imágenes</string>
+
+
 </resources>

@@ -410,7 +410,19 @@
     <string name="client_offline_error">Error: Client is offline. Check connection.</string>
 
     <string name="settings">Settings</string>
-    <string name="company_profile">Company Profile</string>
     <string name="company_products">Company Products</string>
     <string name="company_orders">Company Orders</string>
+    <string name="company_profile">Company profile</string>
+    <string name="edit_company_profile">Edit company Profile</string>
+    <string name="company_products_list">Company products list</string>
+    <string name="company_products_options">Company products options</string>
+
+    <string name="edit_company_product">Edit product</string>
+
+    <string name="manage_company_product_images">Manage Images</string>
+
+
+
+
+
 </resources>

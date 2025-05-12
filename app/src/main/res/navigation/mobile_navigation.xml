@@ -46,7 +46,7 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.settings.SettingsFragment"
-        android:label="Settings"
+        android:label="@string/settings"
         tools:layout="@layout/fragment_settings" />
 
     <fragment
@@ -67,7 +67,7 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.Profile.ProfileFragment"
-        android:label="Profile"
+        android:label="@string/company_profile"
         tools:layout="@layout/fragment_profile">
         <action
             android:id="@+id/action_profileFragment_to_editProfileFragment"
@@ -76,7 +76,7 @@
     <fragment
         android:id="@+id/editProfileFragment"
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.Profile.EditProfileFragment"
-        android:label="Edit profile"
+        android:label="@string/edit_company_profile"
         tools:layout="@layout/fragment_edit_profile">
         <action
             android:id="@+id/action_editProfileFragment_to_profileFragment"
@@ -85,12 +85,12 @@
     <fragment
         android:id="@+id/CompanyProductsFragment"
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.company_products.CompanyProductsFragment"
-        android:label="Products"
+        android:label="@string/company_products"
         tools:layout="@layout/products" />
     <fragment
         android:id="@+id/companyProductsListFragment"
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.company_products.CompanyProductsListFragment"
-        android:label="fragment_compnay_products_list"
+        android:label="@string/company_products_list"
         tools:layout="@layout/fragment_compnay_products_list">
         <action
             android:id="@+id/action_companyProductsListFragment_to_editProductFragment"
@@ -99,7 +99,7 @@
     <fragment
         android:id="@+id/productsOptionsFragment"
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.company_products.ProductsOptionsFragment"
-        android:label="fragment_products_options"
+        android:label="@string/company_products_options"
         tools:layout="@layout/fragment_products_options">
         <action
             android:id="@+id/action_productsOptionsFragment_to_CompanyProductsFragment"
@@ -112,7 +112,7 @@
     <fragment
         android:id="@+id/editProductFragment"
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.company_products.EditProductFragment"
-        android:label="fragment_edit_product"
+        android:label="@string/edit_company_product"
         tools:layout="@layout/fragment_edit_product">
         <action
             android:id="@+id/action_editProductFragment_to_manageImagesFragment"
@@ -121,7 +121,7 @@
     <fragment
         android:id="@+id/manageImagesFragment"
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.company_products.ManageImagesFragment"
-        android:label="fragment_manage_images"
+        android:label="@string/manage_company_product_images"
         tools:layout="@layout/fragment_manage_images" />
     <fragment
         android:id="@+id/companyOrderListFragment"
