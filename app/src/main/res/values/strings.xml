@@ -446,5 +446,12 @@
         <item>Organic</item>
     </string-array>
 
+    <string name="error_description_required">Description is required</string>
+    <string name="error_acidity_required">Acidity is required for coffee</string>
+    <string name="error_body_required">Body is required for coffee</string>
+    <string name="error_aftertaste_required">Aftertaste is required for coffee</string>
+    <string name="error_ingredients_required">Ingredients are required for coffee</string>
+    <string name="error_preparation_required">Preparation is required for coffee</string>
+
 
 </resources>

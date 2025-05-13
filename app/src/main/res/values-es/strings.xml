@@ -379,5 +379,12 @@
         <item>Orgánico</item>
     </string-array>
 
+    <string name="error_description_required">La descripción es requerida</string>
+    <string name="error_acidity_required">La acidez es requerida para el café</string>
+    <string name="error_body_required">El cuerpo es requerido para el café</string>
+    <string name="error_aftertaste_required">El retrogusto es requerido para el café</string>
+    <string name="error_ingredients_required">Los ingredientes son requeridos para el café</string>
+    <string name="error_preparation_required">La preparación es requerida para el café</string>
+
 
 </resources>

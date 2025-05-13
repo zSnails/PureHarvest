@@ -41,7 +41,6 @@ public class EditProductFragment extends Fragment {
     private String[] productTypesArray;
     private String coffeeTypeString;
 
-
     private static final String[] CANONICAL_PRODUCT_TYPE_KEYS_ENGLISH = {"Coffee", "Honey", "Vegetable", "Specialty", "Gourmet", "Base/Normal", "Organic"};
     private static final String[] CANONICAL_PRODUCT_TYPE_KEYS_SPANISH = {"Café", "Miel", "Hortaliza", "Especialidad", "Gourmet", "Base/Normal", "Orgánico"};
 
@@ -60,7 +59,7 @@ public class EditProductFragment extends Fragment {
         }
         productTypesArray = getResources().getStringArray(R.array.product_types_array);
         if (productTypesArray.length > 0) {
-            coffeeTypeString = productTypesArray[0]; // This is the localized version of "Coffee"
+            coffeeTypeString = productTypesArray[0];
         }
     }
 
@@ -107,7 +106,6 @@ public class EditProductFragment extends Fragment {
         if (selectedLocalizedType == null) {
             isCoffeeProduct = false;
         } else {
-
             isCoffeeProduct = selectedLocalizedType.equalsIgnoreCase(coffeeTypeString);
         }
 
@@ -378,6 +376,7 @@ public class EditProductFragment extends Fragment {
         if (priceStr.isEmpty()) { binding.layoutProductPrice.setError(getString(R.string.error_price_required)); valid = false; } else { binding.layoutProductPrice.setError(null); }
         if (ratingStr.isEmpty()) { binding.layoutProductRating.setError(getString(R.string.error_rating_required)); valid = false; } else { binding.layoutProductRating.setError(null); }
 
+        if (description.isEmpty()) { binding.layoutProductDescription.setError(getString(R.string.error_description_required)); valid = false; } else { binding.layoutProductDescription.setError(null); }
 
         double price = 0;
         if (valid && !priceStr.isEmpty()) {
@@ -401,11 +400,7 @@ public class EditProductFragment extends Fragment {
             }
         }
 
-        if (!valid) return;
-        showLoading(true);
-
         String canonicalTypeToSave = null;
-        // Find the index of the selected localized type in productTypesArray
         int selectedIndex = -1;
         for(int i=0; i < productTypesArray.length; i++){
             if(productTypesArray[i].equalsIgnoreCase(selectedLocalizedType)){
@@ -413,36 +408,49 @@ public class EditProductFragment extends Fragment {
                 break;
             }
         }
-
-        // Use that index to get the English canonical key
         if(selectedIndex != -1 && selectedIndex < CANONICAL_PRODUCT_TYPE_KEYS_ENGLISH.length){
             canonicalTypeToSave = CANONICAL_PRODUCT_TYPE_KEYS_ENGLISH[selectedIndex];
         }
-
         if(canonicalTypeToSave == null){
-            Log.w(TAG, "Could not find English canonical key for localized type: " + selectedLocalizedType + ". Saving localized string as fallback, but this indicates a mismatch.");
-            canonicalTypeToSave = selectedLocalizedType; // Fallback, but ideally shouldn't happen
+            Log.w(TAG, "Could not find English canonical key for localized type: " + selectedLocalizedType + ". Saving localized string as fallback.");
+            canonicalTypeToSave = selectedLocalizedType;
         }
 
 
         Map<String, Object> productUpdates = new HashMap<>();
         productUpdates.put("name", name);
-        productUpdates.put("type", canonicalTypeToSave); // Save the English canonical key
+        productUpdates.put("type", canonicalTypeToSave);
         productUpdates.put("rating", rating);
         productUpdates.put("price", price);
         productUpdates.put("description", description);
 
         if (coffeeTypeString != null && selectedLocalizedType.equalsIgnoreCase(coffeeTypeString)) {
+            String acidity = Objects.requireNonNull(binding.editProductAcidity.getText()).toString().trim();
+            String body = Objects.requireNonNull(binding.editProductBody.getText()).toString().trim();
+            String aftertaste = Objects.requireNonNull(binding.editProductAftertaste.getText()).toString().trim();
+            String ingredients = Objects.requireNonNull(binding.editProductIngredients.getText()).toString().trim();
+            String preparation = Objects.requireNonNull(binding.editProductPreparation.getText()).toString().trim();
+
+            if (acidity.isEmpty()) { binding.layoutProductAcidity.setError(getString(R.string.error_acidity_required)); valid = false; } else { binding.layoutProductAcidity.setError(null); }
+            if (body.isEmpty()) { binding.layoutProductBody.setError(getString(R.string.error_body_required)); valid = false; } else { binding.layoutProductBody.setError(null); }
+            if (aftertaste.isEmpty()) { binding.layoutProductAftertaste.setError(getString(R.string.error_aftertaste_required)); valid = false; } else { binding.layoutProductAftertaste.setError(null); }
+            if (ingredients.isEmpty()) { binding.layoutProductIngredients.setError(getString(R.string.error_ingredients_required)); valid = false; } else { binding.layoutProductIngredients.setError(null); }
+            if (preparation.isEmpty()) { binding.layoutProductPreparation.setError(getString(R.string.error_preparation_required)); valid = false; } else { binding.layoutProductPreparation.setError(null); }
+
             productUpdates.put("certifications", Objects.requireNonNull(binding.editProductCertifications.getText()).toString().trim());
             productUpdates.put("flavorsAndAromas", Objects.requireNonNull(binding.editProductFlavorsAromas.getText()).toString().trim());
-            productUpdates.put("acidity", Objects.requireNonNull(binding.editProductAcidity.getText()).toString().trim());
-            productUpdates.put("body", Objects.requireNonNull(binding.editProductBody.getText()).toString().trim());
-            productUpdates.put("aftertaste", Objects.requireNonNull(binding.editProductAftertaste.getText()).toString().trim());
-            productUpdates.put("ingredients", Objects.requireNonNull(binding.editProductIngredients.getText()).toString().trim());
-            productUpdates.put("preparation", Objects.requireNonNull(binding.editProductPreparation.getText()).toString().trim());
-        } else {
-
+            productUpdates.put("acidity", acidity);
+            productUpdates.put("body", body);
+            productUpdates.put("aftertaste", aftertaste);
+            productUpdates.put("ingredients", ingredients);
+            productUpdates.put("preparation", preparation);
         }
+
+        if (!valid) {
+            showLoading(false); // Make sure loading is hidden if validation fails early
+            return;
+        }
+        showLoading(true); // Show loading only if all client-side validation passes
         updateProductFirestoreOnlyText(productUpdates);
     }
 
