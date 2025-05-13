@@ -42,6 +42,10 @@ public class EditProductFragment extends Fragment {
     private String coffeeTypeString;
 
 
+    private static final String[] CANONICAL_PRODUCT_TYPE_KEYS_ENGLISH = {"Coffee", "Honey", "Vegetable", "Specialty", "Gourmet", "Base/Normal", "Organic"};
+    private static final String[] CANONICAL_PRODUCT_TYPE_KEYS_SPANISH = {"Café", "Miel", "Hortaliza", "Especialidad", "Gourmet", "Base/Normal", "Orgánico"};
+
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +60,7 @@ public class EditProductFragment extends Fragment {
         }
         productTypesArray = getResources().getStringArray(R.array.product_types_array);
         if (productTypesArray.length > 0) {
-            coffeeTypeString = productTypesArray[0];
+            coffeeTypeString = productTypesArray[0]; // This is the localized version of "Coffee"
         }
     }
 
@@ -96,14 +100,15 @@ public class EditProductFragment extends Fragment {
         binding.buttonDeleteProduct.setOnClickListener(v -> handleDeleteProductConfirmation());
     }
 
-    private void updateFieldVisibility(String selectedType) {
+    private void updateFieldVisibility(String selectedLocalizedType) {
         if (binding == null || coffeeTypeString == null) return;
 
         boolean isCoffeeProduct;
-        if (selectedType == null) {
+        if (selectedLocalizedType == null) {
             isCoffeeProduct = false;
         } else {
-            isCoffeeProduct = selectedType.equalsIgnoreCase(coffeeTypeString);
+
+            isCoffeeProduct = selectedLocalizedType.equalsIgnoreCase(coffeeTypeString);
         }
 
         binding.layoutProductCertifications.setVisibility(isCoffeeProduct ? View.VISIBLE : View.GONE);
@@ -229,7 +234,7 @@ public class EditProductFragment extends Fragment {
                     if (!isAdded() || binding == null) return;
                     showLoading(false);
                     showErrorState(String.format(getString(R.string.error_loading_data_generic), e.getMessage()));
-                    if (binding != null && binding.imageProduct != null) { // Check binding and imageProduct
+                    if (binding != null && binding.imageProduct != null) {
                         binding.imageProduct.setImageResource(R.drawable.ic_error_image);
                     }
                     setButtonsEnabled(false);
@@ -239,21 +244,48 @@ public class EditProductFragment extends Fragment {
         if (binding == null) return;
         binding.editProductName.setText(doc.getString("name"));
 
-        String typeFromServer = doc.getString("type");
-        String typeToDisplayAndUseForLogic = typeFromServer;
+        String typeFromFirestore = doc.getString("type");
+        String localizedTypeToDisplay = null;
+        int typeIndex = -1;
 
-        if (typeFromServer != null && coffeeTypeString != null) {
-            if (typeFromServer.equalsIgnoreCase("Coffee") || typeFromServer.equalsIgnoreCase("Café")) {
-                typeToDisplayAndUseForLogic = coffeeTypeString;
+        if (typeFromFirestore != null && !typeFromFirestore.trim().isEmpty()) {
+            String cleanedTypeFromFirestore = typeFromFirestore.trim();
+
+            for (int i = 0; i < CANONICAL_PRODUCT_TYPE_KEYS_ENGLISH.length; i++) {
+                if (CANONICAL_PRODUCT_TYPE_KEYS_ENGLISH[i].equalsIgnoreCase(cleanedTypeFromFirestore)) {
+                    typeIndex = i;
+                    break;
+                }
             }
-            binding.spinnerProductType.setText(typeToDisplayAndUseForLogic, false);
-            updateFieldVisibility(typeToDisplayAndUseForLogic);
-        } else if (productTypesArray.length > 0) {
-            typeToDisplayAndUseForLogic = productTypesArray[0];
-            binding.spinnerProductType.setText(typeToDisplayAndUseForLogic, false);
-            updateFieldVisibility(typeToDisplayAndUseForLogic);
+
+            if (typeIndex == -1 && CANONICAL_PRODUCT_TYPE_KEYS_SPANISH.length == CANONICAL_PRODUCT_TYPE_KEYS_ENGLISH.length) {
+                for (int i = 0; i < CANONICAL_PRODUCT_TYPE_KEYS_SPANISH.length; i++) {
+                    if (CANONICAL_PRODUCT_TYPE_KEYS_SPANISH[i].equalsIgnoreCase(cleanedTypeFromFirestore)) {
+                        typeIndex = i;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (typeIndex != -1 && typeIndex < productTypesArray.length) {
+            localizedTypeToDisplay = productTypesArray[typeIndex];
         } else {
-            updateFieldVisibility(null); // Fallback if no types are available
+            if (productTypesArray.length > 0) {
+                localizedTypeToDisplay = productTypesArray[0];
+                Log.w(TAG, "Product type from Firestore '" + typeFromFirestore +
+                        "' not matched or invalid. Defaulting to: " + localizedTypeToDisplay);
+            } else {
+                Log.e(TAG, "Product type from Firestore not matched, and productTypesArray is empty.");
+            }
+        }
+
+        if (localizedTypeToDisplay != null) {
+            binding.spinnerProductType.setText(localizedTypeToDisplay, false);
+            updateFieldVisibility(localizedTypeToDisplay);
+        } else {
+            Log.e(TAG, "Could not determine localized product type to display for spinner.");
+            updateFieldVisibility(null);
         }
 
 
@@ -292,7 +324,7 @@ public class EditProductFragment extends Fragment {
         if (imageUrlToLoad != null && getContext() != null && isAdded()) {
             Glide.with(this).load(imageUrlToLoad).placeholder(R.drawable.ic_placeholder_image).error(R.drawable.ic_error_image).into(binding.imageProduct);
         } else {
-            if(binding != null) binding.imageProduct.setImageResource(R.drawable.ic_placeholder_image);
+            if(binding != null && binding.imageProduct != null) binding.imageProduct.setImageResource(R.drawable.ic_placeholder_image);
         }
     }
 
@@ -336,7 +368,7 @@ public class EditProductFragment extends Fragment {
         }
 
         String name = Objects.requireNonNull(binding.editProductName.getText()).toString().trim();
-        String selectedTypeFromSpinner = binding.spinnerProductType.getText().toString();
+        String selectedLocalizedType = binding.spinnerProductType.getText().toString();
         String ratingStr = Objects.requireNonNull(binding.editProductRating.getText()).toString().trim();
         String priceStr = Objects.requireNonNull(binding.editProductPrice.getText()).toString().trim();
         String description = Objects.requireNonNull(binding.editProductDescription.getText()).toString().trim();
@@ -372,14 +404,35 @@ public class EditProductFragment extends Fragment {
         if (!valid) return;
         showLoading(true);
 
+        String canonicalTypeToSave = null;
+        // Find the index of the selected localized type in productTypesArray
+        int selectedIndex = -1;
+        for(int i=0; i < productTypesArray.length; i++){
+            if(productTypesArray[i].equalsIgnoreCase(selectedLocalizedType)){
+                selectedIndex = i;
+                break;
+            }
+        }
+
+        // Use that index to get the English canonical key
+        if(selectedIndex != -1 && selectedIndex < CANONICAL_PRODUCT_TYPE_KEYS_ENGLISH.length){
+            canonicalTypeToSave = CANONICAL_PRODUCT_TYPE_KEYS_ENGLISH[selectedIndex];
+        }
+
+        if(canonicalTypeToSave == null){
+            Log.w(TAG, "Could not find English canonical key for localized type: " + selectedLocalizedType + ". Saving localized string as fallback, but this indicates a mismatch.");
+            canonicalTypeToSave = selectedLocalizedType; // Fallback, but ideally shouldn't happen
+        }
+
+
         Map<String, Object> productUpdates = new HashMap<>();
         productUpdates.put("name", name);
-        productUpdates.put("type", selectedTypeFromSpinner);
+        productUpdates.put("type", canonicalTypeToSave); // Save the English canonical key
         productUpdates.put("rating", rating);
         productUpdates.put("price", price);
         productUpdates.put("description", description);
 
-        if (coffeeTypeString != null && selectedTypeFromSpinner.equalsIgnoreCase(coffeeTypeString)) {
+        if (coffeeTypeString != null && selectedLocalizedType.equalsIgnoreCase(coffeeTypeString)) {
             productUpdates.put("certifications", Objects.requireNonNull(binding.editProductCertifications.getText()).toString().trim());
             productUpdates.put("flavorsAndAromas", Objects.requireNonNull(binding.editProductFlavorsAromas.getText()).toString().trim());
             productUpdates.put("acidity", Objects.requireNonNull(binding.editProductAcidity.getText()).toString().trim());
