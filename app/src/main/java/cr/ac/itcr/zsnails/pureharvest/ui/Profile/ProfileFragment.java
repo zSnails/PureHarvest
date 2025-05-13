@@ -1,4 +1,3 @@
-// File: cr.ac.itcr.zsnails.pureharvest.ui.Profile.ProfileFragment.java
 package cr.ac.itcr.zsnails.pureharvest.ui.Profile;
 
 import static android.app.Activity.RESULT_OK;
@@ -62,11 +61,11 @@ public class ProfileFragment extends Fragment {
                 PICK_IMAGE_REQUEST = Integer.parseInt(companyIdToUse);
             } catch (NumberFormatException e) {
                 Log.e(TAG, "Failed to parse companyIdToUse to int for PICK_IMAGE_REQUEST: " + companyIdToUse, e);
-                PICK_IMAGE_REQUEST = 1; // Default or error-specific request code
+                PICK_IMAGE_REQUEST = 1;
             }
         } else {
             Log.e(TAG, "companyIdToUse is null or empty in onCreate");
-            PICK_IMAGE_REQUEST = 1; // Default or error-specific request code
+            PICK_IMAGE_REQUEST = 1;
         }
     }
 
