@@ -7,33 +7,6 @@
     android:background="?android:colorBackground"
     tools:context=".ui.orders.companyOrderListFragment">
 
-    <ImageButton
-        android:id="@+id/backButtonOrdersList"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:src="@drawable/ic_arrow_back_24"
-        android:contentDescription="@string/content_description_back_button"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/titleTextViewOrders"
-        android:layout_width="227dp"
-        android:layout_height="25dp"
-        android:layout_marginHorizontal="16dp"
-        android:gravity="center_horizontal"
-        android:text="@string/title_my_orders"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-        app:layout_constraintBottom_toBottomOf="@+id/backButtonOrdersList"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.1"
-        app:layout_constraintStart_toEndOf="@id/backButtonOrdersList"
-        app:layout_constraintTop_toTopOf="@+id/backButtonOrdersList"
-        app:layout_constraintVertical_bias="0.565" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewOrders"
         android:layout_width="0dp"
@@ -45,7 +18,7 @@
         android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="2"
-        app:layout_constraintTop_toBottomOf="@+id/backButtonOrdersList"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

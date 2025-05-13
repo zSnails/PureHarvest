@@ -1,4 +1,3 @@
-// File: cr.ac.itcr.zsnails.pureharvest.ui.orders.companyOrderListFragment.java
 package cr.ac.itcr.zsnails.pureharvest.ui.orders;
 
 import android.os.Bundle;
@@ -78,10 +77,7 @@ public class companyOrderListFragment extends Fragment implements CompanyOrderAd
         recyclerViewOrders = view.findViewById(R.id.recyclerViewOrders);
         progressBarOrders = view.findViewById(R.id.progressBarOrders);
         textViewEmptyOrdersList = view.findViewById(R.id.textViewEmptyOrdersList);
-        backButtonOrdersList = view.findViewById(R.id.backButtonOrdersList);
-        titleTextViewOrders = view.findViewById(R.id.titleTextViewOrders);
 
-        // La lista orderList se pasa al adaptador. El fragmento es responsable de actualizar esta lista.
         orderAdapter = new CompanyOrderAdapter(requireContext(), orderList, this);
 
         setupUI();
@@ -140,18 +136,11 @@ public class companyOrderListFragment extends Fragment implements CompanyOrderAd
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 try {
                                     Order order = document.toObject(Order.class);
-                                    // Si NO usas @DocumentId en tu modelo Order.java,
-                                    // Y el campo documentId en el modelo tiene @Exclude,
-                                    // entonces esta línea es NECESARIA:
-                                    // order.setDocumentId(document.getId());
-                                    // Si usas @DocumentId, esta línea es redundante.
-                                    // La dejo por si tu modelo aún no usa @DocumentId correctamente.
                                     if (order.getDocumentId() == null || order.getDocumentId().isEmpty()) {
                                         order.setDocumentId(document.getId());
                                     }
 
 
-                                    // LOG PARA DEPURAR
                                     Log.d(TAG, "Order Fetched: ID=" + order.getDocumentId() +
                                             ", UserID=" + order.getUserId() +
                                             //", ProductIDs=" + (order.getProductIDs() != null ? order.getProductIDs().toString() : "null"));
@@ -161,14 +150,12 @@ public class companyOrderListFragment extends Fragment implements CompanyOrderAd
                                     Log.e(TAG, "Error converting document to Order: ID=" + document.getId(), e);
                                 }
                             }
-                            // Actualizar la lista principal del fragmento y notificar al adaptador
                             orderList.clear();
                             orderList.addAll(fetchedOrdersLocal);
-                            orderAdapter.notifyDataSetChanged(); // O usa orderAdapter.updateOrders(orderList); si implementaste ese método para limpiar y añadir.
-                            // Tu adapter tiene updateOrders, usémoslo:
-                            // orderAdapter.updateOrders(orderList); // Esto es más limpio
+                            orderAdapter.notifyDataSetChanged();
 
-                            if (orderList.isEmpty()) { // Usar orderList que es la lista del fragmento/adaptador
+
+                            if (orderList.isEmpty()) {
                                 if (textViewEmptyOrdersList != null) {
                                     textViewEmptyOrdersList.setText(getString(R.string.no_orders_yet_company));
                                     textViewEmptyOrdersList.setVisibility(View.VISIBLE);
@@ -179,7 +166,7 @@ public class companyOrderListFragment extends Fragment implements CompanyOrderAd
                                 if (recyclerViewOrders != null) recyclerViewOrders.setVisibility(View.VISIBLE);
                             }
                         } else {
-                            handleFetchError(getString(R.string.error_null_result_orders)); // Usa string resource
+                            handleFetchError(getString(R.string.error_null_result_orders));
                         }
                     } else {
                         String errorMessage = getString(R.string.error_loading_orders);
@@ -212,7 +199,7 @@ public class companyOrderListFragment extends Fragment implements CompanyOrderAd
     public void onOrderClick(Order order) {
         if (getContext() == null || !isAdded()) return;
         Log.d(TAG, "Order clicked: DocID=" + order.getDocumentId() + ", UserID: " + order.getUserId());
-        // Toast.makeText(getContext(), "Pedido clickeado: " + order.getDocumentId(), Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
