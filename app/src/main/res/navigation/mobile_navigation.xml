@@ -126,7 +126,7 @@
     <fragment
         android:id="@+id/companyOrderListFragment"
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.orders.companyOrderListFragment"
-        android:label="fragment_company_order_list"
+        android:label="@string/company_order_list"
         tools:layout="@layout/fragment_company_order_list">
         <action
             android:id="@+id/action_companyOrderListFragment_to_orderDetailsFragment"
@@ -135,11 +135,11 @@
     <fragment
         android:id="@+id/orderDetailsFragment"
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.orders.OrderDetailsFragment"
-        android:label="fragment_order_details"
+        android:label="@string/company_order_details"
         tools:layout="@layout/fragment_order_details" />
     <fragment
         android:id="@+id/companyContactFragment"
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.companyContact.companyContactFragment"
-        android:label="fragment_company_contact"
+        android:label="@string/company_contact"
         tools:layout="@layout/fragment_company_contact" />
 </navigation>

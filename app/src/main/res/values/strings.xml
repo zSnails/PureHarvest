@@ -420,7 +420,10 @@
     <string name="edit_company_product">Edit product</string>
 
     <string name="manage_company_product_images">Manage Images</string>
+    <string name="company_order_list">Orders list</string>
+    <string name="company_order_details">Order details</string>
 
+    <string name="company_contact">Contact information</string>
 
 
 
