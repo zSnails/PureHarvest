@@ -425,7 +425,9 @@
 
     <string name="company_contact">Contact information</string>
 
-
+    <string name="confirm_delete_image_title">Confirm Deletion</string>
+    <string name="confirm_delete_image_message">Are you sure you want to delete your profile image?</string>
+    <string name="button_confirm">Confirm</string>
 
 
 </resources>

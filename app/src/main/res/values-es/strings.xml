@@ -359,5 +359,8 @@
     <string name="hint_edit_product_acidity">Nivel de acidez</string>
     <string name="hint_edit_product_description">Descripción del producto</string>
 
+    <string name="confirm_delete_image_title">Confirmar Eliminación</string>
+    <string name="confirm_delete_image_message">¿Estás seguro de que quieres eliminar tu imagen de perfil?</string>
+    <string name="button_confirm">Confirmar</string>
 
 </resources>
