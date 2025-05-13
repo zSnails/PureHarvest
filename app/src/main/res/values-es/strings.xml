@@ -362,5 +362,22 @@
     <string name="confirm_delete_image_title">Confirmar Eliminación</string>
     <string name="confirm_delete_image_message">¿Estás seguro de que quieres eliminar tu imagen de perfil?</string>
     <string name="button_confirm">Confirmar</string>
+    <string name="hint_product_rating">Puntuación (1-5)</string>
+    <string name="hint_product_certifications">Certificaciones/Premios (Opcional)</string>
+    <string name="hint_product_flavors_aromas">Sabores y Aromas (Opcional)</string>
+    <string name="error_rating_required">La puntuación es requerida</string>
+    <string name="error_invalid_rating_format">Formato de puntuación inválido</string>
+    <string name="error_invalid_rating_range">La puntuación debe ser entre 1 y 5</string>
+
+    <string-array name="product_types_array">
+        <item>Café</item>
+        <item>Miel</item>
+        <item>Hortaliza</item>
+        <item>Especialidad</item>
+        <item>Gourmet</item>
+        <item>Base/Normal</item>
+        <item>Orgánico</item>
+    </string-array>
+
 
 </resources>

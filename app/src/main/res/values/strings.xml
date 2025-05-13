@@ -429,5 +429,22 @@
     <string name="confirm_delete_image_message">Are you sure you want to delete your profile image?</string>
     <string name="button_confirm">Confirm</string>
 
+    <string name="hint_product_rating">Rating (1-5)</string>
+    <string name="hint_product_certifications">Certifications/Awards (Optional)</string>
+    <string name="hint_product_flavors_aromas">Flavors and Aromas (Optional)</string>
+    <string name="error_rating_required">Rating is required</string>
+    <string name="error_invalid_rating_format">Invalid rating format</string>
+    <string name="error_invalid_rating_range">Rating must be between 1 and 5</string>
+
+    <string-array name="product_types_array">
+        <item>Coffee</item>
+        <item>Honey</item>
+        <item>Vegetable</item>
+        <item>Specialty</item>
+        <item>Gourmet</item>
+        <item>Base/Normal</item>
+        <item>Organic</item>
+    </string-array>
+
 
 </resources>
