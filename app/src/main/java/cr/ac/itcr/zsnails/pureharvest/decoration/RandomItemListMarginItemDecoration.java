@@ -19,6 +19,6 @@ public class RandomItemListMarginItemDecoration extends ItemDecoration {
     public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         outRect.left = this.space;
         outRect.right = this.space;
-        outRect.bottom = this.space;
+        outRect.bottom = this.space + this.space/2;
     }
 }
