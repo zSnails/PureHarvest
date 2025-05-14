@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
@@ -62,7 +62,11 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
 
         binding.containerSections.addView(section);
 
-        viewModel.getProducts().observe(getViewLifecycleOwner(), adapter::updateData);
+        viewModel.getProducts().observe(getViewLifecycleOwner(), products -> {
+            adapter.updateData(products);
+            section.getRecyclerView().getLayoutParams().height = RecyclerView.LayoutParams.WRAP_CONTENT;
+            section.getRecyclerView().requestLayout();
+        });
     }
 
     @Override

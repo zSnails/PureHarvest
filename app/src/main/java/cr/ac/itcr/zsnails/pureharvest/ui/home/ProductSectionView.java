@@ -7,7 +7,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import cr.ac.itcr.zsnails.pureharvest.R;
@@ -33,7 +32,7 @@ public class ProductSectionView extends LinearLayout {
         recyclerView = findViewById(R.id.productRecyclerView);
 
         // Set GridLayoutManager (2 columns)
-        recyclerView.setLayoutManager(new GridLayoutManager(context, 2));
+        recyclerView.setLayoutManager(new WrapContentGridLayoutManager(context, 2));
     }
 
     public void setTitle(String title) {
