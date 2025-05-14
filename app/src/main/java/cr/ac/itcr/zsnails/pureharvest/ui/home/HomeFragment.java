@@ -62,11 +62,7 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
 
         binding.containerSections.addView(section);
 
-        viewModel.getProducts().observe(getViewLifecycleOwner(), products -> {
-            adapter.updateData(products);
-            section.getRecyclerView().getLayoutParams().height = RecyclerView.LayoutParams.WRAP_CONTENT;
-            section.getRecyclerView().requestLayout();
-        });
+        viewModel.getProducts().observe(getViewLifecycleOwner(), adapter::updateData);
     }
 
     @Override
