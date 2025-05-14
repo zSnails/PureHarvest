@@ -20,6 +20,7 @@ import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.data.model.Product;
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentHomeBinding;
 import cr.ac.itcr.zsnails.pureharvest.decoration.MarginItemDecoration;
+import cr.ac.itcr.zsnails.pureharvest.decoration.RandomItemListMarginItemDecoration;
 import cr.ac.itcr.zsnails.pureharvest.domain.repository.ShoppingCartRepository;
 import cr.ac.itcr.zsnails.pureharvest.entities.CartItem;
 import cr.ac.itcr.zsnails.pureharvest.ui.cart.ShoppingCartViewModel;
@@ -57,7 +58,7 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
         section.setAdapter(adapter);
 
         section.getRecyclerView().addItemDecoration(
-                new MarginItemDecoration((int) getResources().getDimension(R.dimen.random_item_list_margin))
+                new RandomItemListMarginItemDecoration((int) getResources().getDimension(R.dimen.random_item_list_margin))
         );
 
         binding.containerSections.addView(section);

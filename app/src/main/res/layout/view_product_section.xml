@@ -12,7 +12,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="16dp"
         android:text="@string/products_list_home"
         android:textColor="@color/leaf_green"
         android:textStyle="bold"
