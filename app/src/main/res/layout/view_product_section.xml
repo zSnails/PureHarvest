@@ -1,0 +1,36 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/sectionTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/products_list_home"
+        android:textColor="@color/leaf_green"
+        android:textStyle="bold"
+        android:textSize="22sp"
+        android:paddingBottom="8dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/productRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:nestedScrollingEnabled="false"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:overScrollMode="never" />
+
+    <!-- RecyclerView Grid (two columns) -->
+    <!-- <androidx.recyclerview.widget.RecyclerView
+       android:id="@+id/recyclerView"
+       android:layout_width="match_parent"
+       android:layout_height="fill_parent"
+       android:clipChildren="false"
+       android:clipToPadding="false"
+       android:padding="0dp"
+       app:layout_constraintEnd_toEndOf="parent"
+       tools:listitem="@layout/item_product" />-->
+</LinearLayout>

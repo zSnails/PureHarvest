@@ -51,11 +51,16 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
         shoppingCart = new ViewModelProvider(requireActivity()).get(ShoppingCartViewModel.class);
 
         final ProductAdapter adapter = new ProductAdapter(new ArrayList<>(), this, this);
-        this.binding.recyclerView.addItemDecoration(
-                new MarginItemDecoration(
-                        (int) getResources().getDimension(R.dimen.random_item_list_margin)));
-        binding.recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        binding.recyclerView.setAdapter(adapter);
+
+        ProductSectionView section = new ProductSectionView(requireContext());
+        section.setTitle(getString(R.string.products_list_home));
+        section.setAdapter(adapter);
+
+        section.getRecyclerView().addItemDecoration(
+                new MarginItemDecoration((int) getResources().getDimension(R.dimen.random_item_list_margin))
+        );
+
+        binding.containerSections.addView(section);
 
         viewModel.getProducts().observe(getViewLifecycleOwner(), adapter::updateData);
     }
