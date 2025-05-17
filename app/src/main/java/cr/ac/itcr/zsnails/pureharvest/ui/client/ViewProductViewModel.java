@@ -1,5 +1,6 @@
 package cr.ac.itcr.zsnails.pureharvest.ui.client;
 
+import android.security.keystore.UserNotAuthenticatedException;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -29,10 +30,10 @@ public class ViewProductViewModel extends ViewModel {
         this.auth = auth;
     }
 
-    public void loadFavoriteStatus() throws NullPointerException {
+    public void loadFavoriteStatus() throws UserNotAuthenticatedException {
         FirebaseUser user = auth.getCurrentUser();
         if (user == null) {
-            throw new NullPointerException(
+            throw new UserNotAuthenticatedException(
                     "@Mathew: mae aquí usted tiene que mandar al usuario a que inicie sesión y luego regresar aquí para poder agregar el coso este a favoritos, y no le voy a ayudar");
         }
         this.firestore
@@ -47,11 +48,11 @@ public class ViewProductViewModel extends ViewModel {
                 });
     }
 
-    public void toggleFavorite() throws NullPointerException {
+    public void toggleFavorite() throws UserNotAuthenticatedException {
         // I'll be checking if the user is logged in
         FirebaseUser user = auth.getCurrentUser();
         if (user == null) {
-            throw new NullPointerException(
+            throw new UserNotAuthenticatedException(
                     "@Mathew: mae aquí usted tiene que mandar al usuario a que inicie sesión y luego regresar aquí para poder agregar el coso este a favoritos, y no le voy a ayudar");
         }
         this.firestore

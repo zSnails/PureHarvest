@@ -1,6 +1,7 @@
 package cr.ac.itcr.zsnails.pureharvest.ui.client;
 
 import android.os.Bundle;
+import android.security.keystore.UserNotAuthenticatedException;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
@@ -65,8 +66,11 @@ public class ViewProductActivity extends AppCompatActivity {
                     ContextCompat.getColor(this, fav ? R.color.red : android.R.color.darker_gray)
             );
         });
-        viewProductViewModel.loadFavoriteStatus();
-
+        try {
+            viewProductViewModel.loadFavoriteStatus();
+        } catch (UserNotAuthenticatedException e) {
+            throw new RuntimeException(e);
+        }
 
         initViews();
         imageMain.setOnClickListener(v -> showZoomDialog());
@@ -225,7 +229,11 @@ public class ViewProductActivity extends AppCompatActivity {
         this.isFavorite = !isFavorite; // esto es un hack terrible, esto no debería estar aquí, isFavorite mínimo debería ser el mismo que en el view model
                                        // (esto lo hizo fabs originalmente)
         viewProductViewModel.favorite.setValue(this.isFavorite);
-        viewProductViewModel.toggleFavorite();
+        try {
+            viewProductViewModel.toggleFavorite();
+        } catch (UserNotAuthenticatedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
