@@ -39,6 +39,7 @@ public class ViewProductActivity extends AppCompatActivity {
     private boolean isFavorite = false;
     private LinearLayout optionalFieldsContainer;
     private ShoppingCartViewModel shoppingCartViewModel;
+    private ViewProductViewModel viewProductViewModel;
     private Button btnViewProfile;
     private Product currentProduct;
 
@@ -47,6 +48,7 @@ public class ViewProductActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_product);
         shoppingCartViewModel = new ViewModelProvider(this).get(ShoppingCartViewModel.class);
+        viewProductViewModel = new ViewModelProvider(this).get(ViewProductViewModel.class);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -59,6 +61,14 @@ public class ViewProductActivity extends AppCompatActivity {
             finish();
             return;
         }
+
+        viewProductViewModel.productId = productId;
+        viewProductViewModel.favorite.observe(this, (fav) -> {
+            btnFavorite.setImageResource(fav ? R.drawable.ic_favorite : R.drawable.ic_favorite_border);
+            btnFavorite.setColorFilter(
+                    ContextCompat.getColor(this, fav ? R.color.red : android.R.color.darker_gray)
+            );
+        });
 
 
         initViews();
@@ -213,12 +223,21 @@ public class ViewProductActivity extends AppCompatActivity {
     }
 
     private void toggleFavorite() {
-        isFavorite = !isFavorite;
-        btnFavorite.setImageResource(isFavorite ? R.drawable.ic_favorite : R.drawable.ic_favorite_border);
-        btnFavorite.setColorFilter(
-                ContextCompat.getColor(this, isFavorite ? R.color.red : android.R.color.darker_gray)
-        );
+        //FirebaseUser user = auth.getUser();
+        //if (user == null) {
+        //    throw new NullPointerException(
+        //            "@Mathew: mae aquí usted tiene que mandar al usuario a que inicie sesión y luego regresar aquí para poder agregar el coso este a favoritos, y no le voy a ayudar");
+        //}
+        this.isFavorite = !isFavorite; // esto es un hack terrible, esto no debería estar aquí, isFavorite mínimo debería ser el mismo que en el view model
+                                       // (esto lo hizo fabs originalmente)
+        viewProductViewModel.favorite.setValue(this.isFavorite);
+        //btnFavorite.setImageResource(isFavorite ? R.drawable.ic_favorite : R.drawable.ic_favorite_border);
+        //btnFavorite.setColorFilter(
+        //        ContextCompat.getColor(this, isFavorite ? R.color.red : android.R.color.darker_gray)
+        //);
+        viewProductViewModel.toggleFavorite();
     }
+
     @Override
     public boolean onSupportNavigateUp() {
         finish();
