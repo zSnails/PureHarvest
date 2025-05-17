@@ -69,6 +69,7 @@ public class ViewProductActivity extends AppCompatActivity {
                     ContextCompat.getColor(this, fav ? R.color.red : android.R.color.darker_gray)
             );
         });
+        viewProductViewModel.loadFavoriteStatus();
 
 
         initViews();

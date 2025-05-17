@@ -29,7 +29,25 @@ public class ViewProductViewModel extends ViewModel {
         this.auth = auth;
     }
 
-    public void toggleFavorite() {
+    public void loadFavoriteStatus() throws NullPointerException {
+        FirebaseUser user = auth.getCurrentUser();
+        if (user == null) {
+            throw new NullPointerException(
+                    "@Mathew: mae aquí usted tiene que mandar al usuario a que inicie sesión y luego regresar aquí para poder agregar el coso este a favoritos, y no le voy a ayudar");
+        }
+        this.firestore
+                .collection("favorites")
+                .document(String.format("%s%s", productId, user.getUid())).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        favorite.postValue(true);
+                    } else {
+                        favorite.postValue(false);
+                    }
+                });
+    }
+
+    public void toggleFavorite() throws NullPointerException {
         // I'll be checking if the user is logged in
         FirebaseUser user = auth.getCurrentUser();
         if (user == null) {
