@@ -33,8 +33,9 @@ public class ViewProductViewModel extends ViewModel {
     public void loadFavoriteStatus() throws UserNotAuthenticatedException {
         FirebaseUser user = auth.getCurrentUser();
         if (user == null) {
-            throw new UserNotAuthenticatedException(
-                    "@Mathew: mae aquí usted tiene que mandar al usuario a que inicie sesión y luego regresar aquí para poder agregar el coso este a favoritos, y no le voy a ayudar");
+            favorite.postValue(false);
+            Log.w("favorite-product", "The user is not authenticated, so the favorite status cannot be retrieved");
+            return;
         }
         this.firestore
                 .collection("favorites")
@@ -49,9 +50,9 @@ public class ViewProductViewModel extends ViewModel {
     }
 
     public void toggleFavorite() throws UserNotAuthenticatedException {
-        // I'll be checking if the user is logged in
         FirebaseUser user = auth.getCurrentUser();
         if (user == null) {
+            favorite.postValue(false);
             throw new UserNotAuthenticatedException(
                     "@Mathew: mae aquí usted tiene que mandar al usuario a que inicie sesión y luego regresar aquí para poder agregar el coso este a favoritos, y no le voy a ayudar");
         }
