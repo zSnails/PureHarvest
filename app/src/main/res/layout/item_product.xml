@@ -27,6 +27,24 @@
             android:layout_height="match_parent"
             android:contentDescription="@string/product_image"
             android:scaleType="centerCrop" />
+
+        <TextView
+            android:id="@+id/productBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:paddingStart="6dp"
+            android:paddingEnd="6dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:background="@drawable/rounded_green_badge"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/imageCard"
+            app:layout_constraintTop_toTopOf="@id/imageCard"/>
+
     </androidx.cardview.widget.CardView>
 
     <!-- Product Name -->
