@@ -12,6 +12,8 @@ public class Product {
     private String description;
     private List<String> imageUrls = new ArrayList<>();
     private String sellerId;
+    private int totalUnitsSold;
+    private Double saleDiscount;
 
     // Optionals for coffee
     private String certifications;
@@ -44,6 +46,8 @@ public class Product {
         this.aftertaste = aftertaste;
         this.ingredients = ingredients;
         this.preparation = preparation;
+        this.totalUnitsSold = 0;
+        this.saleDiscount = null;
     }
 
     // --- Getters y Setters ---
@@ -75,6 +79,22 @@ public class Product {
 
     public void setImageUrls(List<String> imageUrls) {
         this.imageUrls = (imageUrls != null) ? imageUrls : new ArrayList<>();
+    }
+
+    public int getTotalUnitsSold() {
+        return totalUnitsSold;
+    }
+
+    public void setTotalUnitsSold(int totalUnitsSold) {
+        this.totalUnitsSold = totalUnitsSold;
+    }
+
+    public Double getSaleDiscount() {
+        return saleDiscount;
+    }
+
+    public void setSaleDiscount(Double saleDiscount) {
+        this.saleDiscount = saleDiscount;
     }
 
     public String getSellerId() { return sellerId; }
