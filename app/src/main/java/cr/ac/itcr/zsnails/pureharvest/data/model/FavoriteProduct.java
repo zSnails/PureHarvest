@@ -5,6 +5,10 @@ public class FavoriteProduct {
     public String productId;
     public String ownerId;
 
+    public FavoriteProduct() {
+
+    }
+
     public FavoriteProduct(String productId, String ownerId) {
         this.productId = productId;
         this.ownerId = ownerId;

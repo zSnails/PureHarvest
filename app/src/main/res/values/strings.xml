@@ -413,4 +413,7 @@
     <string name="company_profile">Company Profile</string>
     <string name="company_products">Company Products</string>
     <string name="company_orders">Company Orders</string>
+    <string name="login_notice">To view your favorites list you must be logged in</string>
+    <string name="favorite_list_add_to_shopping_cart">Add to Cart</string>
+    <string name="favorite_card_item_name">[PRODUCT NAME]</string>
 </resources>
