@@ -87,7 +87,7 @@
     <string name="label_product_description">Description</string>
 
 
-    <string name="hint_edit_product_name" tools:ignore="MissingTranslation">Enter product name</string>
+    <string name="hint_edit_product_name">Enter product name</string>
     <string name="hint_edit_product_type">Enter product type</string>
     <string name="hint_edit_product_price">Enter product price</string>
     <string name="hint_edit_product_acidity">Enter acidity level</string>
@@ -410,7 +410,48 @@
     <string name="client_offline_error">Error: Client is offline. Check connection.</string>
 
     <string name="settings">Settings</string>
-    <string name="company_profile">Company Profile</string>
     <string name="company_products">Company Products</string>
     <string name="company_orders">Company Orders</string>
+    <string name="company_profile">Company profile</string>
+    <string name="edit_company_profile">Edit company Profile</string>
+    <string name="company_products_list">Company products list</string>
+    <string name="company_products_options">Company products options</string>
+
+    <string name="edit_company_product">Edit product</string>
+
+    <string name="manage_company_product_images">Manage Images</string>
+    <string name="company_order_list">Orders list</string>
+    <string name="company_order_details">Order details</string>
+
+    <string name="company_contact">Contact information</string>
+
+    <string name="confirm_delete_image_title">Confirm Deletion</string>
+    <string name="confirm_delete_image_message">Are you sure you want to delete your profile image?</string>
+    <string name="button_confirm">Confirm</string>
+
+    <string name="hint_product_rating">Rating (1-5)</string>
+    <string name="hint_product_certifications">Certifications/Awards (Optional)</string>
+    <string name="hint_product_flavors_aromas">Flavors and Aromas (Optional)</string>
+    <string name="error_rating_required">Rating is required</string>
+    <string name="error_invalid_rating_format">Invalid rating format</string>
+    <string name="error_invalid_rating_range">Rating must be between 1 and 5</string>
+
+    <string-array name="product_types_array">
+        <item>Coffee</item>
+        <item>Honey</item>
+        <item>Vegetable</item>
+        <item>Specialty</item>
+        <item>Gourmet</item>
+        <item>Base/Normal</item>
+        <item>Organic</item>
+    </string-array>
+
+    <string name="error_description_required">Description is required</string>
+    <string name="error_acidity_required">Acidity is required for coffee</string>
+    <string name="error_body_required">Body is required for coffee</string>
+    <string name="error_aftertaste_required">Aftertaste is required for coffee</string>
+    <string name="error_ingredients_required">Ingredients are required for coffee</string>
+    <string name="error_preparation_required">Preparation is required for coffee</string>
+
+
 </resources>

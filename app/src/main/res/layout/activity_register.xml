@@ -212,21 +212,21 @@
                 android:layout_width="70dp"
                 android:layout_height="30dp"
                 android:layout_marginEnd="24dp"
-                android:adjustViewBounds="true"
-                android:background="@drawable/mock_outline"
+                android:src="@drawable/ic_google"
                 android:contentDescription="@string/google_title"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_google" />
+                android:background="@drawable/mock_outline"
+                android:adjustViewBounds="true"
+                android:scaleType="centerInside" />
 
             <ImageButton
                 android:id="@+id/btnFacebook"
                 android:layout_width="70dp"
                 android:layout_height="50dp"
-                android:adjustViewBounds="true"
-                android:background="@drawable/mock_outline"
+                android:src="@drawable/ic_facebook"
                 android:contentDescription="@string/facebook"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_facebook" />
+                android:background="@drawable/mock_outline"
+                android:adjustViewBounds="true"
+                android:scaleType="centerInside" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
