@@ -71,6 +71,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         private final ImageView productImage;
         private final TextView productName;
         private final TextView productPrice;
+        private final TextView productOriginalPrice;
         private final TextView productBadge;
         private final Context ctx;
         private Product me;
@@ -83,6 +84,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             productImage = itemView.findViewById(R.id.productImage);
             productName = itemView.findViewById(R.id.productName);
             productPrice = itemView.findViewById(R.id.productPrice);
+            productOriginalPrice = itemView.findViewById(R.id.productOriginalPrice);
             productBadge = itemView.findViewById(R.id.productBadge);
             ImageView addToCart = itemView.findViewById(R.id.addToCartButton);
 
@@ -102,19 +104,41 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
         public void bind(Product product, boolean showRating) {
             this.me = product;
+            double price = product.getPrice();
+            Double discount = product.getSaleDiscount();
+
+            if (discount != null && discount > 0) {
+                double discountedPrice = price * (1 - discount);
+
+                // Show the discounted price
+                productPrice.setText(this.ctx.getString(R.string.colones, discountedPrice));
+
+                // Show the original price
+                productOriginalPrice.setVisibility(View.VISIBLE);
+                productOriginalPrice.setText(this.ctx.getString(R.string.colones, price));
+
+                // Show badge with discount percentage
+                if (showDiscount) {
+                    productBadge.setVisibility(View.VISIBLE);
+                    int discountPercentage = (int) (discount * 100);
+                    productBadge.setText(this.ctx.getString(R.string.discount_format, discountPercentage));
+                } else {
+                    productBadge.setVisibility(View.GONE);
+                }
+
+            } else {
+                // No discount available
+                productPrice.setText(this.ctx.getString(R.string.colones, price));
+                productOriginalPrice.setVisibility(View.INVISIBLE);
+
+                if (showRating) {
+                    productBadge.setVisibility(View.VISIBLE);
+                    productBadge.setText(this.ctx.getString(R.string.rating_format, product.getRating()));
+                } else {
+                    productBadge.setVisibility(View.GONE);
+                }
+            }
             productName.setText(product.getName());
-            productPrice.setText(this.ctx.getString(R.string.colones, product.getPrice()));
-            if (showRating) {
-                productBadge.setVisibility(View.VISIBLE);
-                productBadge.setText(this.ctx.getString(R.string.rating_format, product.getRating()));
-            } else if (showDiscount && product.getSaleDiscount() != null) {
-                productBadge.setVisibility(View.VISIBLE);
-                int discountPercentage = (int) (product.getSaleDiscount() * 100);
-                productBadge.setText(this.ctx.getString(R.string.discount_format, discountPercentage));
-            }
-            else {
-                productBadge.setVisibility(View.GONE);
-            }
             Glide.with(productImage.getContext()).load(product.getFirstImageUrl()).into(productImage);
         }
     }
