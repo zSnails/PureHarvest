@@ -3,6 +3,10 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_home">Home</string>
     <string name="products_list_home">Discover New Products</string>
+    <string name="carousel_top_sold">Top 10 Best Sellers</string>
+    <string name="rating_format">⭐ %.1f</string>
+    <string name="carousel_special_offers">Special Offers</string>
+    <string name="discount_format">-%d%%</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_account">Account</string>
     <string name="title_activity_example">ExampleActivity</string>
@@ -413,6 +417,5 @@
     <string name="company_profile">Company Profile</string>
     <string name="company_products">Company Products</string>
     <string name="company_orders">Company Orders</string>
-    <string name="carousel_top_sold">Top 10 Best Sellers</string>
-    <string name="rating_format">⭐ %.1f</string>
+
 </resources>

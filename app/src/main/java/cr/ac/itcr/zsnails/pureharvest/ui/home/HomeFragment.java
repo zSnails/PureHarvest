@@ -64,7 +64,7 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
         layoutParams.bottomMargin = sectionSpacing;
 
         // Top 10 Best Sellers Section
-        final ProductAdapter topAdapter = new ProductAdapter(new ArrayList<>(), this, this, true);
+        final ProductAdapter topAdapter = new ProductAdapter(new ArrayList<>(), this, this, true, false);
         TopSoldSectionView topSoldSection = new TopSoldSectionView(requireContext());
         topSoldSection.setTitle(getString(R.string.carousel_top_sold));
         topSoldSection.setAdapter(topAdapter);
@@ -75,7 +75,7 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
         binding.containerSections.addView(topSoldSection);
 
         // Random List Section
-        final ProductAdapter adapter = new ProductAdapter(new ArrayList<>(), this, this, false);
+        final ProductAdapter adapter = new ProductAdapter(new ArrayList<>(), this, this, false, false);
         ProductSectionView section = new ProductSectionView(requireContext());
 
         section.setTitle(getString(R.string.products_list_home));
@@ -84,6 +84,16 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
                 new RandomItemListMarginItemDecoration((int) getResources().getDimension(R.dimen.random_item_list_margin))
         );
         binding.containerSections.addView(section);
+
+        // Special Offers Section
+        final ProductAdapter specialOffersAdapter = new ProductAdapter(new ArrayList<>(), this, this, false, true);
+        SpecialOffersSectionView specialOffersSection = new SpecialOffersSectionView(requireContext());
+        specialOffersSection.setTitle(getString(R.string.carousel_special_offers));
+        specialOffersSection.setAdapter(specialOffersAdapter);
+        specialOffersSection.getRecyclerView().addItemDecoration(
+                new RandomItemListMarginItemDecoration((int) getResources().getDimension(R.dimen.random_item_list_margin))
+        );
+        specialOffersSection.setLayoutParams(layoutParams);
 
         // Observe all products
         viewModel.getProducts().observe(getViewLifecycleOwner(), products -> {
@@ -96,6 +106,17 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
                     .collect(Collectors.toList());
 
             topAdapter.updateData(topSold);
+
+            // Filter discounted products
+            List<Product> discountedProducts = products.stream()
+                    .filter(p -> p.getSaleDiscount() > 0)
+                    .collect(Collectors.toList());
+
+            if (!discountedProducts.isEmpty()) {
+                // Only create the section if there are discounted products
+                specialOffersAdapter.updateData(discountedProducts);
+                binding.containerSections.addView(specialOffersSection, 1); // Insertar en la posición 1 (entre topSold y randomList)
+            }
         });
     }
 

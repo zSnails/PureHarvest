@@ -25,14 +25,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     private AddToCartListener listener;
     private OnProductClickListener productClickListener;
     private boolean showRating;
-    // private boolean showDiscount;
+    private boolean showDiscount;
 
-    public ProductAdapter(List<Product> products, AddToCartListener listener, OnProductClickListener productClickListener, boolean showRating) { //boolean showDiscount
+    public ProductAdapter(List<Product> products, AddToCartListener listener, OnProductClickListener productClickListener, boolean showRating, boolean showDiscount) {
         this.products = products;
         this.listener = listener;
         this.productClickListener = productClickListener;
         this.showRating = showRating;
-        // this.showDiscount = showDiscount
+        this.showDiscount = showDiscount;
     }
 
     public void updateData(List<Product> newProducts) {
@@ -107,7 +107,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             if (showRating) {
                 productBadge.setVisibility(View.VISIBLE);
                 productBadge.setText(this.ctx.getString(R.string.rating_format, product.getRating()));
-            } else {
+            } else if (showDiscount && product.getSaleDiscount() != null) {
+                productBadge.setVisibility(View.VISIBLE);
+                int discountPercentage = (int) (product.getSaleDiscount() * 100);
+                productBadge.setText(this.ctx.getString(R.string.discount_format, discountPercentage));
+            }
+            else {
                 productBadge.setVisibility(View.GONE);
             }
             Glide.with(productImage.getContext()).load(product.getFirstImageUrl()).into(productImage);

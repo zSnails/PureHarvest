@@ -47,7 +47,7 @@ public class Product {
         this.ingredients = ingredients;
         this.preparation = preparation;
         this.totalUnitsSold = 0;
-        this.saleDiscount = null;
+        this.saleDiscount = 0.0;
     }
 
     // --- Getters y Setters ---
