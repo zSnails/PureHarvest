@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -12,7 +13,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -48,22 +51,52 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        //Section spacing
+        int sectionSpacing = (int) getResources().getDimension(R.dimen.section_spacing);
+
         viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         shoppingCart = new ViewModelProvider(requireActivity()).get(ShoppingCartViewModel.class);
 
-        final ProductAdapter adapter = new ProductAdapter(new ArrayList<>(), this, this);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        layoutParams.bottomMargin = sectionSpacing;
 
+        // Top 10 Best Sellers Section
+        final ProductAdapter topAdapter = new ProductAdapter(new ArrayList<>(), this, this, true);
+        TopSoldSectionView topSoldSection = new TopSoldSectionView(requireContext());
+        topSoldSection.setTitle(getString(R.string.carousel_top_sold));
+        topSoldSection.setAdapter(topAdapter);
+        topSoldSection.getRecyclerView().addItemDecoration(
+                new RandomItemListMarginItemDecoration((int) getResources().getDimension(R.dimen.random_item_list_margin))
+        );
+        topSoldSection.setLayoutParams(layoutParams);
+        binding.containerSections.addView(topSoldSection);
+
+        // Random List Section
+        final ProductAdapter adapter = new ProductAdapter(new ArrayList<>(), this, this, false);
         ProductSectionView section = new ProductSectionView(requireContext());
+
         section.setTitle(getString(R.string.products_list_home));
         section.setAdapter(adapter);
-
         section.getRecyclerView().addItemDecoration(
                 new RandomItemListMarginItemDecoration((int) getResources().getDimension(R.dimen.random_item_list_margin))
         );
-
         binding.containerSections.addView(section);
 
-        viewModel.getProducts().observe(getViewLifecycleOwner(), adapter::updateData);
+        // Observe all products
+        viewModel.getProducts().observe(getViewLifecycleOwner(), products -> {
+            adapter.updateData(products);
+
+            // Obtain Top 10 Best Sellers
+            List<Product> topSold = products.stream()
+                    .sorted((p1, p2) -> Integer.compare(p2.getTotalUnitsSold(), p1.getTotalUnitsSold()))
+                    .limit(10)
+                    .collect(Collectors.toList());
+
+            topAdapter.updateData(topSold);
+        });
     }
 
     @Override
