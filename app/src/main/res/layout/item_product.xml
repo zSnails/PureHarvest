@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="0dp"
             android:paddingStart="8dp"
-            android:paddingEnd="6dp"
+            android:paddingEnd="8dp"
             android:paddingTop="6dp"
             android:paddingBottom="6dp"
             android:background="@drawable/rounded_green_badge"
