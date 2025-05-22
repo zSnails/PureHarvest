@@ -2,14 +2,21 @@ package cr.ac.itcr.zsnails.pureharvest;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.PopupMenu;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
+
+import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+
+import com.google.android.material.navigation.NavigationBarView;
 
 import cr.ac.itcr.zsnails.pureharvest.databinding.ActivityMainBinding;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -45,13 +52,44 @@ public class MainActivity extends AppCompatActivity {
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(binding.navView, navController);
+
+        binding.navView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                NavOptions.Builder builder = new NavOptions.Builder();
+                builder.setLaunchSingleTop(true);
+
+                if ((item.getOrder() & Menu.CATEGORY_SECONDARY) == 0) {
+                    int startDestinationId = navController.getGraph().getStartDestinationId();
+                    if (startDestinationId != 0) {
+                        boolean inclusive = false;
+                        boolean saveState = true;
+                        builder.setPopUpTo(startDestinationId, inclusive, saveState);
+                    }
+                }
+
+                if (item.getItemId() == R.id.navigation_dashboard || item.getItemId() == R.id.navigation_home) {
+                    builder.setRestoreState(false);
+                } else {
+                    builder.setRestoreState(true);
+                }
+
+                NavOptions navOptions = builder.build();
+                try {
+                    navController.navigate(item.getItemId(), null, navOptions);
+                    return true;
+                } catch (IllegalArgumentException e) {
+                    return false;
+                }
+            }
+        });
+
         binding.fabMenu.setOnClickListener(view -> {
             PopupMenu popup = new PopupMenu(MainActivity.this, view);
             popup.getMenuInflater().inflate(R.menu.fab_menu, popup.getMenu());
 
-            popup.setOnMenuItemClickListener(item -> {
-                if (item.getItemId() == R.id.action_create_product) {
+            popup.setOnMenuItemClickListener(popupMenuItem -> {
+                if (popupMenuItem.getItemId() == R.id.action_create_product) {
                     startActivity(new Intent(MainActivity.this, cr.ac.itcr.zsnails.pureharvest.ui.seller.CreateProductActivity.class));
                     return true;
                 }
@@ -69,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         super.onNewIntent(intent);
         setIntent(intent);
 
-        if ("company_contact".equals(intent.getStringExtra("navigate_to"))) {
+        if (intent != null && "company_contact".equals(intent.getStringExtra("navigate_to"))) {
             String companyId = intent.getStringExtra("company_id");
 
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
