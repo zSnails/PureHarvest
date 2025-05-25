@@ -1,5 +1,7 @@
 package cr.ac.itcr.zsnails.pureharvest.ui.company_buyers;
 
+import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
@@ -18,6 +21,10 @@ import cr.ac.itcr.zsnails.pureharvest.R;
 public class CompanyBuyersAdapter extends RecyclerView.Adapter<CompanyBuyersAdapter.BuyerViewHolder> {
 
     private List<CompanyBuyer> buyerList;
+    public static final String KEY_USER_ID = "userId";
+    public static final String KEY_USER_NAME = "userName";
+    public static final String KEY_ITEMS_BOUGHT = "itemsBought";
+
 
     public CompanyBuyersAdapter(List<CompanyBuyer> buyerList) {
         this.buyerList = buyerList;
@@ -38,7 +45,17 @@ public class CompanyBuyersAdapter extends RecyclerView.Adapter<CompanyBuyersAdap
         holder.textViewItemsBought.setText(String.valueOf(buyer.getItemsBought()));
 
         holder.buttonSeeDetails.setOnClickListener(v -> {
-            Toast.makeText(v.getContext(), "Details for " + buyer.getName(), Toast.LENGTH_SHORT).show();
+            Bundle bundle = new Bundle();
+            bundle.putString(KEY_USER_ID, buyer.getId());
+            bundle.putString(KEY_USER_NAME, buyer.getName());
+            bundle.putInt(KEY_ITEMS_BOUGHT, buyer.getItemsBought());
+
+            try {
+                Navigation.findNavController(v).navigate(R.id.action_companyBuyersListFragment_to_companyBuyerDetailsFragment, bundle);
+            } catch (Exception e) {
+                Toast.makeText(v.getContext(), "Navigation error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                Log.e("NavigationError", "Could not navigate", e);
+            }
         });
     }
 

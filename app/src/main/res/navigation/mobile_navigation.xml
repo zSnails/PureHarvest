@@ -149,5 +149,14 @@
         android:id="@+id/companyBuyersListFragment"
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.company_buyers.CompanyBuyersListFragment"
         android:label="fragment_company_buyers_list"
-        tools:layout="@layout/fragment_company_buyers_list" />
+        tools:layout="@layout/fragment_company_buyers_list" >
+        <action
+            android:id="@+id/action_companyBuyersListFragment_to_companyBuyerDetailsFragment"
+            app:destination="@id/companyBuyerDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/companyBuyerDetailsFragment"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.company_buyers.CompanyBuyerDetailsFragment"
+        android:label="fragment_company_buyer_details"
+        tools:layout="@layout/fragment_company_buyer_details" />
 </navigation>

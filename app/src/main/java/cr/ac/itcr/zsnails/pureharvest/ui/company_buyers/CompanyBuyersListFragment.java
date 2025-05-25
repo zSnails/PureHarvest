@@ -5,28 +5,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import cr.ac.itcr.zsnails.pureharvest.MainActivity; // Asegúrate que esta importación sea correcta
+import cr.ac.itcr.zsnails.pureharvest.MainActivity;
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentCompanyBuyersListBinding;
 
 public class CompanyBuyersListFragment extends Fragment {
@@ -36,7 +31,7 @@ public class CompanyBuyersListFragment extends Fragment {
     private CompanyBuyersAdapter adapter;
     private List<CompanyBuyer> companyBuyerList;
     private FirebaseFirestore db;
-    private String currentSellerId; // Para almacenar el idGlobalUser
+    private String currentSellerId;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -61,7 +56,9 @@ public class CompanyBuyersListFragment extends Fragment {
             fetchCompanyBuyersData();
         } else {
             Log.e(TAG, "idGlobalUser is null or empty. Cannot fetch buyers.");
-            Toast.makeText(getContext(), "Error: Seller ID not available.", Toast.LENGTH_LONG).show();
+            if (getContext() != null) {
+                Toast.makeText(getContext(), "Error: Seller ID not available.", Toast.LENGTH_LONG).show();
+            }
             binding.progressBarCompanyBuyers.setVisibility(View.GONE);
             binding.textViewNoBuyers.setText("Seller ID not configured.");
             binding.textViewNoBuyers.setVisibility(View.VISIBLE);
@@ -69,15 +66,19 @@ public class CompanyBuyersListFragment extends Fragment {
     }
 
     private void fetchCompanyBuyersData() {
-       // binding.progressBarCompanyBuyers.setVisibility(View.VISIBLE);
+        binding.progressBarCompanyBuyers.setVisibility(View.VISIBLE);
         binding.recyclerViewCompanyBuyers.setVisibility(View.GONE);
-       // binding.textViewNoBuyers.setVisibility(View.GONE);
+        binding.textViewNoBuyers.setVisibility(View.GONE);
 
         db.collection("orders")
                 .whereEqualTo("sellerId", currentSellerId)
                 .get()
                 .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
+                    if (!isAdded() || getContext() == null) {
+                        binding.progressBarCompanyBuyers.setVisibility(View.GONE);
+                        return;
+                    }
+                    if (task.isSuccessful() && task.getResult() != null) {
                         Map<String, Integer> userOrderCounts = new HashMap<>();
                         List<String> uniqueUserIds = new ArrayList<>();
 
@@ -94,24 +95,27 @@ public class CompanyBuyersListFragment extends Fragment {
                         if (uniqueUserIds.isEmpty()) {
                             binding.progressBarCompanyBuyers.setVisibility(View.GONE);
                             binding.textViewNoBuyers.setVisibility(View.VISIBLE);
-                            adapter.updateData(new ArrayList<>()); // Limpiar lista si estaba llena
+                            adapter.updateData(new ArrayList<>());
                             Log.d(TAG, "No orders found for this seller, or no userIds in orders.");
                         } else {
-                            fetchUserDetails(uniqueUserIds, userOrderCounts);
+                            fetchUserDetailsFromFirebase(uniqueUserIds, userOrderCounts);
                         }
                     } else {
                         binding.progressBarCompanyBuyers.setVisibility(View.GONE);
                         binding.textViewNoBuyers.setText("Error fetching orders.");
                         binding.textViewNoBuyers.setVisibility(View.VISIBLE);
                         Log.e(TAG, "Error getting orders: ", task.getException());
-                        Toast.makeText(getContext(), "Error fetching orders: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        if (task.getException() != null) {
+                            Toast.makeText(getContext(), "Error fetching orders: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getContext(), "Error fetching orders.", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
     }
 
-    private void fetchUserDetails(List<String> userIds, Map<String, Integer> userOrderCounts) {
+    private void fetchUserDetailsFromFirebase(List<String> userIds, Map<String, Integer> userOrderCounts) {
         List<CompanyBuyer> fetchedBuyers = new ArrayList<>();
-
         if (userIds.isEmpty()) {
             binding.progressBarCompanyBuyers.setVisibility(View.GONE);
             binding.textViewNoBuyers.setVisibility(View.VISIBLE);
@@ -125,18 +129,24 @@ public class CompanyBuyersListFragment extends Fragment {
         for (String userId : userIds) {
             db.collection("users").document(userId).get()
                     .addOnCompleteListener(userTask -> {
+                        if (!isAdded() || getContext() == null) {
+                            if (tasksCompleted.incrementAndGet() == totalTasks) {
+                                binding.progressBarCompanyBuyers.setVisibility(View.GONE);
+                            }
+                            return;
+                        }
                         if (userTask.isSuccessful()) {
                             DocumentSnapshot userDocument = userTask.getResult();
                             if (userDocument != null && userDocument.exists()) {
                                 String fullName = userDocument.getString("fullName");
-                                if (fullName == null) fullName = "N/A";
+                                if (fullName == null || fullName.trim().isEmpty()) fullName = "N/A";
 
                                 int orderCount = userOrderCounts.getOrDefault(userId, 0);
-                                fetchedBuyers.add(new CompanyBuyer(userId, fullName, orderCount));
+                                fetchedBuyers.add(new CompanyBuyer(userDocument.getId(), fullName, orderCount));
                             } else {
                                 Log.w(TAG, "User document not found for ID: " + userId + ". Using ID as name.");
                                 int orderCount = userOrderCounts.getOrDefault(userId, 0);
-                                fetchedBuyers.add(new CompanyBuyer(userId, "User: " + userId + " (Not Found)", orderCount));
+                                fetchedBuyers.add(new CompanyBuyer(userId, "User: " + userId, orderCount));
                             }
                         } else {
                             Log.e(TAG, "Error fetching user details for " + userId, userTask.getException());
@@ -150,13 +160,13 @@ public class CompanyBuyersListFragment extends Fragment {
                                 binding.textViewNoBuyers.setVisibility(View.VISIBLE);
                             } else {
                                 binding.recyclerViewCompanyBuyers.setVisibility(View.VISIBLE);
+                                binding.textViewNoBuyers.setVisibility(View.GONE);
                             }
                             adapter.updateData(fetchedBuyers);
                         }
                     });
         }
     }
-
 
     @Override
     public void onDestroyView() {
