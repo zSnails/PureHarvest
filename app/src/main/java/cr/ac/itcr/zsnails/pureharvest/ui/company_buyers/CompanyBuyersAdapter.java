@@ -3,7 +3,6 @@ package cr.ac.itcr.zsnails.pureharvest.ui.company_buyers;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,7 +63,10 @@ public class CompanyBuyersAdapter extends RecyclerView.Adapter<CompanyBuyersAdap
     }
 
     public void updateData(List<CompanyBuyer> newBuyerList) {
-        this.buyerList = newBuyerList;
+        this.buyerList.clear();
+        if (newBuyerList != null) {
+            this.buyerList.addAll(newBuyerList);
+        }
         notifyDataSetChanged();
     }
 }
