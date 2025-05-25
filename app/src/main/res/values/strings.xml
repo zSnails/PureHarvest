@@ -298,7 +298,6 @@
     <string name="error_fetching_product_details">Error fetching product details.</string>
 
 
-
     <string name="label_product_id_from_order">Ordered Product ID:</string>
 
 
@@ -413,4 +412,6 @@
     <string name="company_profile">Company Profile</string>
     <string name="company_products">Company Products</string>
     <string name="company_orders">Company Orders</string>
+
+    <string name="company_buyers_list">See buyers list</string>
 </resources>

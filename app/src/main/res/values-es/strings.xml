@@ -13,4 +13,5 @@
     <string name="company_profile">Perfil de la empresa</string>
     <string name="company_products">Productos de la empresa</string>
     <string name="company_orders">Ordenes de la empresa</string>
+    <string name="company_buyers_list">Ver lista de compradores</string>
 </resources>

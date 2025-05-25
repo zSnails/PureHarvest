@@ -31,6 +31,9 @@
         <action
             android:id="@+id/action_navigation_dashboard_to_settingsFragment"
             app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_navigation_dashboard_to_companyBuyersListFragment"
+            app:destination="@id/companyBuyersListFragment" />
     </fragment>
 
     <fragment
@@ -142,4 +145,9 @@
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.companyContact.companyContactFragment"
         android:label="fragment_company_contact"
         tools:layout="@layout/fragment_company_contact" />
+    <fragment
+        android:id="@+id/companyBuyersListFragment"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.company_buyers.CompanyBuyersListFragment"
+        android:label="fragment_company_buyers_list"
+        tools:layout="@layout/fragment_company_buyers_list" />
 </navigation>
