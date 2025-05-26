@@ -59,13 +59,16 @@ public class CompanyBuyersListFragment extends Fragment {
             if (getContext() != null) {
                 Toast.makeText(getContext(), "Error: Seller ID not available.", Toast.LENGTH_LONG).show();
             }
-            binding.progressBarCompanyBuyers.setVisibility(View.GONE);
-            binding.textViewNoBuyers.setText("Seller ID not configured.");
-            binding.textViewNoBuyers.setVisibility(View.VISIBLE);
+            if (binding != null) {
+                binding.progressBarCompanyBuyers.setVisibility(View.GONE);
+                binding.textViewNoBuyers.setText("Seller ID not configured.");
+                binding.textViewNoBuyers.setVisibility(View.VISIBLE);
+            }
         }
     }
 
     private void fetchCompanyBuyersData() {
+        if (binding == null) return;
         binding.progressBarCompanyBuyers.setVisibility(View.VISIBLE);
         binding.recyclerViewCompanyBuyers.setVisibility(View.GONE);
         binding.textViewNoBuyers.setVisibility(View.GONE);
@@ -74,8 +77,8 @@ public class CompanyBuyersListFragment extends Fragment {
                 .whereEqualTo("sellerId", currentSellerId)
                 .get()
                 .addOnCompleteListener(task -> {
-                    if (!isAdded() || getContext() == null) {
-                        binding.progressBarCompanyBuyers.setVisibility(View.GONE);
+                    if (!isAdded() || getContext() == null || binding == null) {
+                        if (binding != null) binding.progressBarCompanyBuyers.setVisibility(View.GONE);
                         return;
                     }
                     if (task.isSuccessful() && task.getResult() != null) {
@@ -117,8 +120,10 @@ public class CompanyBuyersListFragment extends Fragment {
     private void fetchUserDetailsFromFirebase(List<String> userIds, Map<String, Integer> userOrderCounts) {
         List<CompanyBuyer> fetchedBuyers = new ArrayList<>();
         if (userIds.isEmpty()) {
-            binding.progressBarCompanyBuyers.setVisibility(View.GONE);
-            binding.textViewNoBuyers.setVisibility(View.VISIBLE);
+            if (binding != null) {
+                binding.progressBarCompanyBuyers.setVisibility(View.GONE);
+                binding.textViewNoBuyers.setVisibility(View.VISIBLE);
+            }
             adapter.updateData(new ArrayList<>());
             return;
         }
@@ -131,7 +136,7 @@ public class CompanyBuyersListFragment extends Fragment {
                     .addOnCompleteListener(userTask -> {
                         if (!isAdded() || getContext() == null) {
                             if (tasksCompleted.incrementAndGet() == totalTasks) {
-                                binding.progressBarCompanyBuyers.setVisibility(View.GONE);
+                                if (binding != null) binding.progressBarCompanyBuyers.setVisibility(View.GONE);
                             }
                             return;
                         }
@@ -141,26 +146,34 @@ public class CompanyBuyersListFragment extends Fragment {
                                 String fullName = userDocument.getString("fullName");
                                 if (fullName == null || fullName.trim().isEmpty()) fullName = "N/A";
 
+                                String email = userDocument.getString("email");
+                                if (email == null || email.trim().isEmpty()) email = "N/A";
+
+                                String phone = userDocument.getString("phone");
+                                if (phone == null || phone.trim().isEmpty()) phone = "N/A";
+
                                 int orderCount = userOrderCounts.getOrDefault(userId, 0);
-                                fetchedBuyers.add(new CompanyBuyer(userDocument.getId(), fullName, orderCount));
+                                fetchedBuyers.add(new CompanyBuyer(userDocument.getId(), fullName, orderCount, email, phone));
                             } else {
                                 Log.w(TAG, "User document not found for ID: " + userId + ". Using ID as name.");
                                 int orderCount = userOrderCounts.getOrDefault(userId, 0);
-                                fetchedBuyers.add(new CompanyBuyer(userId, "User: " + userId, orderCount));
+                                fetchedBuyers.add(new CompanyBuyer(userId, "User: " + userId, orderCount, "N/A", "N/A"));
                             }
                         } else {
                             Log.e(TAG, "Error fetching user details for " + userId, userTask.getException());
                             int orderCount = userOrderCounts.getOrDefault(userId, 0);
-                            fetchedBuyers.add(new CompanyBuyer(userId, "User: " + userId + " (Error)", orderCount));
+                            fetchedBuyers.add(new CompanyBuyer(userId, "User: " + userId + " (Error)", orderCount, "N/A", "N/A"));
                         }
 
                         if (tasksCompleted.incrementAndGet() == totalTasks) {
-                            binding.progressBarCompanyBuyers.setVisibility(View.GONE);
-                            if (fetchedBuyers.isEmpty()) {
-                                binding.textViewNoBuyers.setVisibility(View.VISIBLE);
-                            } else {
-                                binding.recyclerViewCompanyBuyers.setVisibility(View.VISIBLE);
-                                binding.textViewNoBuyers.setVisibility(View.GONE);
+                            if (binding != null) {
+                                binding.progressBarCompanyBuyers.setVisibility(View.GONE);
+                                if (fetchedBuyers.isEmpty()) {
+                                    binding.textViewNoBuyers.setVisibility(View.VISIBLE);
+                                } else {
+                                    binding.recyclerViewCompanyBuyers.setVisibility(View.VISIBLE);
+                                    binding.textViewNoBuyers.setVisibility(View.GONE);
+                                }
                             }
                             adapter.updateData(fetchedBuyers);
                         }

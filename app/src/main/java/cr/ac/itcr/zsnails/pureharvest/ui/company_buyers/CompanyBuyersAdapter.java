@@ -9,10 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.material.button.MaterialButton;
 
 import java.util.List;
 
@@ -21,10 +18,6 @@ import cr.ac.itcr.zsnails.pureharvest.R;
 public class CompanyBuyersAdapter extends RecyclerView.Adapter<CompanyBuyersAdapter.BuyerViewHolder> {
 
     private List<CompanyBuyer> buyerList;
-    public static final String KEY_USER_ID = "userId";
-    public static final String KEY_USER_NAME = "userName";
-    public static final String KEY_ITEMS_BOUGHT = "itemsBought";
-
 
     public CompanyBuyersAdapter(List<CompanyBuyer> buyerList) {
         this.buyerList = buyerList;
@@ -42,21 +35,9 @@ public class CompanyBuyersAdapter extends RecyclerView.Adapter<CompanyBuyersAdap
         CompanyBuyer buyer = buyerList.get(position);
         holder.textViewBuyerId.setText(buyer.getId());
         holder.textViewBuyerName.setText(buyer.getName());
+        holder.textViewBuyerEmail.setText(buyer.getEmail() != null ? buyer.getEmail() : "N/A");
+        holder.textViewBuyerPhone.setText(buyer.getPhone() != null ? buyer.getPhone() : "N/A");
         holder.textViewItemsBought.setText(String.valueOf(buyer.getItemsBought()));
-
-        holder.buttonSeeDetails.setOnClickListener(v -> {
-            Bundle bundle = new Bundle();
-            bundle.putString(KEY_USER_ID, buyer.getId());
-            bundle.putString(KEY_USER_NAME, buyer.getName());
-            bundle.putInt(KEY_ITEMS_BOUGHT, buyer.getItemsBought());
-
-            try {
-                Navigation.findNavController(v).navigate(R.id.action_companyBuyersListFragment_to_companyBuyerDetailsFragment, bundle);
-            } catch (Exception e) {
-                Toast.makeText(v.getContext(), "Navigation error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                Log.e("NavigationError", "Could not navigate", e);
-            }
-        });
     }
 
     @Override
@@ -67,15 +48,17 @@ public class CompanyBuyersAdapter extends RecyclerView.Adapter<CompanyBuyersAdap
     static class BuyerViewHolder extends RecyclerView.ViewHolder {
         TextView textViewBuyerId;
         TextView textViewBuyerName;
+        TextView textViewBuyerEmail;
+        TextView textViewBuyerPhone;
         TextView textViewItemsBought;
-        MaterialButton buttonSeeDetails;
 
         public BuyerViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewBuyerId = itemView.findViewById(R.id.textViewBuyerId);
             textViewBuyerName = itemView.findViewById(R.id.textViewBuyerName);
+            textViewBuyerEmail = itemView.findViewById(R.id.textViewBuyerEmail);
+            textViewBuyerPhone = itemView.findViewById(R.id.textViewBuyerPhone);
             textViewItemsBought = itemView.findViewById(R.id.textViewItemsBought);
-            buttonSeeDetails = itemView.findViewById(R.id.buttonSeeDetails);
         }
     }
 
