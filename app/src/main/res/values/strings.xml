@@ -414,4 +414,40 @@
     <string name="company_orders">Company Orders</string>
 
     <string name="company_buyers_list">See buyers list</string>
+
+
+
+
+    <string name="text_not_available">Not available</string>
+
+    <string name="action_send_sms">Send SMS</string>
+    <string name="action_send_whatsapp">Send WhatsApp</string>
+    <string name="toast_whatsapp_not_installed">WhatsApp is not installed.</string>
+    <string name="toast_play_store_error">Could not open Play Store.</string>
+    <string name="toast_whatsapp_error">Error trying to open WhatsApp.</string>
+    <string name="action_send_email">Send Email</string>
+    <string name="toast_no_email_app">No email application installed.</string>
+    <string name="toast_no_contact_info">No contact information available.</string>
+    <string name="dialog_title_contact_prefix">Contact %1$s</string>
+    <string name="action_cancel">Cancel</string>
+
+
+    <string name="error_seller_id_not_available">Error: Seller ID not available.</string>
+    <string name="text_seller_id_not_configured">Seller ID not configured.</string>
+    <string name="error_fetching_orders_toast">Error fetching orders</string>
+    <string name="error_fetching_orders_message">Error fetching orders.</string>
+    <string name="user_fallback_name_format">User: %1$s</string>
+    <string name="user_fallback_name_error_format">User: %1$s (Error)</string>
+    <string name="text_no_buyers_list_empty">No buyers to display.</string>
+
+
+
+    <string name="label_id">ID:</string>
+    <string name="label_name">Name:</string>
+    <string name="label_items_bought">Items Bought:</string>
+    <string name="button_contact">Contact</string>
+
+
+    <string name="title_company_buyers_list">List of Buyers</string>
+    <string name="text_no_buyers_found_initial">No buyers found for this company.</string>
 </resources>

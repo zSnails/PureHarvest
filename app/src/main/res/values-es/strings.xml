@@ -14,4 +14,41 @@
     <string name="company_products">Productos de la empresa</string>
     <string name="company_orders">Ordenes de la empresa</string>
     <string name="company_buyers_list">Ver lista de compradores</string>
+
+
+
+
+    <string name="text_not_available">No disponible</string>
+    <string name="action_call">Llamar</string>
+    <string name="action_send_sms">Enviar SMS</string>
+    <string name="action_send_whatsapp">Enviar WhatsApp</string>
+    <string name="toast_whatsapp_not_installed">WhatsApp no está instalado.</string>
+    <string name="toast_play_store_error">No se pudo abrir Play Store.</string>
+    <string name="toast_whatsapp_error">Error al intentar abrir WhatsApp.</string>
+    <string name="action_send_email">Enviar Email</string>
+    <string name="toast_no_email_app">No hay aplicación de correo instalada.</string>
+    <string name="toast_no_contact_info">No hay información de contacto disponible.</string>
+    <string name="dialog_title_contact_prefix">Contactar a %1$s</string>
+    <string name="action_cancel">Cancelar</string>
+
+
+    <string name="error_seller_id_not_available">Error: ID de vendedor no disponible.</string>
+    <string name="text_seller_id_not_configured">ID de vendedor no configurado.</string>
+    <string name="error_fetching_orders_toast">Error al obtener pedidos</string>
+    <string name="error_fetching_orders_message">Error al obtener pedidos.</string>
+    <string name="user_fallback_name_format">Usuario: %1$s</string>
+    <string name="user_fallback_name_error_format">Usuario: %1$s (Error)</string>
+    <string name="text_no_buyers_list_empty">No hay compradores para mostrar.</string>
+
+
+    <string name="label_id">ID:</string>
+    <string name="label_name">Nombre:</string>
+    <string name="label_email">Email:</string>
+    <string name="label_phone">Teléfono:</string>
+    <string name="label_items_bought">Items Comprados:</string>
+    <string name="button_contact">Contactar</string>
+
+
+    <string name="title_company_buyers_list">Lista de Compradores</string>
+    <string name="text_no_buyers_found_initial">No se encontraron compradores para esta empresa.</string>
 </resources>

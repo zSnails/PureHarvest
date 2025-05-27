@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import cr.ac.itcr.zsnails.pureharvest.MainActivity;
+import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentCompanyBuyersListBinding;
 
 public class CompanyBuyersListFragment extends Fragment {
@@ -57,11 +58,11 @@ public class CompanyBuyersListFragment extends Fragment {
         } else {
             Log.e(TAG, "idGlobalUser is null or empty. Cannot fetch buyers.");
             if (getContext() != null) {
-                Toast.makeText(getContext(), "Error: Seller ID not available.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getString(R.string.error_seller_id_not_available), Toast.LENGTH_LONG).show();
             }
             if (binding != null) {
                 binding.progressBarCompanyBuyers.setVisibility(View.GONE);
-                binding.textViewNoBuyers.setText("Seller ID not configured.");
+                binding.textViewNoBuyers.setText(getString(R.string.text_seller_id_not_configured));
                 binding.textViewNoBuyers.setVisibility(View.VISIBLE);
             }
         }
@@ -97,6 +98,7 @@ public class CompanyBuyersListFragment extends Fragment {
 
                         if (uniqueUserIds.isEmpty()) {
                             binding.progressBarCompanyBuyers.setVisibility(View.GONE);
+                            binding.textViewNoBuyers.setText(getString(R.string.text_no_buyers_list_empty));
                             binding.textViewNoBuyers.setVisibility(View.VISIBLE);
                             adapter.updateData(new ArrayList<>());
                             Log.d(TAG, "No orders found for this seller, or no userIds in orders.");
@@ -105,14 +107,14 @@ public class CompanyBuyersListFragment extends Fragment {
                         }
                     } else {
                         binding.progressBarCompanyBuyers.setVisibility(View.GONE);
-                        binding.textViewNoBuyers.setText("Error fetching orders.");
+                        binding.textViewNoBuyers.setText(getString(R.string.error_fetching_orders_message));
                         binding.textViewNoBuyers.setVisibility(View.VISIBLE);
                         Log.e(TAG, "Error getting orders: ", task.getException());
-                        if (task.getException() != null) {
-                            Toast.makeText(getContext(), "Error fetching orders: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getContext(), "Error fetching orders.", Toast.LENGTH_SHORT).show();
+                        String errorMessage = getString(R.string.error_fetching_orders_toast);
+                        if (task.getException() != null && task.getException().getMessage() != null) {
+                            errorMessage += ": " + task.getException().getMessage();
                         }
+                        Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -122,6 +124,7 @@ public class CompanyBuyersListFragment extends Fragment {
         if (userIds.isEmpty()) {
             if (binding != null) {
                 binding.progressBarCompanyBuyers.setVisibility(View.GONE);
+                binding.textViewNoBuyers.setText(getString(R.string.text_no_buyers_list_empty));
                 binding.textViewNoBuyers.setVisibility(View.VISIBLE);
             }
             adapter.updateData(new ArrayList<>());
@@ -130,6 +133,7 @@ public class CompanyBuyersListFragment extends Fragment {
 
         AtomicInteger tasksCompleted = new AtomicInteger(0);
         int totalTasks = userIds.size();
+        final String naValue = "N/A"; // Literal "N/A" as sentinel for the model
 
         for (String userId : userIds) {
             db.collection("users").document(userId).get()
@@ -144,31 +148,34 @@ public class CompanyBuyersListFragment extends Fragment {
                             DocumentSnapshot userDocument = userTask.getResult();
                             if (userDocument != null && userDocument.exists()) {
                                 String fullName = userDocument.getString("fullName");
-                                if (fullName == null || fullName.trim().isEmpty()) fullName = "N/A";
+                                if (fullName == null || fullName.trim().isEmpty()) fullName = naValue;
 
                                 String email = userDocument.getString("email");
-                                if (email == null || email.trim().isEmpty()) email = "N/A";
+                                if (email == null || email.trim().isEmpty()) email = naValue;
 
                                 String phone = userDocument.getString("phone");
-                                if (phone == null || phone.trim().isEmpty()) phone = "N/A";
+                                if (phone == null || phone.trim().isEmpty()) phone = naValue;
 
                                 int orderCount = userOrderCounts.getOrDefault(userId, 0);
                                 fetchedBuyers.add(new CompanyBuyer(userDocument.getId(), fullName, orderCount, email, phone));
                             } else {
                                 Log.w(TAG, "User document not found for ID: " + userId + ". Using ID as name.");
                                 int orderCount = userOrderCounts.getOrDefault(userId, 0);
-                                fetchedBuyers.add(new CompanyBuyer(userId, "User: " + userId, orderCount, "N/A", "N/A"));
+                                String fallbackName = getString(R.string.user_fallback_name_format, userId);
+                                fetchedBuyers.add(new CompanyBuyer(userId, fallbackName, orderCount, naValue, naValue));
                             }
                         } else {
                             Log.e(TAG, "Error fetching user details for " + userId, userTask.getException());
                             int orderCount = userOrderCounts.getOrDefault(userId, 0);
-                            fetchedBuyers.add(new CompanyBuyer(userId, "User: " + userId + " (Error)", orderCount, "N/A", "N/A"));
+                            String errorFallbackName = getString(R.string.user_fallback_name_error_format, userId);
+                            fetchedBuyers.add(new CompanyBuyer(userId, errorFallbackName, orderCount, naValue, naValue));
                         }
 
                         if (tasksCompleted.incrementAndGet() == totalTasks) {
                             if (binding != null) {
                                 binding.progressBarCompanyBuyers.setVisibility(View.GONE);
                                 if (fetchedBuyers.isEmpty()) {
+                                    binding.textViewNoBuyers.setText(getString(R.string.text_no_buyers_list_empty));
                                     binding.textViewNoBuyers.setVisibility(View.VISIBLE);
                                 } else {
                                     binding.recyclerViewCompanyBuyers.setVisibility(View.VISIBLE);

@@ -40,20 +40,25 @@ public class CompanyBuyersAdapter extends RecyclerView.Adapter<CompanyBuyersAdap
     @Override
     public void onBindViewHolder(@NonNull BuyerViewHolder holder, int position) {
         CompanyBuyer buyer = buyerList.get(position);
+        Context context = holder.itemView.getContext();
+
         holder.textViewBuyerId.setText(buyer.getId());
         holder.textViewBuyerName.setText(buyer.getName());
 
-        String displayEmail = (buyer.getEmail() != null && !buyer.getEmail().equals("N/A") && !buyer.getEmail().isEmpty())
-                ? buyer.getEmail() : "No disponible";
-        String displayPhone = (buyer.getPhone() != null && !buyer.getPhone().equals("N/A") && !buyer.getPhone().isEmpty())
-                ? buyer.getPhone() : "No disponible";
+        String notAvailableText = context.getString(R.string.text_not_available);
 
-        holder.textViewBuyerEmail.setText(displayEmail);
-        holder.textViewBuyerPhone.setText(displayPhone);
+        String emailFromBuyer = buyer.getEmail();
+        holder.textViewBuyerEmail.setText((emailFromBuyer != null && !emailFromBuyer.isEmpty() && !emailFromBuyer.equals("N/A"))
+                ? emailFromBuyer : notAvailableText);
+
+        String phoneFromBuyer = buyer.getPhone();
+        holder.textViewBuyerPhone.setText((phoneFromBuyer != null && !phoneFromBuyer.isEmpty() && !phoneFromBuyer.equals("N/A"))
+                ? phoneFromBuyer : notAvailableText);
+
         holder.textViewItemsBought.setText(String.valueOf(buyer.getItemsBought()));
 
         holder.buttonContactBuyer.setOnClickListener(v -> {
-            showContactOptions(holder.itemView.getContext(), buyer);
+            showContactOptions(context, buyer);
         });
     }
 
@@ -68,19 +73,19 @@ public class CompanyBuyersAdapter extends RecyclerView.Adapter<CompanyBuyersAdap
         boolean emailAvailable = email != null && !email.isEmpty() && !email.equals("N/A");
 
         if (phoneAvailable) {
-            options.add("Llamar");
+            options.add(context.getString(R.string.action_call));
             actions.add(() -> {
                 Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phone));
                 context.startActivity(intent);
             });
 
-            options.add("Enviar SMS");
+            options.add(context.getString(R.string.action_send_sms));
             actions.add(() -> {
                 Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:" + phone));
                 context.startActivity(intent);
             });
 
-            options.add("Enviar WhatsApp");
+            options.add(context.getString(R.string.action_send_whatsapp));
             actions.add(() -> {
                 try {
                     String formattedPhone = phone.replaceAll("[^0-9+]", "");
@@ -89,49 +94,49 @@ public class CompanyBuyersAdapter extends RecyclerView.Adapter<CompanyBuyersAdap
                     if (intent.resolveActivity(context.getPackageManager()) != null) {
                         context.startActivity(intent);
                     } else {
-                        Toast.makeText(context, "WhatsApp no está instalado.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, context.getString(R.string.toast_whatsapp_not_installed), Toast.LENGTH_SHORT).show();
                         try {
                             Intent playStoreIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.whatsapp"));
                             if (playStoreIntent.resolveActivity(context.getPackageManager()) != null) {
                                 context.startActivity(playStoreIntent);
                             }
                         } catch (Exception eMarket) {
-                            Toast.makeText(context, "No se pudo abrir Play Store.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, context.getString(R.string.toast_play_store_error), Toast.LENGTH_SHORT).show();
                         }
                     }
                 } catch (Exception e) {
-                    Toast.makeText(context, "Error al intentar abrir WhatsApp.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.toast_whatsapp_error), Toast.LENGTH_SHORT).show();
                     Log.e("CompanyBuyerAdapter", "WhatsApp Error", e);
                 }
             });
         }
 
         if (emailAvailable) {
-            options.add("Enviar Email");
+            options.add(context.getString(R.string.action_send_email));
             actions.add(() -> {
                 Intent intent = new Intent(Intent.ACTION_SENDTO);
                 intent.setData(Uri.parse("mailto:" + email));
                 if (intent.resolveActivity(context.getPackageManager()) != null) {
                     context.startActivity(intent);
                 } else {
-                    Toast.makeText(context, "No hay aplicación de correo instalada.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.toast_no_email_app), Toast.LENGTH_SHORT).show();
                 }
             });
         }
 
         if (options.isEmpty()) {
-            Toast.makeText(context, "No hay información de contacto disponible.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.toast_no_contact_info), Toast.LENGTH_SHORT).show();
             return;
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Contactar a " + buyer.getName());
+        builder.setTitle(String.format(context.getString(R.string.dialog_title_contact_prefix), buyer.getName()));
         builder.setItems(options.toArray(new CharSequence[0]), (dialog, which) -> {
             if (which >= 0 && which < actions.size()) {
                 actions.get(which).run();
             }
         });
-        builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
+        builder.setNegativeButton(context.getString(R.string.action_cancel), (dialog, which) -> dialog.dismiss());
         builder.show();
     }
 
