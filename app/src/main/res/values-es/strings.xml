@@ -49,6 +49,8 @@
     <string name="button_contact">Contactar</string>
 
 
-    <string name="title_company_buyers_list">Lista de Compradores</string>
+    <string name="fragment_title_company_buyers_list">Lista de Compradores</string>
     <string name="text_no_buyers_found_initial">No se encontraron compradores para esta empresa.</string>
+
+    <string name="title_company_buyers_list">Mis compradores</string>
 </resources>
