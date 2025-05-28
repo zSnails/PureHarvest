@@ -183,7 +183,10 @@ public class ViewProductActivity extends AppCompatActivity {
         // Mini images
         miniImagesContainer.removeAllViews();
         if (product.getImageUrls() != null) {
-            for (String url : product.getImageUrls()) {
+            for (int i = 0; i < product.getImageUrls().size(); i++) {
+                String url = product.getImageUrls().get(i);
+                int finalI = i;
+
                 ImageView mini = new ImageView(this);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(120, 120);
                 params.setMargins(8, 0, 8, 0);
@@ -191,6 +194,8 @@ public class ViewProductActivity extends AppCompatActivity {
                 mini.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
                 Glide.with(this).load(url).into(mini);
+
+                mini.setOnClickListener(v -> imageSlider.setCurrentItem(finalI, true));
 
                 miniImagesContainer.addView(mini);
             }
