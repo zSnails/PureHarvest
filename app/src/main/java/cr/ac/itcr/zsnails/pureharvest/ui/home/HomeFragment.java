@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
@@ -22,7 +23,6 @@ import javax.inject.Inject;
 import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.data.model.Product;
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentHomeBinding;
-import cr.ac.itcr.zsnails.pureharvest.decoration.MarginItemDecoration;
 import cr.ac.itcr.zsnails.pureharvest.decoration.RandomItemListMarginItemDecoration;
 import cr.ac.itcr.zsnails.pureharvest.domain.repository.ShoppingCartRepository;
 import cr.ac.itcr.zsnails.pureharvest.entities.CartItem;
@@ -51,7 +51,6 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //Section spacing
         int sectionSpacing = (int) getResources().getDimension(R.dimen.section_spacing);
 
         viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
@@ -63,7 +62,6 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
         );
         layoutParams.bottomMargin = sectionSpacing;
 
-        // Top 10 Best Sellers Section
         final ProductAdapter topAdapter = new ProductAdapter(new ArrayList<>(), this, this, true, false);
         TopSoldSectionView topSoldSection = new TopSoldSectionView(requireContext());
         topSoldSection.setTitle(getString(R.string.carousel_top_sold));
@@ -74,10 +72,8 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
         topSoldSection.setLayoutParams(layoutParams);
         binding.containerSections.addView(topSoldSection);
 
-        // Random List Section
         final ProductAdapter adapter = new ProductAdapter(new ArrayList<>(), this, this, false, false);
         ProductSectionView section = new ProductSectionView(requireContext());
-
         section.setTitle(getString(R.string.products_list_home));
         section.setAdapter(adapter);
         section.getRecyclerView().addItemDecoration(
@@ -85,7 +81,6 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
         );
         binding.containerSections.addView(section);
 
-        // Special Offers Section
         final ProductAdapter specialOffersAdapter = new ProductAdapter(new ArrayList<>(), this, this, false, true);
         SpecialOffersSectionView specialOffersSection = new SpecialOffersSectionView(requireContext());
         specialOffersSection.setTitle(getString(R.string.carousel_special_offers));
@@ -95,27 +90,72 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
         );
         specialOffersSection.setLayoutParams(layoutParams);
 
-        // Observe all products
-        viewModel.getProducts().observe(getViewLifecycleOwner(), products -> {
-            adapter.updateData(products);
+        viewModel.getProducts().observe(getViewLifecycleOwner(), allProducts -> {
+            if (allProducts == null) return;
 
-            // Obtain Top 10 Best Sellers
-            List<Product> topSold = products.stream()
+            List<Product> sortedRandomList = new ArrayList<>(allProducts);
+            Collections.sort(sortedRandomList, (p1, p2) -> {
+                boolean p1Paid = false;
+                com.google.firebase.Timestamp p1Timestamp = null;
+                List<Object> p1StandOut = p1.getStandOutPayment();
+                if (p1StandOut != null && p1StandOut.size() == 2 && p1StandOut.get(0) instanceof Boolean && (Boolean) p1StandOut.get(0)) {
+                    p1Paid = true;
+                    if (p1StandOut.get(1) instanceof com.google.firebase.Timestamp) {
+                        p1Timestamp = (com.google.firebase.Timestamp) p1StandOut.get(1);
+                    } else if (p1StandOut.get(1) instanceof java.util.Date) {
+                        p1Timestamp = new com.google.firebase.Timestamp((java.util.Date) p1StandOut.get(1));
+                    }
+                }
+
+                boolean p2Paid = false;
+                com.google.firebase.Timestamp p2Timestamp = null;
+                List<Object> p2StandOut = p2.getStandOutPayment();
+                if (p2StandOut != null && p2StandOut.size() == 2 && p2StandOut.get(0) instanceof Boolean && (Boolean) p2StandOut.get(0)) {
+                    p2Paid = true;
+                    if (p2StandOut.get(1) instanceof com.google.firebase.Timestamp) {
+                        p2Timestamp = (com.google.firebase.Timestamp) p2StandOut.get(1);
+                    } else if (p2StandOut.get(1) instanceof java.util.Date) {
+                        p2Timestamp = new com.google.firebase.Timestamp((java.util.Date) p2StandOut.get(1));
+                    }
+                }
+
+                if (p1Paid && !p2Paid) return -1;
+                if (!p1Paid && p2Paid) return 1;
+                if (p1Paid && p2Paid) {
+                    if (p1Timestamp != null && p2Timestamp != null) {
+                        return p1Timestamp.compareTo(p2Timestamp);
+                    } else if (p1Timestamp != null) {
+                        return -1;
+                    } else if (p2Timestamp != null) {
+                        return 1;
+                    }
+                    return 0;
+                }
+                return 0;
+            });
+            adapter.updateData(sortedRandomList);
+
+            List<Product> topSold = allProducts.stream()
                     .sorted((p1, p2) -> Integer.compare(p2.getTotalUnitsSold(), p1.getTotalUnitsSold()))
                     .limit(10)
                     .collect(Collectors.toList());
-
             topAdapter.updateData(topSold);
 
-            // Filter discounted products
-            List<Product> discountedProducts = products.stream()
-                    .filter(p -> p.getSaleDiscount() > 0)
+            List<Product> discountedProducts = allProducts.stream()
+                    .filter(p -> p.getSaleDiscount() != null && p.getSaleDiscount() > 0)
                     .collect(Collectors.toList());
 
+            boolean specialOffersSectionExists = binding.containerSections.indexOfChild(specialOffersSection) != -1;
+
             if (!discountedProducts.isEmpty()) {
-                // Only create the section if there are discounted products
                 specialOffersAdapter.updateData(discountedProducts);
-                binding.containerSections.addView(specialOffersSection, 1); // Insertar en la posición 1 (entre topSold y randomList)
+                if (!specialOffersSectionExists) {
+                    binding.containerSections.addView(specialOffersSection, 1);
+                }
+            } else {
+                if (specialOffersSectionExists) {
+                    binding.containerSections.removeView(specialOffersSection);
+                }
             }
         });
     }
