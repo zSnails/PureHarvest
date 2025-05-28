@@ -97,7 +97,30 @@ public class EditProductFragment extends Fragment {
         binding.buttonSave.setOnClickListener(v -> handleSaveChanges());
         binding.buttonCancel.setOnClickListener(v -> handleCancel());
         binding.buttonDeleteProduct.setOnClickListener(v -> handleDeleteProductConfirmation());
+        binding.buttonManageCoupons.setOnClickListener(v -> handleManageCoupons());
     }
+
+    private void handleManageCoupons() {
+        if (getContext() != null && isAdded() && getView() != null) {
+            if (productId != null && !productId.isEmpty()) {
+                Log.d(TAG, "Navigating to Manage Coupons for product ID: " + productId);
+                Bundle args = new Bundle();
+                args.putString("productId", productId);
+                try {
+                    Navigation.findNavController(requireView()).navigate(
+                            R.id.action_editProductFragment_to_manageCouponsFragment, args);
+                } catch (IllegalArgumentException e) {
+                    Log.e(TAG, "Navigation action not found. Ensure it's defined in your nav graph.", e);
+                    showErrorState(getString(R.string.error_navigation_generic));
+                }
+            } else {
+                showErrorState("Product ID inválido para administrar cupones.");
+            }
+        } else {
+            Log.w(TAG, "No se puede navegar: estado del fragmento no válido.");
+        }
+    }
+
 
     private void updateFieldVisibility(String selectedLocalizedType) {
         if (binding == null || coffeeTypeString == null) return;

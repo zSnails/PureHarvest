@@ -115,6 +115,9 @@
         android:label="@string/edit_company_product"
         tools:layout="@layout/fragment_edit_product">
         <action
+            android:id="@+id/action_editProductFragment_to_manageCouponsFragment"
+            app:destination="@id/manageCouponsFragment" />
+        <action
             android:id="@+id/action_editProductFragment_to_manageImagesFragment"
             app:destination="@id/manageImagesFragment" />
     </fragment>
@@ -142,4 +145,9 @@
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.companyContact.companyContactFragment"
         android:label="@string/company_contact"
         tools:layout="@layout/fragment_company_contact" />
+    <fragment
+        android:id="@+id/manageCouponsFragment"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.coupons.ManageCouponsFragment"
+        android:label="Manage Coupons"
+        tools:layout="@layout/fragment_manage_coupons" />
 </navigation>
