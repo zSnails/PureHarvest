@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.PopupMenu;
 
@@ -51,6 +52,17 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            int destId = destination.getId();
+
+            if (destId == R.id.companyProductsListFragment) {
+                binding.fabMenu.setVisibility(View.VISIBLE);
+                binding.fabMenu.show();
+            } else {
+                binding.fabMenu.setVisibility(View.GONE);
+                binding.fabMenu.hide();
+            }
+        });
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
         binding.navView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
