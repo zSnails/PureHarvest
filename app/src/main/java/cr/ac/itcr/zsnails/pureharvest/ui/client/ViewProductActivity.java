@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager2.widget.ViewPager2;
 import android.content.Intent;
 
 import com.bumptech.glide.Glide;
@@ -19,11 +20,11 @@ import cr.ac.itcr.zsnails.pureharvest.entities.CartItem;
 import cr.ac.itcr.zsnails.pureharvest.ui.cart.ShoppingCartViewModel;
 import dagger.hilt.android.AndroidEntryPoint;
 import cr.ac.itcr.zsnails.pureharvest.MainActivity;
+import cr.ac.itcr.zsnails.pureharvest.ui.client.ImageSliderAdapter;
 
 @AndroidEntryPoint
 public class ViewProductActivity extends AppCompatActivity {
 
-    private ImageView imageMain;
     private LinearLayout miniImagesContainer;
     private TextView productName, productDescription, productType, ratingCount, productPrice;
     private RatingBar productRating;
@@ -41,6 +42,9 @@ public class ViewProductActivity extends AppCompatActivity {
     private ShoppingCartViewModel shoppingCartViewModel;
     private Button btnViewProfile;
     private Product currentProduct;
+    private ViewPager2 imageSlider;
+    private ImageButton btnPrev, btnNext;
+    private List<String> imageUrls;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,12 +66,10 @@ public class ViewProductActivity extends AppCompatActivity {
 
 
         initViews();
-        imageMain.setOnClickListener(v -> showZoomDialog());
         loadProductFromFirestore();
     }
 
     private void initViews() {
-        imageMain = findViewById(R.id.imageMain);
         miniImagesContainer = findViewById(R.id.miniImagesContainer);
         productName = findViewById(R.id.productName);
         productDescription = findViewById(R.id.productDescription);
@@ -82,6 +84,9 @@ public class ViewProductActivity extends AppCompatActivity {
         btnFavorite = findViewById(R.id.btnFavorite);
         btnFavorite.setOnClickListener(v -> toggleFavorite());
         optionalFieldsContainer = findViewById(R.id.optionalFieldsContainer);
+        imageSlider = findViewById(R.id.imageSlider);
+        btnPrev = findViewById(R.id.btnPrev);
+        btnNext = findViewById(R.id.btnNext);
 
         btnViewProfile = findViewById(R.id.btnViewProfile);
         btnViewProfile.setOnClickListener(v -> {
@@ -148,7 +153,31 @@ public class ViewProductActivity extends AppCompatActivity {
 
         // Main image
         if (product.getImageUrls() != null && !product.getImageUrls().isEmpty()) {
-            Glide.with(this).load(product.getImageUrls().get(0)).into(imageMain);
+            ImageSliderAdapter adapter = new ImageSliderAdapter(this, product.getImageUrls(), this::showZoomDialog);
+            imageSlider.setAdapter(adapter);
+            this.imageUrls = product.getImageUrls();
+
+            imageSlider.setOnClickListener(v -> {
+                int currentIndex = imageSlider.getCurrentItem();
+                if (currentIndex >= 0 && imageUrls != null && currentIndex < imageUrls.size()) {
+                    showZoomDialog(imageUrls.get(currentIndex));
+                }
+            });
+
+
+            btnPrev.setOnClickListener(v -> {
+                int current = imageSlider.getCurrentItem();
+                if (current > 0) {
+                    imageSlider.setCurrentItem(current - 1, true);
+                }
+            });
+
+            btnNext.setOnClickListener(v -> {
+                int current = imageSlider.getCurrentItem();
+                if (current < adapter.getItemCount() - 1) {
+                    imageSlider.setCurrentItem(current + 1, true);
+                }
+            });
         }
 
         // Mini images
@@ -163,8 +192,6 @@ public class ViewProductActivity extends AppCompatActivity {
 
                 Glide.with(this).load(url).into(mini);
 
-                mini.setOnClickListener(v -> Glide.with(this).load(url).into(imageMain));
-
                 miniImagesContainer.addView(mini);
             }
         }
@@ -178,14 +205,14 @@ public class ViewProductActivity extends AppCompatActivity {
         addOptionalField("Preparation", product.getPreparation());
     }
 
-    private void showZoomDialog() {
+    private void showZoomDialog(String imageUrl) {
         Dialog dialog = new Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
         dialog.setContentView(R.layout.dialog_image_zoom);
 
         ImageView zoomedImage = dialog.findViewById(R.id.zoomedImage);
-        zoomedImage.setImageDrawable(imageMain.getDrawable());
+        Glide.with(this).load(imageUrl).into(zoomedImage);
 
-        zoomedImage.setOnClickListener(v -> dialog.dismiss()); //close when you touches
+        zoomedImage.setOnClickListener(v -> dialog.dismiss());
 
         dialog.show();
     }
