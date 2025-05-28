@@ -302,7 +302,6 @@
     <string name="error_fetching_product_details">Error fetching product details.</string>
 
 
-
     <string name="label_product_id_from_order">Ordered Product ID:</string>
 
 
@@ -457,5 +456,7 @@
     <string name="error_aftertaste_required">Aftertaste is required for coffee</string>
     <string name="error_ingredients_required">Ingredients are required for coffee</string>
     <string name="error_preparation_required">Preparation is required for coffee</string>
+
+
 
 </resources>

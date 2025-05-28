@@ -20,7 +20,6 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -90,6 +89,7 @@ public class EditProductFragment extends Fragment {
             Log.e(TAG, "Cannot load data: Product ID is null or empty.");
             showErrorState(getString(R.string.error_invalid_product_id));
             setButtonsEnabled(false);
+            binding.buttonPayToStandOut.setEnabled(false);
             updateFieldVisibility(productTypesArray.length > 0 ? productTypesArray[0] : "");
         }
 
@@ -97,6 +97,23 @@ public class EditProductFragment extends Fragment {
         binding.buttonSave.setOnClickListener(v -> handleSaveChanges());
         binding.buttonCancel.setOnClickListener(v -> handleCancel());
         binding.buttonDeleteProduct.setOnClickListener(v -> handleDeleteProductConfirmation());
+        binding.buttonPayToStandOut.setOnClickListener(v -> handlePayToStandOut());
+    }
+
+    private void handlePayToStandOut() {
+        if (productId != null && !productId.isEmpty()) {
+            Bundle bundle = new Bundle();
+            bundle.putString(ARG_PRODUCT_ID, productId);
+            NavController navController = Navigation.findNavController(requireView());
+            try {
+                navController.navigate(R.id.action_editProductFragment_to_standOutPaymentFragment, bundle);
+            } catch (IllegalArgumentException e) {
+                Log.e(TAG, "Navigation action to StandOutPaymentFragment not found. Ensure it's defined in your nav graph.", e);
+                showErrorState(getString(R.string.error_navigation_generic));
+            }
+        } else {
+            Toast.makeText(getContext(), "Product ID is missing. Cannot proceed.", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void updateFieldVisibility(String selectedLocalizedType) {
@@ -117,14 +134,29 @@ public class EditProductFragment extends Fragment {
         binding.layoutProductIngredients.setVisibility(isCoffeeProduct ? View.VISIBLE : View.GONE);
         binding.layoutProductPreparation.setVisibility(isCoffeeProduct ? View.VISIBLE : View.GONE);
 
+        View anchorViewForDeleteButton;
         if (isCoffeeProduct) {
-            ((androidx.constraintlayout.widget.ConstraintLayout.LayoutParams) binding.buttonDeleteProduct.getLayoutParams())
-                    .topToBottom = binding.layoutProductPreparation.getId();
+            anchorViewForDeleteButton = binding.layoutProductPreparation;
         } else {
-            ((androidx.constraintlayout.widget.ConstraintLayout.LayoutParams) binding.buttonDeleteProduct.getLayoutParams())
-                    .topToBottom = binding.layoutProductDescription.getId();
+            anchorViewForDeleteButton = binding.layoutProductDescription;
         }
+
+        androidx.constraintlayout.widget.ConstraintLayout.LayoutParams deleteParams =
+                (androidx.constraintlayout.widget.ConstraintLayout.LayoutParams) binding.buttonDeleteProduct.getLayoutParams();
+        deleteParams.topToBottom = anchorViewForDeleteButton.getId();
+
+        androidx.constraintlayout.widget.ConstraintLayout.LayoutParams payParams =
+                (androidx.constraintlayout.widget.ConstraintLayout.LayoutParams) binding.buttonPayToStandOut.getLayoutParams();
+        payParams.topToBottom = binding.buttonDeleteProduct.getId();
+
+
+        androidx.constraintlayout.widget.ConstraintLayout.LayoutParams cancelParams =
+                (androidx.constraintlayout.widget.ConstraintLayout.LayoutParams) binding.buttonCancel.getLayoutParams();
+        cancelParams.topToBottom = binding.buttonPayToStandOut.getId();
+
         binding.buttonDeleteProduct.requestLayout();
+        binding.buttonPayToStandOut.requestLayout();
+        binding.buttonCancel.requestLayout();
     }
 
 
@@ -223,9 +255,11 @@ public class EditProductFragment extends Fragment {
                     if (documentSnapshot.exists()) {
                         populateFields(documentSnapshot);
                         setButtonsEnabled(true);
+                        binding.buttonPayToStandOut.setEnabled(true);
                     } else {
                         showErrorState(getString(R.string.error_product_does_not_exist));
                         setButtonsEnabled(false);
+                        binding.buttonPayToStandOut.setEnabled(false);
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -236,6 +270,7 @@ public class EditProductFragment extends Fragment {
                         binding.imageProduct.setImageResource(R.drawable.ic_error_image);
                     }
                     setButtonsEnabled(false);
+                    binding.buttonPayToStandOut.setEnabled(false);
                 });
     }
     private void populateFields(DocumentSnapshot doc) {
@@ -410,9 +445,12 @@ public class EditProductFragment extends Fragment {
         }
         if(selectedIndex != -1 && selectedIndex < CANONICAL_PRODUCT_TYPE_KEYS_ENGLISH.length){
             canonicalTypeToSave = CANONICAL_PRODUCT_TYPE_KEYS_ENGLISH[selectedIndex];
+        } else if (selectedIndex != -1 && selectedIndex < CANONICAL_PRODUCT_TYPE_KEYS_SPANISH.length) {
+            canonicalTypeToSave = CANONICAL_PRODUCT_TYPE_KEYS_ENGLISH[selectedIndex];
         }
+
         if(canonicalTypeToSave == null){
-            Log.w(TAG, "Could not find English canonical key for localized type: " + selectedLocalizedType + ". Saving localized string as fallback.");
+            Log.w(TAG, "Could not find canonical key for localized type: " + selectedLocalizedType + ". Saving localized string as fallback or a default.");
             canonicalTypeToSave = selectedLocalizedType;
         }
 
@@ -447,10 +485,10 @@ public class EditProductFragment extends Fragment {
         }
 
         if (!valid) {
-            showLoading(false); // Make sure loading is hidden if validation fails early
+            showLoading(false);
             return;
         }
-        showLoading(true); // Show loading only if all client-side validation passes
+        showLoading(true);
         updateProductFirestoreOnlyText(productUpdates);
     }
 
@@ -500,6 +538,7 @@ public class EditProductFragment extends Fragment {
         binding.buttonCancel.setEnabled(enabled);
         binding.buttonChangeImage.setEnabled(enabled);
         binding.buttonDeleteProduct.setEnabled(enabled);
+        binding.buttonPayToStandOut.setEnabled(enabled && productId != null && !productId.isEmpty());
 
         binding.editProductName.setEnabled(enabled);
         binding.spinnerProductType.setEnabled(enabled);
