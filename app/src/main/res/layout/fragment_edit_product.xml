@@ -40,6 +40,20 @@
             app:layout_constraintStart_toStartOf="@id/image_product"
             app:layout_constraintEnd_toEndOf="@id/image_product"/>
 
+        <!-- Botón: Administrar cupones -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_manage_coupons"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Manage Coupons"
+            android:textColor="@color/leaf_green"
+            app:strokeColor="@color/leaf_green"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/button_change_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
         <!-- Input Fields -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layout_product_name"
@@ -47,7 +61,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/button_change_image"
+            app:layout_constraintTop_toBottomOf="@id/button_manage_coupons"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:hint="@string/hint_edit_product_name">
@@ -277,20 +291,6 @@
                 android:minLines="3"
                 android:gravity="top|start"/>
         </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Botón: Administrar cupones -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_manage_coupons"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Administrar cupones"
-            android:textColor="@color/leaf_green"
-            app:strokeColor="@color/leaf_green"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/layout_product_preparation"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
 
         <!-- Delete button: top constraint should be to the last field that could be visible -->
         <com.google.android.material.button.MaterialButton
