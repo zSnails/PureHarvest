@@ -26,6 +26,7 @@ public class Product {
     private String preparation;
 
     public Product() {
+        // Required empty constructor for Firebase
         this.imageUrls = new ArrayList<>();
         this.standOutPayment = new ArrayList<>();
     }
@@ -53,6 +54,7 @@ public class Product {
         this.standOutPayment = new ArrayList<>();
     }
 
+    // --- Getters y Setters ---
     public String getId() { return id; }
 
     public void setId(String id) { this.id = id; }
