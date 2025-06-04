@@ -31,6 +31,9 @@
         <action
             android:id="@+id/action_navigation_dashboard_to_settingsFragment"
             app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_navigation_dashboard_to_companyBuyersListFragment"
+            app:destination="@id/companyBuyersListFragment" />
     </fragment>
 
     <fragment
@@ -146,6 +149,13 @@
         android:label="@string/company_contact"
         tools:layout="@layout/fragment_company_contact" />
 
+    <!-- INICIO DE CAMBIOS COMBINADOS -->
+    <fragment
+        android:id="@+id/companyBuyersListFragment"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.company_buyers.CompanyBuyersListFragment"
+        android:label="@string/fragment_title_company_buyers_list"
+        tools:layout="@layout/fragment_company_buyers_list" />
+
     <fragment
         android:id="@+id/standOutPaymentFragment"
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.company_products.StandOutPaymentFragment"
@@ -165,5 +175,6 @@
     <action
         android:id="@+id/action_global_to_standOutPaymentFragment"
         app:destination="@id/standOutPaymentFragment" />
+    <!-- FIN DE CAMBIOS COMBINADOS -->
 
 </navigation>
