@@ -53,7 +53,7 @@
         android:id="@+id/navigation_shopping_cart"
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.cart.ShoppingCartFragment"
         android:label="@string/title_shopping_cart"
-        tools:layout="@layout/fragment_account">
+        tools:layout="@layout/fragment_account"> <!-- Probablemente quisiste fragment_shopping_cart aquí -->
         <action
             android:id="@+id/action_navigation_account_to_profileFragment"
             app:destination="@id/profileFragment" />
@@ -145,9 +145,25 @@
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.companyContact.companyContactFragment"
         android:label="@string/company_contact"
         tools:layout="@layout/fragment_company_contact" />
+
     <fragment
         android:id="@+id/standOutPaymentFragment"
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.company_products.StandOutPaymentFragment"
         android:label="fragment_stand_out_payment"
-        tools:layout="@layout/fragment_stand_out_payment" />
+        tools:layout="@layout/fragment_stand_out_payment" >
+        <argument
+            android:name="productId"
+            app:argType="string" />
+    </fragment>
+
+    <activity
+        android:id="@+id/createProductActivity"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.seller.CreateProductActivity"
+        android:label="CreateProductActivity" />
+
+    <!-- Acción global para navegar a StandOutPaymentFragment -->
+    <action
+        android:id="@+id/action_global_to_standOutPaymentFragment"
+        app:destination="@id/standOutPaymentFragment" />
+
 </navigation>

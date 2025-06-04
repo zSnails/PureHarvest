@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.*;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 
+import cr.ac.itcr.zsnails.pureharvest.MainActivity;
 import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.firebase.ProductUploader;
 import cr.ac.itcr.zsnails.pureharvest.data.model.Product;
@@ -122,11 +124,12 @@ public class CreateProductActivity extends AppCompatActivity {
             btnCreateProduct.setEnabled(false);
             btnCreateProduct.setText("Subiendo...");
 
+
             uploader.uploadProduct(this, product, selectedImageUris, new ProductUploader.UploadCallback() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(String productId) {
                     Toast.makeText(CreateProductActivity.this, "Producto creado exitosamente", Toast.LENGTH_LONG).show();
-                    finish();
+                    showStandOutPaymentDialog(productId); // Llamar al método del diálogo
                 }
 
                 @Override
@@ -179,6 +182,7 @@ public class CreateProductActivity extends AppCompatActivity {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        selectedImageUris.clear();
                         if (result.getData().getClipData() != null) {
                             int count = result.getData().getClipData().getItemCount();
                             for (int i = 0; i < count && selectedImageUris.size() < MAX_IMAGES; i++) {
@@ -191,6 +195,11 @@ public class CreateProductActivity extends AppCompatActivity {
                                 selectedImageUris.add(imageUri);
                             }
                         }
+                        
+                        if(selectedImageUris.size() > MAX_IMAGES){
+                            Toast.makeText(this, "Solo puedes seleccionar un máximo de " + MAX_IMAGES + " imágenes.", Toast.LENGTH_LONG).show();
+                            selectedImageUris = selectedImageUris.subList(0, MAX_IMAGES);
+                        }
                         showImagePreviews();
                     }
                 }
@@ -201,7 +210,7 @@ public class CreateProductActivity extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        imagePickerLauncher.launch(Intent.createChooser(intent, "Selecciona imágenes"));
+        imagePickerLauncher.launch(Intent.createChooser(intent, "Selecciona hasta " + MAX_IMAGES + " imágenes"));
     }
 
     private void showImagePreviews() {
@@ -211,9 +220,33 @@ public class CreateProductActivity extends AppCompatActivity {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(200, 200);
             params.setMargins(8, 0, 8, 0);
             imageView.setLayoutParams(params);
-            Glide.with(this).load(uri).into(imageView);
+            Glide.with(this).load(uri).centerCrop().into(imageView);
             imagePreviewContainer.addView(imageView);
         }
+    }
+
+
+    private void showStandOutPaymentDialog(String productId) {
+        new AlertDialog.Builder(this)
+                .setTitle("Destacar Producto")
+                .setMessage("Are you interested in paying for your product to stand out on the list?")
+                .setPositiveButton("Sí", (dialog, which) -> {
+                    if (productId != null && !productId.isEmpty()) {
+                        Intent intent = new Intent(CreateProductActivity.this, MainActivity.class);
+                        intent.putExtra("navigate_to", "stand_out_payment");
+                        intent.putExtra("productId", productId);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(this, "Error: ID de producto no disponible para el pago.", Toast.LENGTH_LONG).show();
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", (dialog, which) -> {
+                    finish();
+                })
+                .setCancelable(false)
+                .show();
     }
 
     @Override

@@ -2,6 +2,7 @@ package cr.ac.itcr.zsnails.pureharvest;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log; // Añadido para logging
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,7 +29,8 @@ public class MainActivity extends AppCompatActivity {
     public static String idGlobalUser = "1";
     private ActivityMainBinding binding;
 
-    private Button settingsBtn;
+
+    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,21 +39,15 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        Intent intent = getIntent();
-        if (intent != null && "company_contact".equals(intent.getStringExtra("navigate_to"))) {
-            String companyId = intent.getStringExtra("company_id");
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
 
-            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-            Bundle bundle = new Bundle();
-            bundle.putString("company_id", companyId);
-            navController.navigate(R.id.companyContactFragment, bundle);
-        }
+        handleIntentExtras(getIntent());
+
 
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_account, R.id.navigation_shopping_cart)
                 .build();
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             int destId = destination.getId();
 
@@ -110,28 +106,52 @@ public class MainActivity extends AppCompatActivity {
 
             popup.show();
         });
-
-
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
+        handleIntentExtras(intent);
+    }
 
-        if (intent != null && "company_contact".equals(intent.getStringExtra("navigate_to"))) {
-            String companyId = intent.getStringExtra("company_id");
 
-            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-            Bundle bundle = new Bundle();
-            bundle.putString("company_id", companyId);
-            navController.navigate(R.id.companyContactFragment, bundle);
+    private void handleIntentExtras(Intent intent) {
+        if (intent != null && intent.hasExtra("navigate_to") && navController != null) {
+            String destination = intent.getStringExtra("navigate_to");
+            Bundle args = new Bundle();
+            Log.d("MainActivity", "handleIntentExtras: Destino = " + destination);
+
+            if ("company_contact".equals(destination)) {
+                if (intent.hasExtra("company_id")) {
+                    String companyId = intent.getStringExtra("company_id");
+                    args.putString("company_id", companyId);
+                    Log.d("MainActivity", "company_id: " + companyId);
+                }
+                try {
+                    navController.navigate(R.id.companyContactFragment, args);
+                } catch (Exception e) {
+                    Log.e("MainActivity", "Error al navegar a company_contact: " + e.getMessage(), e);
+                }
+            } else if ("stand_out_payment".equals(destination)) {
+                if (intent.hasExtra("productId")) {
+                    String productId = intent.getStringExtra("productId");
+                    args.putString("productId", productId);
+                    Log.d("MainActivity", "productId: " + productId);
+                }
+                try {
+                    navController.navigate(R.id.action_global_to_standOutPaymentFragment, args);
+                } catch (Exception e) {
+                    Log.e("MainActivity", "Error al navegar a stand_out_payment: " + e.getMessage(), e);
+                }
+            }
+
+            intent.removeExtra("navigate_to");
         }
     }
 
     @Override
     public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        return navController.navigateUp() || super.onSupportNavigateUp();
+        return (navController != null && navController.navigateUp()) || super.onSupportNavigateUp();
     }
 }
