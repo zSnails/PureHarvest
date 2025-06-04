@@ -3,34 +3,29 @@
     <string name="app_name">Pure Harvest</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_home">Inicio</string>
+
     <string name="title_dashboard">Tablero</string>
     <string name="title_account">Cuenta</string>
     <string name="title_activity_example">ExampleActivity</string>
     <string name="settingsButton">Ajustes</string>
     <string name="languageTV">Cambiar idioma</string>
 
-    <string name="settings">Configuracion</string>
-    <string name="company_profile">Perfil de la empresa</string>
     <string name="company_products">Productos de la empresa</string>
     <string name="company_orders">Ordenes de la empresa</string>
+
+    <!-- Strings from feature/company-buyers-list (primera parte del conflicto) -->
+    <!-- Aquellos que no se duplican con la segunda parte, o son únicos -->
     <string name="company_buyers_list">Ver lista de compradores</string>
-
-
-
-
     <string name="text_not_available">No disponible</string>
-    <string name="action_call">Llamar</string>
-    <string name="action_send_sms">Enviar SMS</string>
-    <string name="action_send_whatsapp">Enviar WhatsApp</string>
-    <string name="toast_whatsapp_not_installed">WhatsApp no está instalado.</string>
+    <!-- action_call, action_send_sms, action_send_whatsapp están en la segunda parte, así que no los repetimos si son idénticos -->
+    <string name="toast_whatsapp_not_installed">WhatsApp no está instalado.</string> <!-- Nombre único -->
     <string name="toast_play_store_error">No se pudo abrir Play Store.</string>
     <string name="toast_whatsapp_error">Error al intentar abrir WhatsApp.</string>
     <string name="action_send_email">Enviar Email</string>
     <string name="toast_no_email_app">No hay aplicación de correo instalada.</string>
     <string name="toast_no_contact_info">No hay información de contacto disponible.</string>
     <string name="dialog_title_contact_prefix">Contactar a %1$s</string>
-    <string name="action_cancel">Cancelar</string>
-
+    <string name="action_cancel">Cancelar</string> <!-- Nombre único ('action_cancel' vs 'dialog_action_cancel') -->
 
     <string name="error_seller_id_not_available">Error: ID de vendedor no disponible.</string>
     <string name="text_seller_id_not_configured">ID de vendedor no configurado.</string>
@@ -40,17 +35,388 @@
     <string name="user_fallback_name_error_format">Usuario: %1$s (Error)</string>
     <string name="text_no_buyers_list_empty">No hay compradores para mostrar.</string>
 
-
     <string name="label_id">ID:</string>
     <string name="label_name">Nombre:</string>
-    <string name="label_email">Email:</string>
-    <string name="label_phone">Teléfono:</string>
+    <!-- label_email y label_phone están en la segunda parte, si son idénticos no los repetimos -->
+    <!-- <string name="label_email">Email:</string> --> <!-- Existe en la segunda parte -->
+    <!-- <string name="label_phone">Teléfono:</string> --> <!-- Existe en la segunda parte -->
     <string name="label_items_bought">Items Comprados:</string>
     <string name="button_contact">Contactar</string>
 
-
     <string name="fragment_title_company_buyers_list">Lista de Compradores</string>
     <string name="text_no_buyers_found_initial">No se encontraron compradores para esta empresa.</string>
-
     <string name="title_company_buyers_list">Mis compradores</string>
+
+    <!-- Strings from feature/stand-out-and-buyers-list (segunda parte del conflicto) -->
+    <string name="back_button_content_description">Atrás</string>
+    <string name="title_product_list">Mis Productos</string>
+    <string name="empty_product_list">Aún no has agregado productos.</string>
+
+    <string name="manage_images">Gestionar Imágenes</string>
+    <string name="product_name">Nombre del Producto</string>
+    <string name="product_type">Tipo de Producto</string>
+    <string name="product_description">Descripción</string>
+    <string name="product_ingredients">Ingredientes</string>
+    <string name="product_preparation">Preparación</string>
+    <string name="product_price">Precio</string>
+    <string name="product_acidity">Acidez</string>
+    <string name="product_body">Cuerpo</string>
+    <string name="product_aftertaste">Retrogusto</string>
+    <string name="delete_product">Eliminar Producto</string>
+    <string name="product_image_description">Imagen del producto</string>
+
+    <string name="cd_back_button">Botón atrás</string>
+    <string name="cd_product_image">Imagen del producto</string>
+    <string name="button_manage_images">Gestionar Imágenes</string>
+
+    <string name="hint_description">Descripción</string>
+    <string name="hint_ingredients">Ingredientes</string>
+    <string name="hint_preparation">Preparación</string>
+    <string name="hint_price">Precio</string>
+    <string name="hint_acidity">Acidez</string>
+    <string name="hint_body">Cuerpo</string>
+    <string name="hint_aftertaste">Retrogusto</string>
+
+    <string name="button_delete_product">Eliminar Producto</string>
+
+    <string name="cd_back_button_profile">Botón atrás del perfil</string>
+
+    <string name="label_company_name_required">Nombre de la Empresa *</string>
+    <string name="hint_current_name">Nombre Actual</string>
+
+    <string name="label_slogan_optional">Eslogan (Opcional)</string>
+    <string name="hint_current_slogan">Eslogan Actual</string>
+
+    <string name="label_phone_number_required">Número de Teléfono *</string>
+    <string name="hint_current_phone_number">Número Actual</string>
+
+    <string name="label_email_optional">Correo Electrónico (Opcional)</string>
+    <string name="hint_current_email">Correo Actual</string>
+
+    <string name="label_address_required">Dirección *</string>
+    <string name="hint_current_address">Dirección Actual</string>
+
+    <string name="label_map_address_required">Dirección en el Mapa *</string>
+    <string name="hint_current_map_address">Dirección en el mapa actual</string>
+
+    <string name="button_save_changes">Guardar Cambios</string>
+    <string name="button_cancel">Cancelar</string>
+
+    <string name="title_edit_profile">Editar Perfil</string>
+
+    <string name="cd_back_button_manage_images">Botón atrás para gestionar imágenes</string>
+    <string name="title_manage_images">Gestionar Imágenes</string>
+
+    <string name="cd_image_slot_1">Imagen 1</string>
+    <string name="cd_image_slot_2">Imagen 2</string>
+    <string name="cd_image_slot_3">Imagen 3</string>
+    <string name="cd_image_slot_4">Imagen 4</string>
+    <string name="cd_image_slot_5">Imagen 5</string>
+
+    <string name="text_slot_empty">Vacío</string>
+    <string name="button_change">Cambiar</string>
+    <string name="button_delete">Eliminar</string>
+
+    <string name="cd_back_button_options">Botón atrás para opciones del producto</string>
+    <string name="title_manage_products">Gestionar Productos</string>
+    <string name="button_see_my_products">Ver Mis Productos</string>
+    <string name="button_see_company_orders">Ver pedidos de la empresa</string>
+
+    <string name="cd_back_button_profile_view">Botón atrás para ver perfil</string>
+    <string name="cd_profile_image">Imagen de perfil</string>
+
+    <string name="button_change_photo">Cambiar Foto</string>
+    <string name="button_delete_photo">Eliminar Foto</string>
+
+    <string name="label_contact_information">Información de Contacto</string>
+    <string name="label_phone">Teléfono:</string> <!-- Este es el que se mantiene si había duplicado -->
+    <string name="label_email">Correo:</string> <!-- Este es el que se mantiene si había duplicado -->
+    <string name="label_address">Dirección:</string>
+    <string name="label_map">Mapa:</string>
+    <string name="text_view_on_map">Ver en el Mapa</string>
+
+    <string name="button_edit_profile">Editar Perfil</string>
+
+    <string name="title_profile">Perfil</string>
+
+    <string name="button_view_details">Ver Detalles</string>
+
+    <string name="label_order_id_prefix">ID del Pedido:\u0020</string>
+    <string name="label_user_id_prefix">ID del Usuario:\u0020</string>
+
+    <string name="format_order_id">ID del Pedido: %s</string>
+    <string name="format_user_id">ID del Usuario: %s</string>
+
+    <string name="tools_text_order_id_example">ID del Pedido: ABCxyz123documentoejemplomuylargo</string>
+    <string name="tools_text_user_id_example">ID del Usuario: usuario_id_muy_largo_ejemplo_que_podría_ser_truncado</string>
+    <string name="tools_text_date_example">27 oct. 2023, 10:30 a. m.</string>
+
+    <string name="cd_product_item_image">Imagen del producto</string>
+    <string name="button_manage">Gestionar</string>
+
+    <string name="tools_text_product_name_example_long">Nombre de Producto Largo Que Podría Ocultar Dos Líneas</string>
+    <string name="tools_text_product_price_example">$12.00</string>
+
+    <string name="toast_product_added_successfully">¡Producto agregado exitosamente!</string>
+    <string name="toast_error_adding_product">Error al agregar el producto: %s</string>
+
+    <string name="error_fields_cannot_be_empty">Los campos no pueden estar vacíos.</string>
+    <string name="error_invalid_number_format">Formato de número inválido para el precio</string>
+
+    <string name="error_invalid_product_id">Error: ID de producto inválido.</string>
+    <string name="error_cannot_delete_product_now">No se puede eliminar el producto en este momento.</string>
+    <string name="dialog_title_confirm_deletion">Confirmar Eliminación</string>
+    <string name="dialog_message_confirm_deletion">¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer y también eliminará las imágenes asociadas.</string>
+    <string name="dialog_button_delete">Eliminar</string>
+    <string name="dialog_button_cancel">Cancelar</string>
+    <string name="log_product_deletion_cancelled">Eliminación del producto cancelada por el usuario.</string>
+    <string name="error_internal_while_deleting">Error interno al intentar eliminar.</string>
+    <string name="success_product_data_deleted">Datos del producto eliminados.</string>
+    <string name="success_product_deleted">Producto eliminado.</string>
+    <string name="success_product_and_images_deleted">Producto e imágenes eliminados.</string>
+    <string name="error_product_deleted_images_error">Producto eliminado, pero ocurrió un error al eliminar las imágenes.</string>
+    <string name="success_product_deleted_no_images_or_list_error">Producto eliminado (no se encontraron imágenes o error al listarlas).</string>
+    <string name="error_product_does_not_exist">El producto no existe.</string>
+    <string name="error_loading_data_generic">Error al cargar datos: %s</string>
+    <string name="error_navigation_generic">Error de navegación.</string>
+    <string name="error_invalid_product_id_for_manage_images">ID de producto inválido para gestionar imágenes.</string>
+    <string name="error_internal_binding_null">Error interno (binding no disponible)</string>
+    <string name="error_name_required">Se requiere nombre</string>
+    <string name="error_price_required">Se requiere precio</string>
+    <string name="error_invalid_price">Precio inválido</string>
+    <string name="error_internal_while_saving">Error interno al guardar.</string>
+    <string name="success_product_updated">Producto actualizado exitosamente.</string>
+    <string name="error_updating_product_generic">Error al actualizar el producto: %s</string>
+
+    <string name="error_invalid_product_id_manage_images">Error: ID de producto inválido.</string>
+    <string name="error_product_not_found_manage_images">Producto no encontrado.</string>
+    <string name="error_loading_images_generic">Error al cargar imágenes: %s</string>
+    <string name="button_add_image">Agregar</string>
+    <string name="button_change_image_action">Cambiar</string>
+    <string name="error_starting_upload">Error al iniciar la carga.</string>
+    <string name="error_getting_image_url">Error al obtener la URL de la imagen.</string>
+    <string name="error_uploading_image">Error al subir la imagen.</string>
+    <string name="success_image_updated">Imagen actualizada.</string>
+    <string name="error_saving_image_url">Error al guardar URL: %s</string>
+    <string name="dialog_title_confirm_image_deletion">Confirmar Eliminación</string>
+    <string name="dialog_message_confirm_image_deletion">¿Estás seguro de que deseas eliminar esta imagen?</string>
+    <string name="error_deleting_image_url">Error al eliminar la URL: %s</string>
+    <string name="success_image_deleted">Imagen eliminada.</string>
+    <string name="success_image_deleted_not_found_in_storage">Imagen eliminada (no se encontró en el almacenamiento).</string>
+    <string name="error_deleting_image_from_storage">Error al eliminar la imagen del almacenamiento.</string>
+    <string name="error_invalid_image_url_for_deletion">URL de imagen inválida para eliminación.</string>
+    <string name="log_image_pick_cancelled">Selección de imagen cancelada o resultado no OK.</string>
+    <string name="log_unknown_activity_request_code">onActivityResult: Código de solicitud desconocido %d</string>
+
+    <string name="button_company_orders_list">Lista de pedidos de la empresa</string>
+
+    <string name="error_null_result_orders">Error: Resultado nulo al cargar pedidos.</string>
+
+    <string name="error_invalid_order_id_details">ID de pedido inválido para ver detalles.</string>
+    <string name="error_navigation_details">Error al intentar navegar a detalles.</string>
+    <string name="error_navigation_controller_null">Error de navegación (controlador nulo).</string>
+
+    <!-- Para OrderDetailsFragment -->
+    <string name="title_order_details">Detalles del Pedido</string>
+    <string name="error_invalid_order_id_display">ID de pedido inválido. No se pueden mostrar los detalles.</string>
+    <string name="error_deserializing_order">No se pudo procesar la información del pedido.</string>
+    <string name="error_order_not_found">Pedido no encontrado.</string>
+    <string name="error_fetching_order_details">Error al obtener detalles del pedido</string>
+    <string name="error_displaying_order_null">Error: No hay datos del pedido para mostrar.</string>
+
+    <string name="label_order_id">ID de Pedido:</string>
+    <string name="label_order_date">Fecha:</string>
+    <string name="label_seller_id">ID del Vendedor:</string>
+    <string name="label_user_id_details">ID del Usuario:</string>
+    <string name="label_product_ids">IDs de Productos:</string>
+
+    <string name="error_fetching_product_details">Error al obtener detalles del producto.</string>
+
+    <string name="label_product_id_from_order">ID del Producto Pedido:</string>
+
+    <string name="label_seller_info">Vendedor (Empresa):</string>
+    <string name="label_user_info">Cliente (Usuario):</string>
+
+    <string name="order_details_title">Detalles del Pedido</string>
+    <string name="order_id">ID de Pedido:</string>
+    <string name="order_date">Fecha:</string>
+    <string name="sold_by">Vendido por:</string>
+    <string name="customer">Cliente:</string>
+    <string name="product_included">Producto Incluido</string>
+    <string name="product_id">ID del Producto:</string>
+
+    <string name="edit_profile_title">Editar Perfil de la Empresa</string>
+    <string name="hint_company_name">Nombre de la Empresa *</string>
+    <string name="hint_company_slogan">Eslogan (Opcional)</string>
+    <string name="hint_phone_number">Número de Teléfono *</string>
+    <string name="hint_email_address">Correo Electrónico (Opcional)</string>
+    <string name="hint_physical_address">Dirección Física *</string>
+    <string name="hint_map_address_link">Enlace de Mapa *</string>
+
+    <string name="content_description_back_button_edit_profile">Volver al Perfil</string>
+
+    <!-- Mensajes de Validación -->
+    <string name="error_company_name_required">El nombre de la empresa es obligatorio</string>
+    <string name="error_phone_number_required">El número de teléfono es obligatorio</string>
+    <string name="error_address_required">La dirección es obligatoria</string>
+    <string name="error_map_address_required">El enlace de mapa es obligatorio</string>
+    <string name="error_fill_required_fields">Por favor complete todos los campos obligatorios (*)</string>
+
+    <!-- Mensajes Toast -->
+    <string name="toast_company_data_not_found">No se encontraron datos de la empresa.</string>
+    <string name="toast_error_loading_profile">Error al cargar los datos del perfil: %s</string>
+    <string name="toast_profile_updated_successfully">Perfil actualizado exitosamente</string>
+    <string name="toast_error_updating_profile">Error al actualizar el perfil: %s</string>
+
+    <string name="profile_title">Perfil de la Empresa</string>
+    <string name="label_company_name">Nombre:</string>
+    <string name="label_slogan">Eslogan:</string>
+
+    <string name="label_map_address">Ubicación en el Mapa:</string>
+    <string name="button_add_photo">Agregar Foto</string>
+
+    <string name="content_description_back_button_profile">Volver</string>
+    <string name="content_description_profile_image">Imagen del perfil de la empresa</string>
+
+    <string name="placeholder_name_default">Nombre de la Empresa</string>
+    <string name="placeholder_slogan_default">Nuestro increíble eslogan</string>
+    <string name="placeholder_phone_default">(506) 8888-8888</string>
+    <string name="placeholder_email_default">info@empresa.com</string>
+    <string name="placeholder_address_default">Calle Principal, Ciudad, Provincia</string>
+    <string name="placeholder_map_default">Enlace de Google Maps</string>
+    <string name="placeholder_error_loading">Error al cargar</string>
+
+    <string name="toast_upload_successful">Carga exitosa</string>
+    <string name="toast_upload_failed">Error al cargar: %s</string>
+    <string name="toast_image_deleted_successfully">Imagen eliminada exitosamente</string>
+    <string name="toast_image_not_found_to_delete">Imagen no encontrada para eliminar.</string>
+    <string name="toast_failed_to_delete_image">Error al eliminar la imagen: %s</string>
+    <string name="toast_profile_data_not_found_profile">Datos del perfil no encontrados.</string>
+    <string name="toast_error_loading_profile_data">Error al cargar datos del perfil: %s</string>
+    <string name="hint_create_product_price">Precio</string>
+
+    <string name="open_location_with">Abrir ubicación con</string>
+    <string name="no_map_app_found">No se encontró una aplicación de mapas.</string>
+    <string name="error_preparing_map">Error al preparar el mapa</string>
+
+    <!-- Nuevos strings para opciones telefónicas -->
+    <string name="contact_via_phone_title">Contactar por teléfono</string>
+    <string name="action_call">Llamar</string> <!-- Se mantiene esta versión. La otra era idéntica -->
+    <string name="action_sms">Enviar SMS</string> <!-- Se mantiene esta versión. La otra era idéntica -->
+    <string name="action_whatsapp">Enviar WhatsApp</string> <!-- Se mantiene esta versión. La otra era idéntica -->
+    <string name="whatsapp_not_installed">WhatsApp no está instalado.</string> <!-- Nombre único, diferente de toast_whatsapp_not_installed -->
+    <string name="no_phone_number_available">Número de teléfono no disponible.</string>
+    <string name="error_opening_dialer">Error al abrir el marcador.</string>
+    <string name="error_opening_sms">Error al abrir la app de SMS.</string>
+    <string name="error_opening_whatsapp">Error al abrir WhatsApp.</string>
+
+    <string name="company_name">Nombre de la Empresa</string>
+    <string name="company_slogan">Eslogan Profesional Aquí. Puede ser un poco más largo.</string>
+
+    <string name="sample_phone">8888-8888</string>
+    <string name="sample_email">empresa@ejemplo.com</string>
+    <string name="sample_address">Santa Clara, San Carlos, Alajuela.</string>
+    <string name="button_see_location">Ver ubicación en el mapa</string>
+
+    <string name="no_address_available_map">No hay dirección disponible para abrir en el mapa.</string>
+    <string name="error_preparing_map_detail">Error al preparar el mapa: %1$s</string>
+
+    <string name="no_email_address_available">No hay correo electrónico disponible.</string>
+    <string name="send_email_with_chooser_title">Enviar correo con…</string>
+    <string name="no_email_app_found">No se encontró una aplicación de correo.</string>
+    <string name="error_preparing_email_detail">Error al preparar el correo: %1$s</string>
+
+    <string name="dialog_action_cancel">Cancelar</string> <!-- Nombre único, se mantiene -->
+
+    <string name="error_opening_dialer_detail">Error al abrir el marcador: %1$s</string>
+    <string name="error_opening_sms_detail">Error al abrir la app de SMS: %1$s</string>
+    <string name="error_opening_whatsapp_detail">Error al abrir WhatsApp: %1$s</string>
+
+    <string name="database_error">Error de Base de Datos</string>
+    <string name="company_info_not_found">Información de la empresa no encontrada.</string>
+    <string name="error_fetching_data_detail">Error al obtener los datos: %1$s</string>
+    <string name="client_offline_error">Error: El cliente está sin conexión. Verifique la conexión.</string>
+
+    <string name="settings">Configuraciones</string>
+    <string name="company_profile">Perfil de la empresa</string>
+
+    <string name="edit_company_profile">Editar perfil de la empresa</string>
+    <string name="company_products_list">Lista de productos de la empresa</string>
+    <string name="company_products_options">Opciones de productos</string>
+    <string name="edit_company_product">Editar producto</string>
+
+    <string name="manage_company_product_images">Administrar imágenes</string>
+    <string name="company_order_list">Lista de órdenes</string>
+    <string name="company_order_details">Detalles de la órden</string>
+    <string name="company_contact">Información de contacto</string>
+
+    -- <!-- Este comentario se mantiene como estaba en la rama -->
+
+    <string name="full_name">Nombre completo</string>
+    <string name="phone">Teléfono</string>
+
+    <string name="cNameL">Nombre de la empresa</string>
+    <string name="placeholder_name">Nombre</string>
+    <string name="placeholder_phone">Teléfono</string>
+    <string name="placeholder_address">Dirección</string>
+    <string name="placeholder_map">Dirección en el mapa</string>
+    <string name="placeholder_error">Error</string>
+    <string name="not_available_short">N/D</string>
+    <string name="order_name_prefix">ID del product: </string>
+    <string name="order_user_prefix">Usario: </string>
+    <string name="view_order_details_for">Ver detalles de la órden: %s</string>
+    <string name="error_loading_orders">Error cargando las órdenes.</string>
+    <string name="no_orders_yet_company">Aún no tienes órdenes registradas</string>
+    <string name="title_my_orders">Mis órdenes</string>
+    <string name="content_description_back_button">Atrás</string>
+    <string name="order_id_prefix">ID: </string>
+    <string name="order_doc_id_prefix">ID de la órden: </string>
+
+    <string name="button_profile">Perfil</string>
+    <string name="button_products">Productos</string>
+
+    <string name="label_product_name">Nombre del producto</string>
+    <string name="label_product_type">Tipo</string>
+    <string name="label_product_price">Precio</string>
+    <string name="label_product_acidity">Acidez</string>
+    <string name="label_product_description">Descripción</string>
+
+    <string name="hint_edit_product_name">Nombre del producto</string>
+    <string name="hint_edit_product_type">Tipo de product</string>
+    <string name="hint_edit_product_price">Precio del producto</string>
+    <string name="hint_edit_product_acidity">Nivel de acidez</string>
+    <string name="hint_edit_product_description">Descripción del producto</string>
+
+    <string name="confirm_delete_image_title">Confirmar Eliminación</string>
+    <string name="confirm_delete_image_message">¿Estás seguro de que quieres eliminar tu imagen de perfil?</string>
+    <string name="button_confirm">Confirmar</string>
+    <string name="hint_product_rating">Puntuación (1-5)</string>
+    <string name="hint_product_certifications">Certificaciones/Premios (Opcional)</string>
+    <string name="hint_product_flavors_aromas">Sabores y Aromas (Opcional)</string>
+    <string name="error_rating_required">La puntuación es requerida</string>
+    <string name="error_invalid_rating_format">Formato de puntuación inválido</string>
+    <string name="error_invalid_rating_range">La puntuación debe ser entre 1 y 5</string>
+
+    <string-array name="product_types_array">
+        <item>Café</item>
+        <item>Miel</item>
+        <item>Hortaliza</item>
+        <item>Especialidad</item>
+        <item>Gourmet</item>
+        <item>Base/Normal</item>
+        <item>Orgánico</item>
+    </string-array>
+
+    <string name="button_pay_to_stand_out_product">Pagar para destacar producto</string>
+    <string name="pay_to_stand_out_product_title">Pagar para Destacar</string>
+    <string name="stand_out_payment_explanation">Al confirmar este pago (costo aún por definir), su producto será priorizado en la lista aleatoria. Los productos se muestran según la fecha y hora de pago, apareciendo primero aquellos cuyos pagos se realizaron antes.</string>
+    <string name="button_confirm_payment">Confirmar Pago</string>
+    <string name="confirm_payment_dialog_title">Confirmar Pago</string>
+    <string name="confirm_payment_dialog_message">¿Está seguro de que desea proceder con el pago para destacar este producto?</string>
+    <string name="dialog_confirm">Confirmar</string>
+    <string name="dialog_cancel">Cancelar</string>
+    <string name="payment_successful">¡Pago exitoso! El producto ahora será destacado.</string>
+    <string name="payment_failed">El pago falló. Por favor, inténtelo de nuevo.</string>
+    <string name="product_id_missing">Falta el ID del producto. No se puede proceder.</string>
+
 </resources>

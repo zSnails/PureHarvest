@@ -21,7 +21,7 @@ public class ProductUploader {
     private final StorageReference storageRef = FirebaseStorage.getInstance().getReference("product_images");
 
     public interface UploadCallback {
-        void onSuccess();
+        void onSuccess(String productId); // Modificado para aceptar productId
         void onFailure(Exception e);
     }
 
@@ -60,7 +60,7 @@ public class ProductUploader {
 
         firestore.collection("products").document(newId)
                 .set(product)
-                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnSuccessListener(unused -> callback.onSuccess(newId)) // Modificado para pasar newId
                 .addOnFailureListener(callback::onFailure);
     }
 }

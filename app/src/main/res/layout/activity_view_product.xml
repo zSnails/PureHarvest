@@ -16,27 +16,47 @@
         android:padding="16dp">
 
         <!-- Main Product Image -->
-        <FrameLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="250dp"
-            android:background="@android:color/darker_gray">
+            android:layout_marginBottom="8dp">
 
-            <ImageView
-                android:id="@+id/imageMain"
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/imageSlider"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop" />
+                android:layout_height="match_parent" />
+
+            <ImageButton
+                android:id="@+id/btnPrev"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="8dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_arrow_left" />
+
+            <ImageButton
+                android:id="@+id/btnNext"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="8dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_arrow_right" />
 
             <ImageButton
                 android:id="@+id/btnFavorite"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_gravity="top|end"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
                 android:layout_margin="8dp"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_favorite_border"
                 app:tint="@android:color/holo_red_dark" />
-        </FrameLayout>
+        </RelativeLayout>
 
         <!-- Miniature Images -->
         <HorizontalScrollView

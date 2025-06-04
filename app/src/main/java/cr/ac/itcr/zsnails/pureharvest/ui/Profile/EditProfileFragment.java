@@ -27,13 +27,12 @@ import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentEditProfileBinding;
 
 public class EditProfileFragment extends Fragment {
 
-    private static final String TAG = "EditProfileFragment"; // TAG para logs
+    private static final String TAG = "EditProfileFragment";
     private FragmentEditProfileBinding binding;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    // Ya no se usará la constante local, se obtendrá de MainActivity
-    // private static final String COMPANY_ID = "2";
-    private String companyIdToUse; // Variable para almacenar el ID global
+
+    private String companyIdToUse;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,7 +81,7 @@ public class EditProfileFragment extends Fragment {
 
     private void loadCompanyData() {
         Log.d(TAG, "Cargando datos para Company ID: " + companyIdToUse);
-        db.collection("Company").document(companyIdToUse).get() // Usa companyIdToUse
+        db.collection("Company").document(companyIdToUse).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (getContext() == null || !isAdded() || binding == null) return;
 
