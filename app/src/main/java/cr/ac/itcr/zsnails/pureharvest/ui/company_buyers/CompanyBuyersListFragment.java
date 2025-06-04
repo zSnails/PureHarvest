@@ -4,6 +4,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController; // Importar NavController
+import androidx.navigation.Navigation;  // Importar Navigation
 import androidx.recyclerview.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,7 +27,8 @@ import cr.ac.itcr.zsnails.pureharvest.MainActivity;
 import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentCompanyBuyersListBinding;
 
-public class CompanyBuyersListFragment extends Fragment {
+// Implementar la nueva interfaz del Adapter
+public class CompanyBuyersListFragment extends Fragment implements CompanyBuyersAdapter.OnBuyerClickListener {
 
     private static final String TAG = "CompanyBuyersFragment";
     private FragmentCompanyBuyersListBinding binding;
@@ -33,6 +36,7 @@ public class CompanyBuyersListFragment extends Fragment {
     private List<CompanyBuyer> companyBuyerList;
     private FirebaseFirestore db;
     private String currentSellerId;
+    private NavController navController; // NavController
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -40,13 +44,22 @@ public class CompanyBuyersListFragment extends Fragment {
         binding = FragmentCompanyBuyersListBinding.inflate(inflater, container, false);
         db = FirebaseFirestore.getInstance();
         companyBuyerList = new ArrayList<>();
-        adapter = new CompanyBuyersAdapter(companyBuyerList);
+        // Pasar 'this' como listener al adapter
+        adapter = new CompanyBuyersAdapter(companyBuyerList, this);
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        // Obtener NavController
+        try {
+            navController = Navigation.findNavController(view);
+        } catch (IllegalStateException e) {
+            Log.e(TAG, "NavController not found for this view.", e);
+            // Considerar manejar este error, quizás mostrando un Toast o deshabilitando la navegación
+        }
 
         binding.recyclerViewCompanyBuyers.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerViewCompanyBuyers.setAdapter(adapter);
@@ -69,6 +82,7 @@ public class CompanyBuyersListFragment extends Fragment {
     }
 
     private void fetchCompanyBuyersData() {
+        // ... (el resto del método fetchCompanyBuyersData es igual)
         if (binding == null) return;
         binding.progressBarCompanyBuyers.setVisibility(View.VISIBLE);
         binding.recyclerViewCompanyBuyers.setVisibility(View.GONE);
@@ -120,6 +134,7 @@ public class CompanyBuyersListFragment extends Fragment {
     }
 
     private void fetchUserDetailsFromFirebase(List<String> userIds, Map<String, Integer> userOrderCounts) {
+        // ... (el resto del método fetchUserDetailsFromFirebase es igual)
         List<CompanyBuyer> fetchedBuyers = new ArrayList<>();
         if (userIds.isEmpty()) {
             if (binding != null) {
@@ -133,7 +148,7 @@ public class CompanyBuyersListFragment extends Fragment {
 
         AtomicInteger tasksCompleted = new AtomicInteger(0);
         int totalTasks = userIds.size();
-        final String naValue = "N/A"; // Literal "N/A" as sentinel for the model
+        final String naValue = "N/A";
 
         for (String userId : userIds) {
             db.collection("users").document(userId).get()
@@ -188,9 +203,45 @@ public class CompanyBuyersListFragment extends Fragment {
         }
     }
 
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    // Implementación del método de la interfaz OnBuyerClickListener
+    @Override
+    public void onViewDetailsClick(CompanyBuyer buyer) {
+        if (getContext() == null || !isAdded() || navController == null) {
+            Log.w(TAG, "Cannot navigate: context/fragment not added or NavController is null.");
+            if (getContext() != null) {
+                Toast.makeText(getContext(), getString(R.string.error_navigation_details), Toast.LENGTH_SHORT).show();
+            }
+            return;
+        }
+
+        String buyerId = buyer.getId();
+        int itemsBought = buyer.getItemsBought(); // Necesitamos pasar esto también
+
+        if (buyerId == null || buyerId.isEmpty()) {
+            //Toast.makeText(getContext(), getString(R.string.error_invalid_buyer_id_details), Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Buyer ID is null or empty, cannot navigate to details.");
+            return;
+        }
+
+        Log.d(TAG, "Navigating to details for buyer: " + buyerId + " with items bought: " + itemsBought);
+
+        Bundle bundle = new Bundle();
+        bundle.putString("buyer_id", buyerId);
+        bundle.putInt("items_bought", itemsBought); // Pasar items comprados
+
+        try {
+            // Asegúrate de que el ID de la acción es correcto en tu nav_graph.xml
+            navController.navigate(R.id.action_companyBuyersListFragment_to_companyBuyerDetailsFragment, bundle);
+        } catch (IllegalArgumentException e) {
+            Log.e(TAG, "Navigation action/destination not found or other navigation error.", e);
+            Toast.makeText(getContext(), getString(R.string.error_navigation_details), Toast.LENGTH_SHORT).show();
+        }
     }
 }

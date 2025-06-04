@@ -455,4 +455,12 @@
     <string name="error_ingredients_required">Ingredients are required for coffee</string>
     <string name="error_preparation_required">Preparation is required for coffee</string>
 
+    <string name="title_buyer_details">Buyer Details</string>
+    <string name="button_contact_buyer">Contact Buyer</string>
+    <string name="error_loading_buyer_details">Error loading buyer details.</string>
+
+
+
+
+
 </resources>

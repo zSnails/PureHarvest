@@ -58,50 +58,6 @@
             tools:text="Comprador Alfa" />
 
         <TextView
-            android:id="@+id/textViewBuyerEmailLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/label_email"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewBuyerNameLabel" />
-
-        <TextView
-            android:id="@+id/textViewBuyerEmail"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:textSize="14sp"
-            app:layout_constraintStart_toEndOf="@+id/textViewBuyerEmailLabel"
-            app:layout_constraintTop_toTopOf="@+id/textViewBuyerEmailLabel"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:text="comprador@example.com" />
-
-        <TextView
-            android:id="@+id/textViewBuyerPhoneLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/label_phone"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewBuyerEmailLabel" />
-
-        <TextView
-            android:id="@+id/textViewBuyerPhone"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:textSize="14sp"
-            app:layout_constraintStart_toEndOf="@+id/textViewBuyerPhoneLabel"
-            app:layout_constraintTop_toTopOf="@+id/textViewBuyerPhoneLabel"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:text="+1234567890" />
-
-        <TextView
             android:id="@+id/textViewItemsBoughtLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -110,7 +66,7 @@
             android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewBuyerPhoneLabel"/>
+            app:layout_constraintTop_toBottomOf="@+id/textViewBuyerNameLabel"/>
 
         <TextView
             android:id="@+id/textViewItemsBought"
@@ -121,17 +77,16 @@
             app:layout_constraintStart_toEndOf="@+id/textViewItemsBoughtLabel"
             app:layout_constraintTop_toTopOf="@+id/textViewItemsBoughtLabel"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="@+id/textViewItemsBoughtLabel"
             tools:text="15" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonContactBuyer"
-            android:layout_width="0dp"
+            android:id="@+id/buttonViewDetailsBuyer"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/button_contact"
+            android:text="@string/button_view_details"
             android:layout_marginTop="16dp"
             app:layout_constraintTop_toBottomOf="@+id/textViewItemsBoughtLabel"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             />
