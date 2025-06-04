@@ -195,7 +195,7 @@ public class CreateProductActivity extends AppCompatActivity {
                                 selectedImageUris.add(imageUri);
                             }
                         }
-                        
+
                         if(selectedImageUris.size() > MAX_IMAGES){
                             Toast.makeText(this, "Solo puedes seleccionar un máximo de " + MAX_IMAGES + " imágenes.", Toast.LENGTH_LONG).show();
                             selectedImageUris = selectedImageUris.subList(0, MAX_IMAGES);
@@ -228,9 +228,10 @@ public class CreateProductActivity extends AppCompatActivity {
 
     private void showStandOutPaymentDialog(String productId) {
         new AlertDialog.Builder(this)
-                .setTitle("Destacar Producto")
-                .setMessage("Are you interested in paying for your product to stand out on the list?")
-                .setPositiveButton("Sí", (dialog, which) -> {
+                .setTitle("Stand out product")
+                .setMessage("Are you interested in paying for your product to stand out on the list? " +
+                        "You can do it later if you wish")
+                .setPositiveButton("Yes", (dialog, which) -> {
                     if (productId != null && !productId.isEmpty()) {
                         Intent intent = new Intent(CreateProductActivity.this, MainActivity.class);
                         intent.putExtra("navigate_to", "stand_out_payment");
