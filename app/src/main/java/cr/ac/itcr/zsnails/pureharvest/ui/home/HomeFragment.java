@@ -56,12 +56,19 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
 
         viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         shoppingCart = new ViewModelProvider(requireActivity()).get(ShoppingCartViewModel.class);
+        View searchToolsSection = getLayoutInflater().inflate(R.layout.search_tools, binding.containerSections, false);
+
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         );
         layoutParams.bottomMargin = sectionSpacing;
+
+        // Searchbar and filters
+        layoutParams.bottomMargin = getResources().getDimensionPixelSize(R.dimen.section_spacing);
+        searchToolsSection.setLayoutParams(layoutParams);
+        binding.containerSections.addView(searchToolsSection);
 
         // Top 10 Best Sellers Section
         final ProductAdapter topAdapter = new ProductAdapter(new ArrayList<>(), this, this, true, false);

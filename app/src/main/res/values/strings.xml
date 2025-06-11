@@ -457,5 +457,7 @@
     <string name="error_aftertaste_required">Aftertaste is required for coffee</string>
     <string name="error_ingredients_required">Ingredients are required for coffee</string>
     <string name="error_preparation_required">Preparation is required for coffee</string>
+    <string name="searchbar_placeholder">Look for coffee, honey or vegetables...</string>
+    <string name="advanced_search_button_text">Filter by...</string>
 
 </resources>
