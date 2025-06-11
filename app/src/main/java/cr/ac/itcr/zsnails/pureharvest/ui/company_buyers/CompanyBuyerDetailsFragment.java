@@ -44,7 +44,7 @@ public class CompanyBuyerDetailsFragment extends Fragment {
         } else {
             Log.e(TAG, "Buyer ID is null or empty.");
             binding.progressBarDetails.setVisibility(View.GONE);
-            binding.textViewDetailsError.setText("ID de comprador no válido.");
+            binding.textViewDetailsError.setText("Invalid buyer ID.");
             binding.textViewDetailsError.setVisibility(View.VISIBLE);
         }
     }
@@ -74,14 +74,14 @@ public class CompanyBuyerDetailsFragment extends Fragment {
                             binding.layoutDetailsContent.setVisibility(View.VISIBLE);
                         } else {
                             Log.w(TAG, "No such document for buyer ID: " + id);
-                            binding.textViewDetailsError.setText("No se encontraron los detalles del comprador.");
+                            binding.textViewDetailsError.setText("Buyer details not found.");
                             binding.textViewDetailsError.setVisibility(View.VISIBLE);
                         }
                     } else {
                         Log.e(TAG, "Error getting buyer details: ", task.getException());
-                        binding.textViewDetailsError.setText("Error al cargar los detalles del comprador.");
+                        binding.textViewDetailsError.setText("Error loading buyer details.");
                         binding.textViewDetailsError.setVisibility(View.VISIBLE);
-                        Toast.makeText(getContext(), "Error al cargar los detalles del comprador.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Error loading buyer details.", Toast.LENGTH_SHORT).show();
                     }
                 });
     }

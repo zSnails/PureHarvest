@@ -9,7 +9,7 @@
         android:id="@+id/textViewDetailTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Detalles del Comprador"
+        android:text="Buyer Details"
         android:textSize="20sp"
         android:textStyle="bold"
         android:gravity="center_horizontal"
@@ -42,7 +42,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nombre:"
+            android:text="Name:"
             android:textStyle="bold"
             android:textSize="16sp"/>
 
@@ -72,7 +72,7 @@
         android:id="@+id/textViewDetailsError"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No se encontraron los detalles del comprador."
+        android:text="Buyer details not found."
         android:textColor="@android:color/holo_red_dark"
         android:textSize="16sp"
         android:visibility="gone"
