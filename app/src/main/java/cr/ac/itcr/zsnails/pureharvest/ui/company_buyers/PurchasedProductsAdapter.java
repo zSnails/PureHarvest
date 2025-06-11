@@ -3,9 +3,12 @@ package cr.ac.itcr.zsnails.pureharvest.ui.company_buyers;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 import java.util.Locale;
@@ -34,6 +37,12 @@ public class PurchasedProductsAdapter extends RecyclerView.Adapter<PurchasedProd
         holder.productName.setText(product.getName());
         holder.productPrice.setText(String.format(Locale.US, "$%.2f", product.getPrice()));
         holder.orderDate.setText(product.getFormattedDate());
+
+        Glide.with(holder.itemView.getContext())
+                .load(product.getImageUrl())
+                .placeholder(R.drawable.ic_launcher_foreground) // Reemplaza con tu placeholder
+                .error(R.drawable.ic_launcher_background) // Reemplaza con tu imagen de error
+                .into(holder.productImage);
     }
 
     @Override
@@ -42,10 +51,12 @@ public class PurchasedProductsAdapter extends RecyclerView.Adapter<PurchasedProd
     }
 
     static class ProductViewHolder extends RecyclerView.ViewHolder {
+        ImageView productImage;
         TextView productId, productName, productPrice, orderDate;
 
         public ProductViewHolder(@NonNull View itemView) {
             super(itemView);
+            productImage = itemView.findViewById(R.id.imageViewProduct);
             productId = itemView.findViewById(R.id.textViewProductId);
             productName = itemView.findViewById(R.id.textViewProductName);
             productPrice = itemView.findViewById(R.id.textViewProductPrice);

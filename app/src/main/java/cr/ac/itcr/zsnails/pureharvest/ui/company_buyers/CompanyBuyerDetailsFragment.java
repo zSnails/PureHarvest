@@ -170,10 +170,19 @@ public class CompanyBuyerDetailsFragment extends Fragment {
                             DocumentSnapshot productDoc = productTask.getResult();
                             String name = productDoc.getString("name");
                             Double price = productDoc.getDouble("price");
-                            fetchedProducts.add(new PurchasedProduct(productId, name != null ? name : "Unknown", price != null ? price : 0.0, date));
+                            String firstImageUrl = null;
+                            try {
+                                List<String> imageUrls = (List<String>) productDoc.get("imageUrls");
+                                if (imageUrls != null && !imageUrls.isEmpty()) {
+                                    firstImageUrl = imageUrls.get(0);
+                                }
+                            } catch (Exception e) {
+                                Log.e(TAG, "Error parsing imageUrls", e);
+                            }
+                            fetchedProducts.add(new PurchasedProduct(productId, name != null ? name : "Unknown", price != null ? price : 0.0, date, firstImageUrl));
                         } else {
                             Log.w(TAG, "Product not found for ID: " + productId);
-                            fetchedProducts.add(new PurchasedProduct(productId, "Product not found", 0.0, date));
+                            fetchedProducts.add(new PurchasedProduct(productId, "Product not found", 0.0, date, null));
                         }
 
                         if (counter.incrementAndGet() == totalOrders) {

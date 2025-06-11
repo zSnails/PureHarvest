@@ -9,12 +9,14 @@ public class PurchasedProduct {
     private String name;
     private double price;
     private Date date;
+    private String imageUrl;
 
-    public PurchasedProduct(String productId, String name, double price, Date date) {
+    public PurchasedProduct(String productId, String name, double price, Date date, String imageUrl) {
         this.productId = productId;
         this.name = name;
         this.price = price;
         this.date = date;
+        this.imageUrl = imageUrl;
     }
 
     public String getProductId() {
@@ -27,6 +29,10 @@ public class PurchasedProduct {
 
     public double getPrice() {
         return price;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
     }
 
     public String getFormattedDate() {
