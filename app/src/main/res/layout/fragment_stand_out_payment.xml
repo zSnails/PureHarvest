@@ -18,6 +18,48 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="32dp"/>
 
+    <ImageView
+        android:id="@+id/image_product_to_feature"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="24dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintTop_toBottomOf="@id/text_payment_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:src="@tools:sample/avatars"/>
+
+    <TextView
+        android:id="@+id/text_product_name_feature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+        app:layout_constraintTop_toBottomOf="@id/image_product_to_feature"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Premium Organic Strawberries"/>
+
+    <TextView
+        android:id="@+id/text_product_price_feature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+        android:textColor="?attr/colorPrimary"
+        app:layout_constraintTop_toBottomOf="@id/text_product_name_feature"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="$5.99"/>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/product_details_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:constraint_referenced_ids="image_product_to_feature,text_product_name_feature,text_product_price_feature"
+        tools:visibility="visible"/>
+
     <TextView
         android:id="@+id/text_payment_explanation"
         android:layout_width="0dp"
@@ -26,7 +68,7 @@
         android:text="By confirming this payment (cost to be defined), your product will be prioritized in the random list. Products are displayed based on the payment date and time, with the earliest payments appearing first."
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
         android:gravity="center_horizontal"
-        app:layout_constraintTop_toBottomOf="@id/text_payment_title"
+        app:layout_constraintTop_toBottomOf="@id/text_product_price_feature"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
