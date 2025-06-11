@@ -419,4 +419,6 @@
     <string name="payment_failed">El pago falló. Por favor, inténtelo de nuevo.</string>
     <string name="product_id_missing">Falta el ID del producto. No se puede proceder.</string>
 
+    <string name="fragment_company_buyer_details">Compradores de la empresa</string>
+
 </resources>

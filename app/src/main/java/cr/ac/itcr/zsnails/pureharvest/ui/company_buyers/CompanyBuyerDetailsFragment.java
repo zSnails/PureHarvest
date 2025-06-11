@@ -126,6 +126,9 @@ public class CompanyBuyerDetailsFragment extends Fragment {
                     if (!isAdded() || binding == null) return;
 
                     if (orderTask.isSuccessful() && orderTask.getResult() != null) {
+                        int orderCount = orderTask.getResult().size();
+                        binding.textViewBuyerDetailItemsBought.setText(String.valueOf(orderCount));
+
                         if (orderTask.getResult().isEmpty()) {
                             binding.progressBarProducts.setVisibility(View.GONE);
                             binding.textViewNoProducts.setVisibility(View.VISIBLE);
@@ -143,6 +146,7 @@ public class CompanyBuyerDetailsFragment extends Fragment {
                         binding.progressBarProducts.setVisibility(View.GONE);
                         binding.textViewNoProducts.setText("Error loading products.");
                         binding.textViewNoProducts.setVisibility(View.VISIBLE);
+                        binding.textViewBuyerDetailItemsBought.setText("N/A");
                     }
                 });
     }

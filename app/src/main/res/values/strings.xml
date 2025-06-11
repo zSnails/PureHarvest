@@ -459,6 +459,8 @@
     <string name="button_contact_buyer">Contact Buyer</string>
     <string name="error_loading_buyer_details">Error loading buyer details.</string>
 
+    <string name="fragment_company_buyer_details">Company buyers</string>
+
 
 
 

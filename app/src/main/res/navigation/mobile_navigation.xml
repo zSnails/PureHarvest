@@ -175,15 +175,15 @@
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.seller.CreateProductActivity"
         android:label="CreateProductActivity" />
 
-    <!-- Acción global para navegar a StandOutPaymentFragment -->
     <action
         android:id="@+id/action_global_to_standOutPaymentFragment"
         app:destination="@id/standOutPaymentFragment" />
     <fragment
         android:id="@+id/companyBuyerDetailsFragment"
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.company_buyers.CompanyBuyerDetailsFragment"
-        android:label="fragment_company_buyer_details"
+        android:label="@string/fragment_company_buyer_details"
+
         tools:layout="@layout/fragment_company_buyer_details" />
-    <!-- FIN DE CAMBIOS COMBINADOS -->
+
 
 </navigation>
