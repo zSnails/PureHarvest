@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentCompanyBuyerDetailsBinding;
 
@@ -26,6 +27,7 @@ public class CompanyBuyerDetailsFragment extends Fragment {
     private FragmentCompanyBuyerDetailsBinding binding;
     private FirebaseFirestore db;
     private String buyerId;
+    private String sellerId;
     private String buyerPhone;
     private String buyerEmail;
 
@@ -43,14 +45,16 @@ public class CompanyBuyerDetailsFragment extends Fragment {
 
         if (getArguments() != null) {
             buyerId = getArguments().getString("buyer_id");
+            sellerId = getArguments().getString("seller_id");
         }
 
-        if (buyerId != null && !buyerId.isEmpty()) {
+        if (buyerId != null && !buyerId.isEmpty() && sellerId != null && !sellerId.isEmpty()) {
             fetchBuyerDetails(buyerId);
+            fetchOrderCount(buyerId, sellerId);
         } else {
-            Log.e(TAG, "Buyer ID is null or empty.");
+            Log.e(TAG, "Buyer ID or Seller ID is null or empty.");
             binding.progressBarDetails.setVisibility(View.GONE);
-            binding.textViewDetailsError.setText("Invalid buyer ID.");
+            binding.textViewDetailsError.setText("Invalid buyer or seller ID.");
             binding.textViewDetailsError.setVisibility(View.VISIBLE);
         }
 
@@ -96,10 +100,32 @@ public class CompanyBuyerDetailsFragment extends Fragment {
                         Log.e(TAG, "Error getting buyer details: ", task.getException());
                         binding.textViewDetailsError.setText("Error loading buyer details.");
                         binding.textViewDetailsError.setVisibility(View.VISIBLE);
-                        Toast.makeText(getContext(), "Error loading buyer details.", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
+
+    private void fetchOrderCount(String bId, String sId) {
+        binding.textViewBuyerDetailItemsBought.setText("Loading...");
+
+        db.collection("orders")
+                .whereEqualTo("userId", bId)
+                .whereEqualTo("sellerId", sId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (!isAdded() || getContext() == null || binding == null) {
+                        return;
+                    }
+
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        int count = task.getResult().size();
+                        binding.textViewBuyerDetailItemsBought.setText(String.valueOf(count));
+                    } else {
+                        Log.e(TAG, "Error getting order count: ", task.getException());
+                        binding.textViewBuyerDetailItemsBought.setText("N/A");
+                    }
+                });
+    }
+
 
     private void showContactDialog() {
         final CharSequence[] options = {"Call", "Send SMS", "Send WhatsApp", "Send Email"};
@@ -108,7 +134,7 @@ public class CompanyBuyerDetailsFragment extends Fragment {
         builder.setTitle("Contact Buyer");
         builder.setItems(options, (dialog, item) -> {
             switch (item) {
-                case 0: // Call
+                case 0:
                     if (buyerPhone != null && !buyerPhone.isEmpty()) {
                         Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + buyerPhone));
                         startActivity(callIntent);
@@ -116,7 +142,7 @@ public class CompanyBuyerDetailsFragment extends Fragment {
                         Toast.makeText(getContext(), "Phone number not available.", Toast.LENGTH_SHORT).show();
                     }
                     break;
-                case 1: // Send SMS
+                case 1:
                     if (buyerPhone != null && !buyerPhone.isEmpty()) {
                         Intent smsIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:" + buyerPhone));
                         startActivity(smsIntent);
@@ -124,7 +150,7 @@ public class CompanyBuyerDetailsFragment extends Fragment {
                         Toast.makeText(getContext(), "Phone number not available.", Toast.LENGTH_SHORT).show();
                     }
                     break;
-                case 2: // Send WhatsApp
+                case 2:
                     if (buyerPhone != null && !buyerPhone.isEmpty()) {
                         try {
                             Intent whatsappIntent = new Intent(Intent.ACTION_VIEW);
@@ -137,7 +163,7 @@ public class CompanyBuyerDetailsFragment extends Fragment {
                         Toast.makeText(getContext(), "Phone number not available.", Toast.LENGTH_SHORT).show();
                     }
                     break;
-                case 3: // Send Email
+                case 3:
                     if (buyerEmail != null && !buyerEmail.isEmpty()) {
                         Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + buyerEmail));
                         try {

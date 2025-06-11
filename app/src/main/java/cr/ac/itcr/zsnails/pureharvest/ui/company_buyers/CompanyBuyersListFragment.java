@@ -4,8 +4,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController; // Importar NavController
-import androidx.navigation.Navigation;  // Importar Navigation
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,7 +27,6 @@ import cr.ac.itcr.zsnails.pureharvest.MainActivity;
 import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentCompanyBuyersListBinding;
 
-// Implementar la nueva interfaz del Adapter
 public class CompanyBuyersListFragment extends Fragment implements CompanyBuyersAdapter.OnBuyerClickListener {
 
     private static final String TAG = "CompanyBuyersFragment";
@@ -36,7 +35,7 @@ public class CompanyBuyersListFragment extends Fragment implements CompanyBuyers
     private List<CompanyBuyer> companyBuyerList;
     private FirebaseFirestore db;
     private String currentSellerId;
-    private NavController navController; // NavController
+    private NavController navController;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -44,7 +43,6 @@ public class CompanyBuyersListFragment extends Fragment implements CompanyBuyers
         binding = FragmentCompanyBuyersListBinding.inflate(inflater, container, false);
         db = FirebaseFirestore.getInstance();
         companyBuyerList = new ArrayList<>();
-        // Pasar 'this' como listener al adapter
         adapter = new CompanyBuyersAdapter(companyBuyerList, this);
         return binding.getRoot();
     }
@@ -53,12 +51,10 @@ public class CompanyBuyersListFragment extends Fragment implements CompanyBuyers
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Obtener NavController
         try {
             navController = Navigation.findNavController(view);
         } catch (IllegalStateException e) {
             Log.e(TAG, "NavController not found for this view.", e);
-            // Considerar manejar este error, quizás mostrando un Toast o deshabilitando la navegación
         }
 
         binding.recyclerViewCompanyBuyers.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -71,18 +67,17 @@ public class CompanyBuyersListFragment extends Fragment implements CompanyBuyers
         } else {
             Log.e(TAG, "idGlobalUser is null or empty. Cannot fetch buyers.");
             if (getContext() != null) {
-                Toast.makeText(getContext(), getString(R.string.error_seller_id_not_available), Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Error: Seller ID not available.", Toast.LENGTH_LONG).show();
             }
             if (binding != null) {
                 binding.progressBarCompanyBuyers.setVisibility(View.GONE);
-                binding.textViewNoBuyers.setText(getString(R.string.text_seller_id_not_configured));
+                binding.textViewNoBuyers.setText("Seller ID not configured.");
                 binding.textViewNoBuyers.setVisibility(View.VISIBLE);
             }
         }
     }
 
     private void fetchCompanyBuyersData() {
-        // ... (el resto del método fetchCompanyBuyersData es igual)
         if (binding == null) return;
         binding.progressBarCompanyBuyers.setVisibility(View.VISIBLE);
         binding.recyclerViewCompanyBuyers.setVisibility(View.GONE);
@@ -112,7 +107,7 @@ public class CompanyBuyersListFragment extends Fragment implements CompanyBuyers
 
                         if (uniqueUserIds.isEmpty()) {
                             binding.progressBarCompanyBuyers.setVisibility(View.GONE);
-                            binding.textViewNoBuyers.setText(getString(R.string.text_no_buyers_list_empty));
+                            binding.textViewNoBuyers.setText("The list of buyers is empty.");
                             binding.textViewNoBuyers.setVisibility(View.VISIBLE);
                             adapter.updateData(new ArrayList<>());
                             Log.d(TAG, "No orders found for this seller, or no userIds in orders.");
@@ -121,10 +116,10 @@ public class CompanyBuyersListFragment extends Fragment implements CompanyBuyers
                         }
                     } else {
                         binding.progressBarCompanyBuyers.setVisibility(View.GONE);
-                        binding.textViewNoBuyers.setText(getString(R.string.error_fetching_orders_message));
+                        binding.textViewNoBuyers.setText("Error fetching orders.");
                         binding.textViewNoBuyers.setVisibility(View.VISIBLE);
                         Log.e(TAG, "Error getting orders: ", task.getException());
-                        String errorMessage = getString(R.string.error_fetching_orders_toast);
+                        String errorMessage = "Could not fetch orders";
                         if (task.getException() != null && task.getException().getMessage() != null) {
                             errorMessage += ": " + task.getException().getMessage();
                         }
@@ -134,12 +129,11 @@ public class CompanyBuyersListFragment extends Fragment implements CompanyBuyers
     }
 
     private void fetchUserDetailsFromFirebase(List<String> userIds, Map<String, Integer> userOrderCounts) {
-        // ... (el resto del método fetchUserDetailsFromFirebase es igual)
         List<CompanyBuyer> fetchedBuyers = new ArrayList<>();
         if (userIds.isEmpty()) {
             if (binding != null) {
                 binding.progressBarCompanyBuyers.setVisibility(View.GONE);
-                binding.textViewNoBuyers.setText(getString(R.string.text_no_buyers_list_empty));
+                binding.textViewNoBuyers.setText("The list of buyers is empty.");
                 binding.textViewNoBuyers.setVisibility(View.VISIBLE);
             }
             adapter.updateData(new ArrayList<>());
@@ -176,13 +170,13 @@ public class CompanyBuyersListFragment extends Fragment implements CompanyBuyers
                             } else {
                                 Log.w(TAG, "User document not found for ID: " + userId + ". Using ID as name.");
                                 int orderCount = userOrderCounts.getOrDefault(userId, 0);
-                                String fallbackName = getString(R.string.user_fallback_name_format, userId);
+                                String fallbackName = "User (" + userId.substring(0, 5) + "...)";
                                 fetchedBuyers.add(new CompanyBuyer(userId, fallbackName, orderCount, naValue, naValue));
                             }
                         } else {
                             Log.e(TAG, "Error fetching user details for " + userId, userTask.getException());
                             int orderCount = userOrderCounts.getOrDefault(userId, 0);
-                            String errorFallbackName = getString(R.string.user_fallback_name_error_format, userId);
+                            String errorFallbackName = "User (Error)";
                             fetchedBuyers.add(new CompanyBuyer(userId, errorFallbackName, orderCount, naValue, naValue));
                         }
 
@@ -190,7 +184,7 @@ public class CompanyBuyersListFragment extends Fragment implements CompanyBuyers
                             if (binding != null) {
                                 binding.progressBarCompanyBuyers.setVisibility(View.GONE);
                                 if (fetchedBuyers.isEmpty()) {
-                                    binding.textViewNoBuyers.setText(getString(R.string.text_no_buyers_list_empty));
+                                    binding.textViewNoBuyers.setText("The list of buyers is empty.");
                                     binding.textViewNoBuyers.setVisibility(View.VISIBLE);
                                 } else {
                                     binding.recyclerViewCompanyBuyers.setVisibility(View.VISIBLE);
@@ -210,38 +204,34 @@ public class CompanyBuyersListFragment extends Fragment implements CompanyBuyers
         binding = null;
     }
 
-    // Implementación del método de la interfaz OnBuyerClickListener
     @Override
     public void onViewDetailsClick(CompanyBuyer buyer) {
         if (getContext() == null || !isAdded() || navController == null) {
             Log.w(TAG, "Cannot navigate: context/fragment not added or NavController is null.");
             if (getContext() != null) {
-                Toast.makeText(getContext(), getString(R.string.error_navigation_details), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Error navigating to details.", Toast.LENGTH_SHORT).show();
             }
             return;
         }
 
         String buyerId = buyer.getId();
-        int itemsBought = buyer.getItemsBought(); // Necesitamos pasar esto también
 
         if (buyerId == null || buyerId.isEmpty()) {
-            //Toast.makeText(getContext(), getString(R.string.error_invalid_buyer_id_details), Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Buyer ID is null or empty, cannot navigate to details.");
             return;
         }
 
-        Log.d(TAG, "Navigating to details for buyer: " + buyerId + " with items bought: " + itemsBought);
+        Log.d(TAG, "Navigating to details for buyer: " + buyerId);
 
         Bundle bundle = new Bundle();
         bundle.putString("buyer_id", buyerId);
-        bundle.putInt("items_bought", itemsBought); // Pasar items comprados
+        bundle.putString("seller_id", currentSellerId);
 
         try {
-            // Asegúrate de que el ID de la acción es correcto en tu nav_graph.xml
             navController.navigate(R.id.action_companyBuyersListFragment_to_companyBuyerDetailsFragment, bundle);
         } catch (IllegalArgumentException e) {
             Log.e(TAG, "Navigation action/destination not found or other navigation error.", e);
-            Toast.makeText(getContext(), getString(R.string.error_navigation_details), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Error navigating to details.", Toast.LENGTH_SHORT).show();
         }
     }
 }
