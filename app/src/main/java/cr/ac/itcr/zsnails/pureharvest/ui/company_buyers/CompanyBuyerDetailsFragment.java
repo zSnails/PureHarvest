@@ -1,5 +1,8 @@
 package cr.ac.itcr.zsnails.pureharvest.ui.company_buyers;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -22,6 +26,8 @@ public class CompanyBuyerDetailsFragment extends Fragment {
     private FragmentCompanyBuyerDetailsBinding binding;
     private FirebaseFirestore db;
     private String buyerId;
+    private String buyerPhone;
+    private String buyerEmail;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -47,12 +53,15 @@ public class CompanyBuyerDetailsFragment extends Fragment {
             binding.textViewDetailsError.setText("Invalid buyer ID.");
             binding.textViewDetailsError.setVisibility(View.VISIBLE);
         }
+
+        binding.buttonContactBuyer.setOnClickListener(v -> showContactDialog());
     }
 
     private void fetchBuyerDetails(String id) {
         binding.progressBarDetails.setVisibility(View.VISIBLE);
         binding.layoutDetailsContent.setVisibility(View.GONE);
         binding.textViewDetailsError.setVisibility(View.GONE);
+        binding.buttonContactBuyer.setVisibility(View.GONE);
 
         db.collection("users").document(id).get()
                 .addOnCompleteListener(task -> {
@@ -66,15 +75,18 @@ public class CompanyBuyerDetailsFragment extends Fragment {
                         DocumentSnapshot document = task.getResult();
                         if (document != null && document.exists()) {
                             String fullName = document.getString("fullName");
-                            String email = document.getString("email");
-                            String phone = document.getString("phone");
+                            buyerEmail = document.getString("email");
+                            buyerPhone = document.getString("phone");
 
                             binding.textViewBuyerDetailId.setText(id);
                             binding.textViewBuyerDetailName.setText(fullName != null ? fullName : "N/A");
-                            binding.textViewBuyerDetailEmail.setText(email != null ? email : "N/A");
-                            binding.textViewBuyerDetailPhone.setText(phone != null ? phone : "N/A");
+                            binding.textViewBuyerDetailEmail.setText(buyerEmail != null ? buyerEmail : "N/A");
+                            binding.textViewBuyerDetailPhone.setText(buyerPhone != null ? buyerPhone : "N/A");
 
                             binding.layoutDetailsContent.setVisibility(View.VISIBLE);
+                            if ((buyerPhone != null && !buyerPhone.isEmpty()) || (buyerEmail != null && !buyerEmail.isEmpty())) {
+                                binding.buttonContactBuyer.setVisibility(View.VISIBLE);
+                            }
                         } else {
                             Log.w(TAG, "No such document for buyer ID: " + id);
                             binding.textViewDetailsError.setText("Buyer details not found.");
@@ -87,6 +99,59 @@ public class CompanyBuyerDetailsFragment extends Fragment {
                         Toast.makeText(getContext(), "Error loading buyer details.", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    private void showContactDialog() {
+        final CharSequence[] options = {"Call", "Send SMS", "Send WhatsApp", "Send Email"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Contact Buyer");
+        builder.setItems(options, (dialog, item) -> {
+            switch (item) {
+                case 0: // Call
+                    if (buyerPhone != null && !buyerPhone.isEmpty()) {
+                        Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + buyerPhone));
+                        startActivity(callIntent);
+                    } else {
+                        Toast.makeText(getContext(), "Phone number not available.", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                case 1: // Send SMS
+                    if (buyerPhone != null && !buyerPhone.isEmpty()) {
+                        Intent smsIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:" + buyerPhone));
+                        startActivity(smsIntent);
+                    } else {
+                        Toast.makeText(getContext(), "Phone number not available.", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                case 2: // Send WhatsApp
+                    if (buyerPhone != null && !buyerPhone.isEmpty()) {
+                        try {
+                            Intent whatsappIntent = new Intent(Intent.ACTION_VIEW);
+                            whatsappIntent.setData(Uri.parse("https://api.whatsapp.com/send?phone=" + buyerPhone));
+                            startActivity(whatsappIntent);
+                        } catch (ActivityNotFoundException e) {
+                            Toast.makeText(getContext(), "WhatsApp is not installed.", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(getContext(), "Phone number not available.", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                case 3: // Send Email
+                    if (buyerEmail != null && !buyerEmail.isEmpty()) {
+                        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + buyerEmail));
+                        try {
+                            startActivity(emailIntent);
+                        } catch (ActivityNotFoundException e) {
+                            Toast.makeText(getContext(), "No email client found.", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(getContext(), "Email address not available.", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+            }
+        });
+        builder.show();
     }
 
     @Override
