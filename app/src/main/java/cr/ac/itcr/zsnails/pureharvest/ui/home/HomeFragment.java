@@ -2,15 +2,17 @@ package cr.ac.itcr.zsnails.pureharvest.ui.home;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +24,6 @@ import javax.inject.Inject;
 import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.data.model.Product;
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentHomeBinding;
-import cr.ac.itcr.zsnails.pureharvest.decoration.MarginItemDecoration;
 import cr.ac.itcr.zsnails.pureharvest.decoration.RandomItemListMarginItemDecoration;
 import cr.ac.itcr.zsnails.pureharvest.domain.repository.ShoppingCartRepository;
 import cr.ac.itcr.zsnails.pureharvest.entities.CartItem;
@@ -37,9 +38,16 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
     public ShoppingCartRepository repo = null;
     @Inject
     public ExecutorService executor;
+
     private FragmentHomeBinding binding;
     private HomeViewModel viewModel;
     private ShoppingCartViewModel shoppingCart;
+
+    private final List<Product> allProducts = new ArrayList<>();
+
+    private TopSoldSectionView topSoldSection;
+    private SpecialOffersSectionView specialOffersSection;
+    private ProductAdapter specialOffersAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,14 +59,11 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //Section spacing
-        int sectionSpacing = (int) getResources().getDimension(R.dimen.section_spacing);
-
         viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         shoppingCart = new ViewModelProvider(requireActivity()).get(ShoppingCartViewModel.class);
-        View searchToolsSection = getLayoutInflater().inflate(R.layout.search_tools, binding.containerSections, false);
 
-
+        //Section spacing
+        int sectionSpacing = (int) getResources().getDimension(R.dimen.section_spacing);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
@@ -66,13 +71,15 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
         layoutParams.bottomMargin = sectionSpacing;
 
         // Searchbar and filters
+        View searchToolsSection = getLayoutInflater().inflate(R.layout.search_tools, binding.containerSections, false);
         layoutParams.bottomMargin = getResources().getDimensionPixelSize(R.dimen.section_spacing);
         searchToolsSection.setLayoutParams(layoutParams);
         binding.containerSections.addView(searchToolsSection);
+        EditText searchEditText = searchToolsSection.findViewById(R.id.searchEditText);
 
         // Top 10 Best Sellers Section
         final ProductAdapter topAdapter = new ProductAdapter(new ArrayList<>(), this, this, true, false);
-        TopSoldSectionView topSoldSection = new TopSoldSectionView(requireContext());
+        topSoldSection = new TopSoldSectionView(requireContext());
         topSoldSection.setTitle(getString(R.string.carousel_top_sold));
         topSoldSection.setAdapter(topAdapter);
         topSoldSection.getRecyclerView().addItemDecoration(
@@ -93,8 +100,8 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
         binding.containerSections.addView(section);
 
         // Special Offers Section
-        final ProductAdapter specialOffersAdapter = new ProductAdapter(new ArrayList<>(), this, this, false, true);
-        SpecialOffersSectionView specialOffersSection = new SpecialOffersSectionView(requireContext());
+        specialOffersAdapter = new ProductAdapter(new ArrayList<>(), this, this, false, true);
+        specialOffersSection = new SpecialOffersSectionView(requireContext());
         specialOffersSection.setTitle(getString(R.string.carousel_special_offers));
         specialOffersSection.setAdapter(specialOffersAdapter);
         specialOffersSection.getRecyclerView().addItemDecoration(
@@ -104,6 +111,8 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
 
         // Observe all products
         viewModel.getProducts().observe(getViewLifecycleOwner(), products -> {
+            allProducts.clear();
+            allProducts.addAll(products);
             adapter.updateData(products);
 
             // Obtain Top 10 Best Sellers
@@ -123,6 +132,39 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
                 // Only create the section if there are discounted products
                 specialOffersAdapter.updateData(discountedProducts);
                 binding.containerSections.addView(specialOffersSection, 1); // Insertar en la posición 1 (entre topSold y randomList)
+            }
+        });
+
+        // Search Filtering
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void afterTextChanged(Editable s) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String query = s.toString().trim().toLowerCase();
+
+                if (query.isEmpty()) {
+                    // Show all sections again
+                    if (binding.containerSections.indexOfChild(topSoldSection) == -1) {
+                        binding.containerSections.addView(topSoldSection, 1); // at the top
+                    }
+                    if (specialOffersAdapter.getItemCount() > 0 &&
+                            binding.containerSections.indexOfChild(specialOffersSection) == -1) {
+                        binding.containerSections.addView(specialOffersSection, 2); // after topSold
+                    }
+                    adapter.updateData(allProducts); // restore full product list
+                } else {
+                    // Hide top sellers and special offers while searching
+                    binding.containerSections.removeView(topSoldSection);
+                    binding.containerSections.removeView(specialOffersSection);
+
+                    // Show only filtered products
+                    List<Product> filtered = allProducts.stream()
+                            .filter(p -> p.getName().toLowerCase().contains(query))
+                            .collect(Collectors.toList());
+                    adapter.updateData(filtered);
+                }
             }
         });
     }
