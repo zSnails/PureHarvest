@@ -67,9 +67,12 @@ public class CompanyBuyerDetailsFragment extends Fragment {
                         if (document != null && document.exists()) {
                             String fullName = document.getString("fullName");
                             String email = document.getString("email");
+                            String phone = document.getString("phone");
 
+                            binding.textViewBuyerDetailId.setText(id);
                             binding.textViewBuyerDetailName.setText(fullName != null ? fullName : "N/A");
                             binding.textViewBuyerDetailEmail.setText(email != null ? email : "N/A");
+                            binding.textViewBuyerDetailPhone.setText(phone != null ? phone : "N/A");
 
                             binding.layoutDetailsContent.setVisibility(View.VISIBLE);
                         } else {
