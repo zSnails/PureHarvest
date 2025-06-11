@@ -7,12 +7,16 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.google.android.material.slider.Slider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +79,28 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
         layoutParams.bottomMargin = getResources().getDimensionPixelSize(R.dimen.section_spacing);
         searchToolsSection.setLayoutParams(layoutParams);
         binding.containerSections.addView(searchToolsSection);
+
         EditText searchEditText = searchToolsSection.findViewById(R.id.searchEditText);
+        Button btnAdvanced = searchToolsSection.findViewById(R.id.btnAdvancedSearch);
+        View filtersLayout = searchToolsSection.findViewById(R.id.advancedFiltersLayout);
+        Slider priceSlider = searchToolsSection.findViewById(R.id.priceSlider);
+        TextView priceValue = searchToolsSection.findViewById(R.id.priceValue);
+
+        btnAdvanced.setOnClickListener(v -> {
+            if (filtersLayout.getVisibility() == View.GONE) {
+                filtersLayout.setVisibility(View.VISIBLE);
+                filtersLayout.setAlpha(0f);
+                filtersLayout.animate().alpha(1f).setDuration(300).start();
+            } else {
+                filtersLayout.animate().alpha(0f).setDuration(300).withEndAction(() -> filtersLayout.setVisibility(View.GONE)).start();
+            }
+        });
+
+        // Update price label
+        priceSlider.addOnChangeListener((slider, value, fromUser) -> {
+            int rounded = (int) value;
+            priceValue.setText("₡" + String.format("%,d", rounded));
+        });
 
         // Top 10 Best Sellers Section
         final ProductAdapter topAdapter = new ProductAdapter(new ArrayList<>(), this, this, true, false);

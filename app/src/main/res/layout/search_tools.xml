@@ -9,5 +9,6 @@
 
     <include layout="@layout/search_bar" />
     <include layout="@layout/advanced_search_button" />
+    <include layout="@layout/advanced_search_filters" />
 
 </LinearLayout>
