@@ -463,5 +463,19 @@
 
     <string name="fragment_stand_out_payment">Payment section</string>
 
+    <string name="stand_out_payment_title">Pay to Stand Out</string>
+    <string name="stand_out_payment_explanation">By confirming this payment (cost to be defined), your product will be prioritized in the random list. Products are displayed based on the payment date and time, with the earliest payments appearing first.</string>
+    <string name="stand_out_payment_confirm_button">Confirm Payment</string>
+    <string name="stand_out_payment_missing_product_id">Product ID is missing. Cannot proceed.</string>
+    <string name="stand_out_payment_load_details_failed">Failed to load product details.</string>
+    <string name="stand_out_payment_load_error">Error loading product: %s</string>
+    <string name="stand_out_payment_price_not_available">Price not available</string>
+    <string name="stand_out_payment_confirmation_dialog_message">Are you sure you want to pay for the product \"%s\" to feature it?</string>
+    <string name="stand_out_payment_confirmation_dialog_title">Confirm Payment</string>
+    <string name="stand_out_payment_confirmation_dialog_positive">Confirm</string>
+    <string name="stand_out_payment_confirmation_dialog_negative">Cancel</string>
+    <string name="stand_out_payment_success">Payment successful! Product will now be featured.</string>
+    <string name="stand_out_payment_failed">Payment failed. Please try again: %s</string>
+
 
 </resources>

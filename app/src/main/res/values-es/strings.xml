@@ -407,20 +407,23 @@
         <item>Orgánico</item>
     </string-array>
 
-    <string name="button_pay_to_stand_out_product">Pagar para destacar producto</string>
-    <string name="pay_to_stand_out_product_title">Pagar para Destacar</string>
-    <string name="stand_out_payment_explanation">Al confirmar este pago (costo aún por definir), su producto será priorizado en la lista aleatoria. Los productos se muestran según la fecha y hora de pago, apareciendo primero aquellos cuyos pagos se realizaron antes.</string>
-    <string name="button_confirm_payment">Confirmar Pago</string>
-    <string name="confirm_payment_dialog_title">Confirmar Pago</string>
-    <string name="confirm_payment_dialog_message">¿Está seguro de que desea proceder con el pago para destacar este producto?</string>
-    <string name="dialog_confirm">Confirmar</string>
-    <string name="dialog_cancel">Cancelar</string>
-    <string name="payment_successful">¡Pago exitoso! El producto ahora será destacado.</string>
-    <string name="payment_failed">El pago falló. Por favor, inténtelo de nuevo.</string>
-    <string name="product_id_missing">Falta el ID del producto. No se puede proceder.</string>
 
     <string name="fragment_company_buyer_details">Compradores de la empresa</string>
 
     <string name="fragment_stand_out_payment">Sección de pago</string>
+
+    <string name="stand_out_payment_title">Pagar para Destacar</string>
+    <string name="stand_out_payment_explanation">Al confirmar este pago (costo por definir), su producto será priorizado en la lista aleatoria. Los productos se muestran según la fecha y hora del pago, apareciendo primero los pagos más antiguos.</string>
+    <string name="stand_out_payment_confirm_button">Confirmar Pago</string>
+    <string name="stand_out_payment_missing_product_id">Falta el ID del producto. No se puede continuar.</string>
+    <string name="stand_out_payment_load_details_failed">No se pudieron cargar los detalles del producto.</string>
+    <string name="stand_out_payment_load_error">Error al cargar el producto: %s</string>
+    <string name="stand_out_payment_price_not_available">Precio no disponible</string>
+    <string name="stand_out_payment_confirmation_dialog_message">¿Está seguro de que desea pagar para destacar el producto \"%s\"?</string>
+    <string name="stand_out_payment_confirmation_dialog_title">Confirmar Pago</string>
+    <string name="stand_out_payment_confirmation_dialog_positive">Confirmar</string>
+    <string name="stand_out_payment_confirmation_dialog_negative">Cancelar</string>
+    <string name="stand_out_payment_success">¡Pago exitoso! El producto ahora será destacado.</string>
+    <string name="stand_out_payment_failed">El pago falló. Por favor, inténtelo de nuevo: %s</string>
 
 </resources>

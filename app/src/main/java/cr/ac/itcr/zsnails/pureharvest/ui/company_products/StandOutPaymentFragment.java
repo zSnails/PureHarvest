@@ -51,7 +51,7 @@ public class StandOutPaymentFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         if (productId == null || productId.isEmpty()) {
-            Toast.makeText(getContext(), "Product ID is missing. Cannot proceed.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), getString(R.string.stand_out_payment_missing_product_id), Toast.LENGTH_LONG).show();
             binding.buttonConfirmPaymentAction.setEnabled(false);
             return;
         }
@@ -79,7 +79,7 @@ public class StandOutPaymentFragment extends Fragment {
                         if (price != null) {
                             binding.textProductPriceFeature.setText(String.format(Locale.US, "$%.2f", price));
                         } else {
-                            binding.textProductPriceFeature.setText("Price not available");
+                            binding.textProductPriceFeature.setText(getString(R.string.stand_out_payment_price_not_available));
                         }
 
                         Glide.with(this)
@@ -92,24 +92,24 @@ public class StandOutPaymentFragment extends Fragment {
                         binding.progressBarPayment.setVisibility(View.GONE);
                         binding.buttonConfirmPaymentAction.setEnabled(true);
                     } else {
-                        Toast.makeText(getContext(), "Failed to load product details.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), getString(R.string.stand_out_payment_load_details_failed), Toast.LENGTH_SHORT).show();
                         binding.progressBarPayment.setVisibility(View.GONE);
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(getContext(), "Error loading product: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.stand_out_payment_load_error, e.getMessage()), Toast.LENGTH_SHORT).show();
                     binding.progressBarPayment.setVisibility(View.GONE);
                 });
     }
 
     private void showConfirmationDialog() {
-        String confirmationMessage = "Are you sure you want to pay for the product \"" + (productName != null ? productName : "") + "\" to feature it?";
+        String confirmationMessage = getString(R.string.stand_out_payment_confirmation_dialog_message, (productName != null ? productName : ""));
 
         new AlertDialog.Builder(requireContext())
-                .setTitle("Confirm Payment")
+                .setTitle(R.string.stand_out_payment_confirmation_dialog_title)
                 .setMessage(confirmationMessage)
-                .setPositiveButton("Confirm", (dialog, which) -> processPayment())
-                .setNegativeButton("Cancel", null)
+                .setPositiveButton(R.string.stand_out_payment_confirmation_dialog_positive, (dialog, which) -> processPayment())
+                .setNegativeButton(R.string.stand_out_payment_confirmation_dialog_negative, null)
                 .show();
     }
 
@@ -123,7 +123,7 @@ public class StandOutPaymentFragment extends Fragment {
                 .update("standOutPayment", paymentData)
                 .addOnSuccessListener(aVoid -> {
                     binding.progressBarPayment.setVisibility(View.GONE);
-                    Toast.makeText(getContext(), "Payment successful! Product will now be featured.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), getString(R.string.stand_out_payment_success), Toast.LENGTH_LONG).show();
                     if (isAdded() && getView() != null) {
                         NavController navController = Navigation.findNavController(requireView());
                         navController.popBackStack();
@@ -132,7 +132,7 @@ public class StandOutPaymentFragment extends Fragment {
                 .addOnFailureListener(e -> {
                     binding.progressBarPayment.setVisibility(View.GONE);
                     binding.buttonConfirmPaymentAction.setEnabled(true);
-                    Toast.makeText(getContext(), "Payment failed. Please try again." + ": " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), getString(R.string.stand_out_payment_failed, e.getMessage()), Toast.LENGTH_LONG).show();
                 });
     }
 
