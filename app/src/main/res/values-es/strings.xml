@@ -421,4 +421,6 @@
 
     <string name="fragment_company_buyer_details">Compradores de la empresa</string>
 
+    <string name="fragment_stand_out_payment">Sección de pago</string>
+
 </resources>

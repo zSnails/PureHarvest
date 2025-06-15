@@ -461,8 +461,7 @@
 
     <string name="fragment_company_buyer_details">Company buyers</string>
 
-
-
+    <string name="fragment_stand_out_payment">Payment section</string>
 
 
 </resources>
