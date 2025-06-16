@@ -428,4 +428,6 @@
 
     <string name="button_pay_to_stand_out">Pagar para destacar producto</string>
 
+    <string name="stand_out_product_cancel_button">Cancelar</string>
+
 </resources>

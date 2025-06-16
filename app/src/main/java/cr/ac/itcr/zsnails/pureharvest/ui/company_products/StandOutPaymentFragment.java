@@ -58,6 +58,7 @@ public class StandOutPaymentFragment extends Fragment {
 
         fetchProductDetails();
         binding.buttonConfirmPaymentAction.setOnClickListener(v -> showConfirmationDialog());
+        binding.buttonCancelPayment.setOnClickListener(v -> navigateBack());
     }
 
     private void fetchProductDetails() {
@@ -124,16 +125,20 @@ public class StandOutPaymentFragment extends Fragment {
                 .addOnSuccessListener(aVoid -> {
                     binding.progressBarPayment.setVisibility(View.GONE);
                     Toast.makeText(getContext(), getString(R.string.stand_out_payment_success), Toast.LENGTH_LONG).show();
-                    if (isAdded() && getView() != null) {
-                        NavController navController = Navigation.findNavController(requireView());
-                        navController.popBackStack();
-                    }
+                    navigateBack();
                 })
                 .addOnFailureListener(e -> {
                     binding.progressBarPayment.setVisibility(View.GONE);
                     binding.buttonConfirmPaymentAction.setEnabled(true);
                     Toast.makeText(getContext(), getString(R.string.stand_out_payment_failed, e.getMessage()), Toast.LENGTH_LONG).show();
                 });
+    }
+
+    private void navigateBack() {
+        if (isAdded() && getView() != null) {
+            NavController navController = Navigation.findNavController(requireView());
+            navController.popBackStack();
+        }
     }
 
     @Override
