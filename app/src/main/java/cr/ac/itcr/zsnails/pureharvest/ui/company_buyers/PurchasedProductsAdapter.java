@@ -35,13 +35,13 @@ public class PurchasedProductsAdapter extends RecyclerView.Adapter<PurchasedProd
         PurchasedProduct product = productList.get(position);
         holder.productId.setText(product.getProductId());
         holder.productName.setText(product.getName());
-        holder.productPrice.setText(String.format(Locale.US, "$%.2f", product.getPrice()));
+        holder.productPrice.setText(String.format(Locale.US, "₡%.2f", product.getPrice()));
         holder.orderDate.setText(product.getFormattedDate());
 
         Glide.with(holder.itemView.getContext())
                 .load(product.getImageUrl())
-                .placeholder(R.drawable.ic_launcher_foreground) // Reemplaza con tu placeholder
-                .error(R.drawable.ic_launcher_background) // Reemplaza con tu imagen de error
+                .placeholder(R.drawable.ic_launcher_foreground)
+                .error(R.drawable.ic_launcher_background)
                 .into(holder.productImage);
     }
 

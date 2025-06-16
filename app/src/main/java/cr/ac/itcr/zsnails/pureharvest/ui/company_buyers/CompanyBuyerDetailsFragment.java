@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentCompanyBuyerDetailsBinding;
 
 public class CompanyBuyerDetailsFragment extends Fragment {
@@ -66,7 +67,7 @@ public class CompanyBuyerDetailsFragment extends Fragment {
         } else {
             Log.e(TAG, "Buyer ID or Seller ID is null or empty.");
             binding.progressBarDetails.setVisibility(View.GONE);
-            binding.textViewDetailsError.setText("Invalid buyer or seller ID.");
+            binding.textViewDetailsError.setText(getString(R.string.error_invalid_buyer_or_seller_id));
             binding.textViewDetailsError.setVisibility(View.VISIBLE);
         }
 
@@ -85,6 +86,7 @@ public class CompanyBuyerDetailsFragment extends Fragment {
         binding.layoutDetailsContent.setVisibility(View.GONE);
         binding.textViewDetailsError.setVisibility(View.GONE);
         binding.buttonContactBuyer.setVisibility(View.GONE);
+        final String naValue = getString(R.string.info_not_available);
 
         db.collection("users").document(id).get()
                 .addOnCompleteListener(task -> {
@@ -97,9 +99,9 @@ public class CompanyBuyerDetailsFragment extends Fragment {
                         buyerEmail = document.getString("email");
                         buyerPhone = document.getString("phone");
 
-                        binding.textViewBuyerDetailName.setText(fullName != null ? fullName : "N/A");
-                        binding.textViewBuyerDetailEmail.setText(buyerEmail != null ? buyerEmail : "N/A");
-                        binding.textViewBuyerDetailPhone.setText(buyerPhone != null ? buyerPhone : "N/A");
+                        binding.textViewBuyerDetailName.setText(fullName != null ? fullName : naValue);
+                        binding.textViewBuyerDetailEmail.setText(buyerEmail != null ? buyerEmail : naValue);
+                        binding.textViewBuyerDetailPhone.setText(buyerPhone != null ? buyerPhone : naValue);
 
                         binding.layoutDetailsContent.setVisibility(View.VISIBLE);
                         if ((buyerPhone != null && !buyerPhone.isEmpty()) || (buyerEmail != null && !buyerEmail.isEmpty())) {
@@ -107,7 +109,7 @@ public class CompanyBuyerDetailsFragment extends Fragment {
                         }
                     } else {
                         Log.e(TAG, "Error getting buyer details: ", task.getException());
-                        binding.textViewDetailsError.setText("Error loading buyer details.");
+                        binding.textViewDetailsError.setText(getString(R.string.error_loading_buyer_details));
                         binding.textViewDetailsError.setVisibility(View.VISIBLE);
                     }
                 });
@@ -144,9 +146,9 @@ public class CompanyBuyerDetailsFragment extends Fragment {
                     } else {
                         Log.e(TAG, "Error getting orders for product list", orderTask.getException());
                         binding.progressBarProducts.setVisibility(View.GONE);
-                        binding.textViewNoProducts.setText("Error loading products.");
+                        binding.textViewNoProducts.setText(getString(R.string.error_loading_products));
                         binding.textViewNoProducts.setVisibility(View.VISIBLE);
-                        binding.textViewBuyerDetailItemsBought.setText("N/A");
+                        binding.textViewBuyerDetailItemsBought.setText(getString(R.string.info_not_available));
                     }
                 });
     }
@@ -155,6 +157,9 @@ public class CompanyBuyerDetailsFragment extends Fragment {
         List<PurchasedProduct> fetchedProducts = new ArrayList<>();
         AtomicInteger counter = new AtomicInteger(0);
         int totalOrders = orders.size();
+        String unknownProduct = getString(R.string.product_name_unknown);
+        String notFoundProduct = getString(R.string.product_not_found);
+
 
         for (QueryDocumentSnapshot orderDoc : orders) {
             String productId = orderDoc.getString("productId");
@@ -183,10 +188,10 @@ public class CompanyBuyerDetailsFragment extends Fragment {
                             } catch (Exception e) {
                                 Log.e(TAG, "Error parsing imageUrls", e);
                             }
-                            fetchedProducts.add(new PurchasedProduct(productId, name != null ? name : "Unknown", price != null ? price : 0.0, date, firstImageUrl));
+                            fetchedProducts.add(new PurchasedProduct(productId, name != null ? name : unknownProduct, price != null ? price : 0.0, date, firstImageUrl));
                         } else {
                             Log.w(TAG, "Product not found for ID: " + productId);
-                            fetchedProducts.add(new PurchasedProduct(productId, "Product not found", 0.0, date, null));
+                            fetchedProducts.add(new PurchasedProduct(productId, notFoundProduct, 0.0, date, null));
                         }
 
                         if (counter.incrementAndGet() == totalOrders) {
@@ -210,45 +215,46 @@ public class CompanyBuyerDetailsFragment extends Fragment {
     }
 
     private void showContactDialog() {
-        final CharSequence[] options = {"Call", "Send SMS", "Send WhatsApp", "Send Email"};
+        if (getContext() == null) return;
+        final CharSequence[] options = getResources().getStringArray(R.array.contact_options);
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Contact Buyer");
+        builder.setTitle(getString(R.string.contact_dialog_title));
         builder.setItems(options, (dialog, item) -> {
             switch (item) {
-                case 0:
+                case 0: // Call
                     if (buyerPhone != null && !buyerPhone.isEmpty()) {
                         startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + buyerPhone)));
                     } else {
-                        Toast.makeText(getContext(), "Phone number not available.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), getString(R.string.error_phone_not_available), Toast.LENGTH_SHORT).show();
                     }
                     break;
-                case 1:
+                case 1: // SMS
                     if (buyerPhone != null && !buyerPhone.isEmpty()) {
                         startActivity(new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:" + buyerPhone)));
                     } else {
-                        Toast.makeText(getContext(), "Phone number not available.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), getString(R.string.error_phone_not_available), Toast.LENGTH_SHORT).show();
                     }
                     break;
-                case 2:
+                case 2: // WhatsApp
                     if (buyerPhone != null && !buyerPhone.isEmpty()) {
                         try {
                             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://api.whatsapp.com/send?phone=" + buyerPhone)));
                         } catch (ActivityNotFoundException e) {
-                            Toast.makeText(getContext(), "WhatsApp is not installed.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), getString(R.string.error_whatsapp_not_installed), Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(getContext(), "Phone number not available.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), getString(R.string.error_phone_not_available), Toast.LENGTH_SHORT).show();
                     }
                     break;
-                case 3:
+                case 3: // Email
                     if (buyerEmail != null && !buyerEmail.isEmpty()) {
                         try {
                             startActivity(new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + buyerEmail)));
                         } catch (ActivityNotFoundException e) {
-                            Toast.makeText(getContext(), "No email client found.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), getString(R.string.error_no_email_client), Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(getContext(), "Email address not available.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), getString(R.string.error_email_not_available), Toast.LENGTH_SHORT).show();
                     }
                     break;
             }

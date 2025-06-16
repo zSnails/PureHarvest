@@ -9,7 +9,7 @@
         android:id="@+id/textViewDetailTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Buyer Details"
+        android:text="@string/buyer_details_title"
         android:textSize="20sp"
         android:textStyle="bold"
         android:gravity="center_horizontal"
@@ -52,7 +52,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Name:"
+                    android:text="@string/label_name"
                     android:textStyle="bold"
                     android:textSize="16sp"/>
 
@@ -66,7 +66,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Items Bought:"
+                    android:text="@string/label_items_bought"
                     android:textStyle="bold"
                     android:textSize="16sp"/>
 
@@ -80,7 +80,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Email:"
+                    android:text="@string/label_email"
                     android:textStyle="bold"
                     android:textSize="16sp"/>
 
@@ -94,7 +94,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Phone:"
+                    android:text="@string/label_phone"
                     android:textStyle="bold"
                     android:textSize="16sp"/>
 
@@ -109,7 +109,7 @@
                     android:id="@+id/buttonContactBuyer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Contact"
+                    android:text="@string/button_contact_buyer"
                     android:layout_marginTop="8dp"
                     android:visibility="gone" />
             </LinearLayout>
@@ -118,7 +118,7 @@
                 android:id="@+id/textViewDetailsError"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Buyer details not found."
+                android:text="@string/error_buyer_details_not_found"
                 android:textColor="@android:color/holo_red_dark"
                 android:textSize="16sp"
                 android:visibility="gone" />
@@ -133,7 +133,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Purchased Products"
+                android:text="@string/title_purchased_products"
                 android:textSize="18sp"
                 android:textStyle="bold"/>
 
@@ -158,7 +158,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="No products have been purchased."
+                android:text="@string/info_no_products_purchased"
                 android:textSize="16sp"
                 android:visibility="gone"/>
 

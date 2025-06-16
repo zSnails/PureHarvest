@@ -492,4 +492,32 @@
     <string name="error_navigating_to_details">Error navigating to details.</string>
 
 
+    <!-- Strings for CompanyBuyerDetailsFragment -->
+    <string name="buyer_details_title">Buyer Details</string>
+    <string name="error_buyer_details_not_found">Buyer details not found.</string>
+    <string name="title_purchased_products">Purchased Products</string>
+    <string name="info_no_products_purchased">No products have been purchased.</string>
+    <string name="error_invalid_buyer_or_seller_id">Invalid buyer or seller ID.</string>
+    <string name="info_not_available">N/A</string>
+    <string name="error_loading_products">Error loading products.</string>
+    <string name="product_name_unknown">Unknown Product</string>
+    <string name="product_not_found">Product not found</string>
+    <string name="contact_dialog_title">Contact Buyer</string>
+    <string name="error_phone_not_available">Phone number not available.</string>
+    <string name="error_whatsapp_not_installed">WhatsApp is not installed.</string>
+    <string name="error_no_email_client">No email client found.</string>
+    <string name="error_email_not_available">Email address not available.</string>
+
+    <string-array name="contact_options">
+        <item>Call</item>
+        <item>Send SMS</item>
+        <item>Send WhatsApp</item>
+        <item>Send Email</item>
+    </string-array>
+
+    <!-- Strings for item_purchased_product.xml -->
+    <string name="cd_purchased_product_image">Product Image</string>
+    <string name="label_price">Price: </string>
+    <string name="label_date">Date: </string>
+
 </resources>

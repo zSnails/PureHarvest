@@ -18,7 +18,7 @@
             android:id="@+id/imageViewProduct"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:contentDescription="Product Image"
+            android:contentDescription="@string/cd_purchased_product_image"
             android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -50,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Price: "
+            android:text="@string/label_price"
             app:layout_constraintStart_toStartOf="@+id/textViewProductId"
             app:layout_constraintTop_toBottomOf="@+id/textViewProductId" />
 
@@ -72,7 +72,7 @@
             android:id="@+id/labelDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Date: "
+            android:text="@string/label_date"
             app:layout_constraintBaseline_toBaselineOf="@+id/textViewOrderDate"
             app:layout_constraintEnd_toStartOf="@+id/textViewOrderDate" />
 

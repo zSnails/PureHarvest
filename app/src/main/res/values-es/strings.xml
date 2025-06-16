@@ -440,4 +440,34 @@
     <string name="fallback_user_name_error">Usuario (Error)</string>
     <string name="error_navigating_to_details">Error al navegar a los detalles.</string>
 
+    <!-- Strings for CompanyBuyerDetailsFragment -->
+    <string name="buyer_details_title">Detalles del Comprador</string>
+    <string name="button_contact_buyer">Contactar</string>
+    <string name="error_buyer_details_not_found">No se encontraron los detalles del comprador.</string>
+    <string name="title_purchased_products">Productos Comprados</string>
+    <string name="info_no_products_purchased">No se han comprado productos.</string>
+    <string name="error_invalid_buyer_or_seller_id">ID de comprador o vendedor inválido.</string>
+    <string name="info_not_available">N/D</string>
+    <string name="error_loading_buyer_details">Error al cargar los detalles del comprador.</string>
+    <string name="error_loading_products">Error al cargar los productos.</string>
+    <string name="product_name_unknown">Producto Desconocido</string>
+    <string name="product_not_found">Producto no encontrado</string>
+    <string name="contact_dialog_title">Contactar Comprador</string>
+    <string name="error_phone_not_available">Número de teléfono no disponible.</string>
+    <string name="error_whatsapp_not_installed">WhatsApp no está instalado.</string>
+    <string name="error_no_email_client">No se encontró un cliente de correo.</string>
+    <string name="error_email_not_available">Dirección de correo no disponible.</string>
+
+    <string-array name="contact_options">
+        <item>Llamar</item>
+        <item>Enviar SMS</item>
+        <item>Enviar WhatsApp</item>
+        <item>Enviar Correo</item>
+    </string-array>
+
+    <!-- Strings for item_purchased_product.xml -->
+    <string name="cd_purchased_product_image">Imagen del producto</string>
+    <string name="label_price">Precio: </string>
+    <string name="label_date">Fecha: </string>
+
 </resources>
