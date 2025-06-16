@@ -482,4 +482,14 @@
     <string name="stand_out_product_cancel_button">Cancel</string>
 
 
+    <string name="error_seller_id_not_configured">Seller ID not configured.</string>
+    <string name="info_no_buyers_found">The list of buyers is empty.</string>
+    <string name="error_fetching_orders">Error fetching orders.</string>
+    <string name="error_could_not_fetch_orders">Could not fetch orders</string>
+    <string name="info_not_available_short">N/A</string>
+    <string name="fallback_user_name_with_id">User (%1$s…)</string>
+    <string name="fallback_user_name_error">User (Error)</string>
+    <string name="error_navigating_to_details">Error navigating to details.</string>
+
+
 </resources>

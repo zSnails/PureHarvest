@@ -430,4 +430,14 @@
 
     <string name="stand_out_product_cancel_button">Cancelar</string>
 
+
+    <string name="error_seller_id_not_configured">El ID del vendedor no está configurado.</string>
+    <string name="info_no_buyers_found">La lista de compradores está vacía.</string>
+    <string name="error_fetching_orders">Error al obtener los pedidos.</string>
+    <string name="error_could_not_fetch_orders">No se pudieron obtener los pedidos</string>
+    <string name="info_not_available_short">N/D</string>
+    <string name="fallback_user_name_with_id">Usuario (%1$s…)</string>
+    <string name="fallback_user_name_error">Usuario (Error)</string>
+    <string name="error_navigating_to_details">Error al navegar a los detalles.</string>
+
 </resources>

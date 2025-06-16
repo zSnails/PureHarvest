@@ -67,11 +67,11 @@ public class CompanyBuyersListFragment extends Fragment implements CompanyBuyers
         } else {
             Log.e(TAG, "idGlobalUser is null or empty. Cannot fetch buyers.");
             if (getContext() != null) {
-                Toast.makeText(getContext(), "Error: Seller ID not available.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getString(R.string.error_seller_id_not_available), Toast.LENGTH_LONG).show();
             }
             if (binding != null) {
                 binding.progressBarCompanyBuyers.setVisibility(View.GONE);
-                binding.textViewNoBuyers.setText("Seller ID not configured.");
+                binding.textViewNoBuyers.setText(getString(R.string.error_seller_id_not_configured));
                 binding.textViewNoBuyers.setVisibility(View.VISIBLE);
             }
         }
@@ -107,7 +107,7 @@ public class CompanyBuyersListFragment extends Fragment implements CompanyBuyers
 
                         if (uniqueUserIds.isEmpty()) {
                             binding.progressBarCompanyBuyers.setVisibility(View.GONE);
-                            binding.textViewNoBuyers.setText("The list of buyers is empty.");
+                            binding.textViewNoBuyers.setText(getString(R.string.info_no_buyers_found));
                             binding.textViewNoBuyers.setVisibility(View.VISIBLE);
                             adapter.updateData(new ArrayList<>());
                             Log.d(TAG, "No orders found for this seller, or no userIds in orders.");
@@ -116,10 +116,10 @@ public class CompanyBuyersListFragment extends Fragment implements CompanyBuyers
                         }
                     } else {
                         binding.progressBarCompanyBuyers.setVisibility(View.GONE);
-                        binding.textViewNoBuyers.setText("Error fetching orders.");
+                        binding.textViewNoBuyers.setText(getString(R.string.error_fetching_orders));
                         binding.textViewNoBuyers.setVisibility(View.VISIBLE);
                         Log.e(TAG, "Error getting orders: ", task.getException());
-                        String errorMessage = "Could not fetch orders";
+                        String errorMessage = getString(R.string.error_could_not_fetch_orders);
                         if (task.getException() != null && task.getException().getMessage() != null) {
                             errorMessage += ": " + task.getException().getMessage();
                         }
@@ -133,7 +133,7 @@ public class CompanyBuyersListFragment extends Fragment implements CompanyBuyers
         if (userIds.isEmpty()) {
             if (binding != null) {
                 binding.progressBarCompanyBuyers.setVisibility(View.GONE);
-                binding.textViewNoBuyers.setText("The list of buyers is empty.");
+                binding.textViewNoBuyers.setText(getString(R.string.info_no_buyers_found));
                 binding.textViewNoBuyers.setVisibility(View.VISIBLE);
             }
             adapter.updateData(new ArrayList<>());
@@ -142,7 +142,7 @@ public class CompanyBuyersListFragment extends Fragment implements CompanyBuyers
 
         AtomicInteger tasksCompleted = new AtomicInteger(0);
         int totalTasks = userIds.size();
-        final String naValue = "N/A";
+        final String naValue = getString(R.string.info_not_available_short);
 
         for (String userId : userIds) {
             db.collection("users").document(userId).get()
@@ -170,13 +170,13 @@ public class CompanyBuyersListFragment extends Fragment implements CompanyBuyers
                             } else {
                                 Log.w(TAG, "User document not found for ID: " + userId + ". Using ID as name.");
                                 int orderCount = userOrderCounts.getOrDefault(userId, 0);
-                                String fallbackName = "User (" + userId.substring(0, 5) + "...)";
+                                String fallbackName = getString(R.string.fallback_user_name_with_id, userId.substring(0, Math.min(userId.length(), 5)));
                                 fetchedBuyers.add(new CompanyBuyer(userId, fallbackName, orderCount, naValue, naValue));
                             }
                         } else {
                             Log.e(TAG, "Error fetching user details for " + userId, userTask.getException());
                             int orderCount = userOrderCounts.getOrDefault(userId, 0);
-                            String errorFallbackName = "User (Error)";
+                            String errorFallbackName = getString(R.string.fallback_user_name_error);
                             fetchedBuyers.add(new CompanyBuyer(userId, errorFallbackName, orderCount, naValue, naValue));
                         }
 
@@ -184,7 +184,7 @@ public class CompanyBuyersListFragment extends Fragment implements CompanyBuyers
                             if (binding != null) {
                                 binding.progressBarCompanyBuyers.setVisibility(View.GONE);
                                 if (fetchedBuyers.isEmpty()) {
-                                    binding.textViewNoBuyers.setText("The list of buyers is empty.");
+                                    binding.textViewNoBuyers.setText(getString(R.string.info_no_buyers_found));
                                     binding.textViewNoBuyers.setVisibility(View.VISIBLE);
                                 } else {
                                     binding.recyclerViewCompanyBuyers.setVisibility(View.VISIBLE);
@@ -209,7 +209,7 @@ public class CompanyBuyersListFragment extends Fragment implements CompanyBuyers
         if (getContext() == null || !isAdded() || navController == null) {
             Log.w(TAG, "Cannot navigate: context/fragment not added or NavController is null.");
             if (getContext() != null) {
-                Toast.makeText(getContext(), "Error navigating to details.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getString(R.string.error_navigating_to_details), Toast.LENGTH_SHORT).show();
             }
             return;
         }
@@ -231,7 +231,7 @@ public class CompanyBuyersListFragment extends Fragment implements CompanyBuyers
             navController.navigate(R.id.action_companyBuyersListFragment_to_companyBuyerDetailsFragment, bundle);
         } catch (IllegalArgumentException e) {
             Log.e(TAG, "Navigation action/destination not found or other navigation error.", e);
-            Toast.makeText(getContext(), "Error navigating to details.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.error_navigating_to_details), Toast.LENGTH_SHORT).show();
         }
     }
 }
