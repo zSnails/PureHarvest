@@ -477,5 +477,7 @@
     <string name="stand_out_payment_success">Payment successful! Product will now be featured.</string>
     <string name="stand_out_payment_failed">Payment failed. Please try again: %s</string>
 
+    <string name="button_pay_to_stand_out">Pay to make product stand out</string>
+
 
 </resources>

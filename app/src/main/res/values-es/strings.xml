@@ -426,4 +426,6 @@
     <string name="stand_out_payment_success">¡Pago exitoso! El producto ahora será destacado.</string>
     <string name="stand_out_payment_failed">El pago falló. Por favor, inténtelo de nuevo: %s</string>
 
+    <string name="button_pay_to_stand_out">Pagar para destacar producto</string>
+
 </resources>
