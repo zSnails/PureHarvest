@@ -16,9 +16,13 @@
     <Button
         android:id="@+id/button_settings"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginHorizontal="32dp"
         android:text="@string/settings"
+        android:background="@drawable/rounded_button"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@id/guideline_top"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -26,10 +30,14 @@
     <Button
         android:id="@+id/button_company_profile"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginTop="16dp"
         android:layout_marginHorizontal="32dp"
         android:text="@string/company_profile"
+        android:background="@drawable/rounded_button"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@id/button_settings"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -37,10 +45,14 @@
     <Button
         android:id="@+id/button_company_products"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginTop="16dp"
         android:layout_marginHorizontal="32dp"
         android:text="@string/company_products"
+        android:background="@drawable/rounded_button"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@id/button_company_profile"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -48,10 +60,14 @@
     <Button
         android:id="@+id/button_company_orders"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginTop="16dp"
         android:layout_marginHorizontal="32dp"
         android:text="@string/company_orders"
+        android:background="@drawable/rounded_button"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@id/button_company_products"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -59,10 +75,14 @@
     <Button
         android:id="@+id/button_company_buyers"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginTop="16dp"
         android:layout_marginHorizontal="32dp"
         android:text="@string/company_buyers_list"
+        android:background="@drawable/rounded_button"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@id/button_company_orders"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -77,7 +97,7 @@
         android:layout_marginEnd="8dp"
         android:textAlignment="center"
         android:textSize="20sp"
-        app:layout_constraintTop_toBottomOf="@id/button_company_orders"
+        app:layout_constraintTop_toBottomOf="@id/button_company_buyers"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
