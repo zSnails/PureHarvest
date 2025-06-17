@@ -14,13 +14,12 @@ public class Order {
     private String userId;
     private String sellerId;
     private Integer status;
-    private List<Map<String, Object>> productsBought; // Changed back to List<Map<String, Object>>
+    private List<Map<String, Object>> productsBought;
 
     public Order() {
 
     }
 
-    // Constructor updated to reflect the new productsBought type
     public Order(Timestamp date, String userId, String sellerId, List<Map<String, Object>> productsBought, Integer status) {
         this.date = date;
         this.userId = userId;

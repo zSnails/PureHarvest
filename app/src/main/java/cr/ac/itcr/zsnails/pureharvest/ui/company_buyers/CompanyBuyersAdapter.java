@@ -20,16 +20,15 @@ import cr.ac.itcr.zsnails.pureharvest.R;
 public class CompanyBuyersAdapter extends RecyclerView.Adapter<CompanyBuyersAdapter.BuyerViewHolder> {
 
     private List<CompanyBuyer> buyerList;
-    private OnBuyerClickListener listener; // Nuevo listener
+    private OnBuyerClickListener listener;
 
-    // Nueva interfaz para el click
     public interface OnBuyerClickListener {
         void onViewDetailsClick(CompanyBuyer buyer);
     }
 
     public CompanyBuyersAdapter(List<CompanyBuyer> buyerList, OnBuyerClickListener listener) {
         this.buyerList = buyerList;
-        this.listener = listener; // Asignar listener
+        this.listener = listener;
     }
 
     @NonNull
@@ -48,7 +47,6 @@ public class CompanyBuyersAdapter extends RecyclerView.Adapter<CompanyBuyersAdap
         holder.textViewBuyerName.setText(buyer.getName());
         holder.textViewItemsBought.setText(String.valueOf(buyer.getItemsBought()));
 
-        // El botón de contactar ya no está aquí, se movió el ID
         holder.buttonViewDetailsBuyer.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onViewDetailsClick(buyer);
@@ -56,7 +54,6 @@ public class CompanyBuyersAdapter extends RecyclerView.Adapter<CompanyBuyersAdap
         });
     }
 
-    // El método showContactOptions se moverá al CompanyBuyerDetailsFragment
 
     @Override
     public int getItemCount() {
@@ -66,16 +63,15 @@ public class CompanyBuyersAdapter extends RecyclerView.Adapter<CompanyBuyersAdap
     static class BuyerViewHolder extends RecyclerView.ViewHolder {
         TextView textViewBuyerId;
         TextView textViewBuyerName;
-        // Quitar textViewBuyerEmail y textViewBuyerPhone
         TextView textViewItemsBought;
-        MaterialButton buttonViewDetailsBuyer; // Cambiado de buttonContactBuyer
+        MaterialButton buttonViewDetailsBuyer;
 
         public BuyerViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewBuyerId = itemView.findViewById(R.id.textViewBuyerId);
             textViewBuyerName = itemView.findViewById(R.id.textViewBuyerName);
             textViewItemsBought = itemView.findViewById(R.id.textViewItemsBought);
-            buttonViewDetailsBuyer = itemView.findViewById(R.id.buttonViewDetailsBuyer); // ID actualizado
+            buttonViewDetailsBuyer = itemView.findViewById(R.id.buttonViewDetailsBuyer);
         }
     }
 

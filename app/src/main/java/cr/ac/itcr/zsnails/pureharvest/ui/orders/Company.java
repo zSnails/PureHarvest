@@ -1,20 +1,17 @@
-// File: cr.ac.itcr.zsnails.pureharvest.ui.orders.Company.java (o en un paquete 'models')
-package cr.ac.itcr.zsnails.pureharvest.ui.orders; // O cr.ac.itcr.zsnails.pureharvest.models.Company
+package cr.ac.itcr.zsnails.pureharvest.ui.orders;
 
 import com.google.firebase.firestore.DocumentId;
 
 public class Company {
     @DocumentId
-    private String documentId; // El ID del documento de la empresa (coincide con sellerId en la orden)
+    private String documentId;
 
-    private String name; // Nombre de la empresa
-    // Añade otros campos de la empresa si los necesitas
+    private String name;
 
     public Company() {
-        // Constructor vacío requerido por Firestore
+
     }
 
-    // Getters y Setters
     public String getDocumentId() {
         return documentId;
     }

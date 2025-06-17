@@ -5,7 +5,7 @@ public class PurchasedProductOrder {
     private String name;
     private double price;
     private String imageUrl;
-    private int quantity; // Added quantity
+    private int quantity;
 
     public PurchasedProductOrder(String productId, String name, double price, String imageUrl, int quantity) {
         this.productId = productId;

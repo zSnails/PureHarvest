@@ -25,7 +25,6 @@ import java.util.List;
 
 import cr.ac.itcr.zsnails.pureharvest.MainActivity;
 import cr.ac.itcr.zsnails.pureharvest.R;
-// Asegúrate que la importación de tu modelo Order es correcta
 
 
 public class CompanyOrderListFragment extends Fragment implements CompanyOrderAdapter.OnOrderClickListener {
@@ -47,7 +46,6 @@ public class CompanyOrderListFragment extends Fragment implements CompanyOrderAd
 
 
     public CompanyOrderListFragment() {
-        // Required empty public constructor
     }
 
     @Override
