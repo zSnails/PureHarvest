@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Locale;
 
 import cr.ac.itcr.zsnails.pureharvest.R;
-import cr.ac.itcr.zsnails.pureharvest.data.model.PurchasedProduct;
+import cr.ac.itcr.zsnails.pureharvest.data.model.PurchasedProduct; // Ensure correct import
 
 public class PurchasedProductsAdapter extends RecyclerView.Adapter<PurchasedProductsAdapter.ProductViewHolder> {
 
@@ -36,13 +36,13 @@ public class PurchasedProductsAdapter extends RecyclerView.Adapter<PurchasedProd
         PurchasedProduct product = productList.get(position);
         holder.productId.setText(product.getProductId());
         holder.productName.setText(product.getName());
-        holder.productPrice.setText(String.format(Locale.US, "₡%.2f", product.getPrice()));
+        holder.productPrice.setText(String.format(Locale.US, "₡%.2f", product.getPrice())); // Using US Locale for consistency with example, adjust if CR specific formatting is needed and different
         holder.orderDate.setText(product.getFormattedDate());
 
         Glide.with(holder.itemView.getContext())
                 .load(product.getImageUrl())
-                .placeholder(R.drawable.ic_launcher_foreground)
-                .error(R.drawable.ic_launcher_background)
+                .placeholder(R.drawable.ic_launcher_foreground) // Ensure these drawables exist
+                .error(R.drawable.ic_launcher_background)       // Ensure these drawables exist
                 .into(holder.productImage);
     }
 

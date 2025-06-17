@@ -508,6 +508,9 @@
     <string name="user_not_found_short">Usuario no encontrado</string>
     <string name="error_loading_user_short">Error cargando usuario</string>
 
+    <string name="no_contact_info_available">No hay información de contacto disponible.</string>
+    <string name="error_product_not_found">Producto no encontrado.</string>
+
 
 
 </resources>

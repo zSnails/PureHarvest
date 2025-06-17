@@ -236,58 +236,16 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"/>
 
-            <TextView
-                android:id="@+id/tvLabelProductId"
-                android:layout_width="wrap_content"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewOrderProduct"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/product_id"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                android:textColor="@color/text_secondary_on_background"/>
-            <TextView
-                android:id="@+id/tvProductIds"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="PROD-FRUIT-APPLE-001"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                android:textColor="@color/text_primary_on_background"
-                android:layout_marginBottom="12dp"/>
-
-            <TextView
-                android:id="@+id/tvLabelProductName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/product_name"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                android:textColor="@color/text_secondary_on_background"
-                android:visibility="gone" />
-            <TextView
-                android:id="@+id/tvProductName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="Manzana Fuji Premium"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                android:textColor="@color/text_primary_on_background"
-                android:layout_marginBottom="12dp"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/tvLabelProductPrice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/product_price"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                android:textColor="@color/text_secondary_on_background"
-                android:visibility="gone" />
-            <TextView
-                android:id="@+id/tvProductPrice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="₡1,850.00"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                android:textStyle="bold"
-                android:textColor="@color/leaf_green"
                 android:layout_marginBottom="24dp"
-                android:visibility="gone" />
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                tools:listitem="@layout/item_purchased_product"
+                tools:itemCount="1"/>
+
         </LinearLayout>
     </ScrollView>
 

@@ -35,6 +35,9 @@ public class PurchasedProduct {
         return imageUrl;
     }
 
+    public Date getDate() { return date; }
+
+
     public String getFormattedDate() {
         if (date == null) {
             return "N/A";
