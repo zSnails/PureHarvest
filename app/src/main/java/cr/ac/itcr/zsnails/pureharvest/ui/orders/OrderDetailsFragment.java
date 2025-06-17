@@ -32,14 +32,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map; // Import Map
+import java.util.Map;
 
 import cr.ac.itcr.zsnails.pureharvest.R;
-import cr.ac.itcr.zsnails.pureharvest.adapters.PurchasedProductsAdapter;
-import cr.ac.itcr.zsnails.pureharvest.data.model.PurchasedProduct;
 
 
 public class OrderDetailsFragment extends Fragment {
@@ -65,9 +62,9 @@ public class OrderDetailsFragment extends Fragment {
 
     private NavController navController;
 
-    private RecyclerView recyclerViewOrderProduct;
-    private PurchasedProductsAdapter purchasedProductsAdapter;
-    private List<PurchasedProduct> productDisplayList;
+    private RecyclerView recyclerViewOrderProductsWithQuantity;
+    private PurchasedProductOrderAdapter purchasedProductOrderAdapter;
+    private List<PurchasedProductOrder> productDisplayListWithQuantity;
 
 
     public OrderDetailsFragment() {
@@ -80,7 +77,7 @@ public class OrderDetailsFragment extends Fragment {
             orderId = getArguments().getString(ARG_ORDER_ID);
         }
         db = FirebaseFirestore.getInstance();
-        productDisplayList = new ArrayList<>();
+        productDisplayListWithQuantity = new ArrayList<>();
     }
 
     @Nullable
@@ -108,17 +105,17 @@ public class OrderDetailsFragment extends Fragment {
         progressBarOrderDetails = view.findViewById(R.id.progressBarOrderDetails);
         contentLayout = view.findViewById(R.id.orderDetailsContent);
 
-        recyclerViewOrderProduct = view.findViewById(R.id.recyclerViewOrderProduct);
+        recyclerViewOrderProductsWithQuantity = view.findViewById(R.id.recyclerViewOrderProductsWithQuantity);
         setupRecyclerView();
 
         return view;
     }
 
     private void setupRecyclerView() {
-        purchasedProductsAdapter = new PurchasedProductsAdapter(productDisplayList);
-        recyclerViewOrderProduct.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerViewOrderProduct.setAdapter(purchasedProductsAdapter);
-        recyclerViewOrderProduct.setVisibility(View.GONE);
+        purchasedProductOrderAdapter = new PurchasedProductOrderAdapter(productDisplayListWithQuantity);
+        recyclerViewOrderProductsWithQuantity.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerViewOrderProductsWithQuantity.setAdapter(purchasedProductOrderAdapter);
+        recyclerViewOrderProductsWithQuantity.setVisibility(View.GONE);
     }
 
 
@@ -149,7 +146,7 @@ public class OrderDetailsFragment extends Fragment {
     private void fetchOrderDetails() {
         if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.VISIBLE);
         if (contentLayout != null) contentLayout.setVisibility(View.GONE);
-        if (recyclerViewOrderProduct != null) recyclerViewOrderProduct.setVisibility(View.GONE);
+        if (recyclerViewOrderProductsWithQuantity != null) recyclerViewOrderProductsWithQuantity.setVisibility(View.GONE);
 
 
         db.collection("orders").document(orderId).get()
@@ -222,7 +219,7 @@ public class OrderDetailsFragment extends Fragment {
                 });
     }
 
-    private void fetchProductsForDisplay(List<Map<String, Object>> productRefs) { // Parameter changed to List<Map<String, Object>>
+    private void fetchProductsForDisplay(List<Map<String, Object>> productRefs) {
         if (productRefs == null || productRefs.isEmpty()) {
             updateProductDisplay(new ArrayList<>());
             finalizeFetch();
@@ -230,12 +227,25 @@ public class OrderDetailsFragment extends Fragment {
         }
 
         List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
-        for (Map<String, Object> productRef : productRefs) { // Iterate over Maps
-            Object idObject = productRef.get("id"); // Get the ID object
-            if (idObject instanceof String) { // Check if it's a String
+        List<Integer> quantities = new ArrayList<>();
+
+        for (Map<String, Object> productRef : productRefs) {
+            Object idObject = productRef.get("id");
+            Object amountObject = productRef.get("amount");
+            int quantity = 1; // Default quantity if not found or invalid
+
+            if (amountObject instanceof Number) {
+                quantity = ((Number) amountObject).intValue();
+            } else if (amountObject != null) {
+                Log.w(TAG, "Product amount in productsBought is not a Number: " + amountObject.getClass().getName());
+            }
+
+
+            if (idObject instanceof String) {
                 String productId = (String) idObject;
                 if (!productId.isEmpty()) {
                     tasks.add(db.collection("products").document(productId).get());
+                    quantities.add(quantity);
                 }
             } else if (idObject != null) {
                 Log.w(TAG, "Product ID in productsBought is not a String: " + idObject.getClass().getName());
@@ -250,10 +260,10 @@ public class OrderDetailsFragment extends Fragment {
 
         Tasks.whenAllSuccess(tasks).addOnSuccessListener(results -> {
             if (!isAdded() || getContext() == null) return;
-            List<PurchasedProduct> fetchedProducts = new ArrayList<>();
-            Date orderDateForProduct = (currentOrder != null && currentOrder.getDate() != null) ? currentOrder.getDate().toDate() : new Date();
+            List<PurchasedProductOrder> fetchedProducts = new ArrayList<>();
 
-            for (Object result : results) {
+            for (int i = 0; i < results.size(); i++) {
+                Object result = results.get(i);
                 DocumentSnapshot productDocument = (DocumentSnapshot) result;
                 if (productDocument.exists()) {
                     String name = productDocument.getString("name");
@@ -261,13 +271,15 @@ public class OrderDetailsFragment extends Fragment {
                     double price = (priceDouble != null) ? priceDouble : 0.0;
                     List<String> imageUrls = (List<String>) productDocument.get("imageUrls");
                     String imageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
+                    int currentQuantity = (quantities.size() > i) ? quantities.get(i) : 1;
 
-                    PurchasedProduct product = new PurchasedProduct(
+
+                    PurchasedProductOrder product = new PurchasedProductOrder(
                             productDocument.getId(),
                             name != null ? name : getString(R.string.not_available_short),
                             price,
-                            orderDateForProduct,
-                            imageUrl
+                            imageUrl,
+                            currentQuantity
                     );
                     fetchedProducts.add(product);
                 }
@@ -286,19 +298,19 @@ public class OrderDetailsFragment extends Fragment {
     private void finalizeFetch() {
         if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.GONE);
         if (contentLayout != null) contentLayout.setVisibility(View.VISIBLE);
-        if (recyclerViewOrderProduct != null && productDisplayList != null && !productDisplayList.isEmpty()) {
-            recyclerViewOrderProduct.setVisibility(View.VISIBLE);
-        } else if (recyclerViewOrderProduct != null) {
-            recyclerViewOrderProduct.setVisibility(View.GONE);
+        if (recyclerViewOrderProductsWithQuantity != null && productDisplayListWithQuantity != null && !productDisplayListWithQuantity.isEmpty()) {
+            recyclerViewOrderProductsWithQuantity.setVisibility(View.VISIBLE);
+        } else if (recyclerViewOrderProductsWithQuantity != null) {
+            recyclerViewOrderProductsWithQuantity.setVisibility(View.GONE);
         }
     }
 
 
-    private void updateProductDisplay(List<PurchasedProduct> products) {
-        if (purchasedProductsAdapter != null) {
-            productDisplayList.clear();
-            productDisplayList.addAll(products);
-            purchasedProductsAdapter.notifyDataSetChanged();
+    private void updateProductDisplay(List<PurchasedProductOrder> products) {
+        if (purchasedProductOrderAdapter != null) {
+            productDisplayListWithQuantity.clear();
+            productDisplayListWithQuantity.addAll(products);
+            purchasedProductOrderAdapter.notifyDataSetChanged();
         }
     }
 

@@ -564,6 +564,9 @@
     <string name="error_fetching_user_details_toast">Error fetching user details</string>
     <string name="error_fetching_some_product_details">Error fetching some product details</string>
 
+    <string name="product_id_prefix_display">ID: %1$s</string>
+    <string name="product_quantity_prefix_display">Quantity: %1$d</string>
+
 
 
 </resources>

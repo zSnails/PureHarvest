@@ -514,4 +514,7 @@
     <string name="error_fetching_user_details_toast">Error al obtener detalles del usuario</string>
     <string name="error_fetching_some_product_details">Error al obtener detalles de algunos productos</string>
 
+    <string name="product_id_prefix_display">ID: %1$s</string>
+    <string name="product_quantity_prefix_display">Cantidad: %1$d</string>
+
 </resources>

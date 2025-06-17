@@ -237,14 +237,14 @@
                 android:layout_marginBottom="16dp"/>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewOrderProduct"
+                android:id="@+id/recyclerViewOrderProductsWithQuantity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 android:clipToPadding="false"
                 android:overScrollMode="never"
-                tools:listitem="@layout/item_purchased_product"
-                tools:itemCount="1"/>
+                tools:listitem="@layout/item_purchased_product_order"
+                tools:itemCount="2"/>
 
         </LinearLayout>
     </ScrollView>
