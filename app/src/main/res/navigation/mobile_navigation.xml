@@ -131,7 +131,7 @@
         tools:layout="@layout/fragment_manage_images" />
     <fragment
         android:id="@+id/companyOrderListFragment"
-        android:name="cr.ac.itcr.zsnails.pureharvest.ui.orders.companyOrderListFragment"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.orders.CompanyOrderListFragment"
         android:label="@string/company_order_list"
         tools:layout="@layout/fragment_company_order_list">
         <action

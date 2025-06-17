@@ -26,9 +26,9 @@ import java.util.List;
 import cr.ac.itcr.zsnails.pureharvest.MainActivity;
 import cr.ac.itcr.zsnails.pureharvest.R;
 // Asegúrate que la importación de tu modelo Order es correcta
-import cr.ac.itcr.zsnails.pureharvest.ui.orders.Order; // Cambiado para apuntar al paquete 'models'
 
-public class companyOrderListFragment extends Fragment implements CompanyOrderAdapter.OnOrderClickListener {
+
+public class CompanyOrderListFragment extends Fragment implements CompanyOrderAdapter.OnOrderClickListener {
 
     private static final String TAG = "CompanyOrderListFrag";
     private String TARGET_SELLER_ID;
@@ -46,7 +46,7 @@ public class companyOrderListFragment extends Fragment implements CompanyOrderAd
     private NavController navController;
 
 
-    public companyOrderListFragment() {
+    public CompanyOrderListFragment() {
         // Required empty public constructor
     }
 
