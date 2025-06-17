@@ -67,6 +67,15 @@
             android:text="Save Coupon"
             android:layout_marginTop="24dp"/>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_delete_coupon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delete Coupon"
+            android:visibility="gone"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@android:color/holo_red_light" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_coupons"
             android:layout_width="match_parent"

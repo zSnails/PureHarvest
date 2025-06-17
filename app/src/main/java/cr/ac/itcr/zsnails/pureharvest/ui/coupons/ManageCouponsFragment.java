@@ -7,10 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.Toast;
-import androidx.recyclerview.widget.LinearLayoutManager;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -28,6 +29,8 @@ public class ManageCouponsFragment extends Fragment {
     private FragmentManageCouponsBinding binding;
     private FirebaseFirestore firestore;
     private String productId;
+    private String editingCouponId = null;
+    private boolean isEditing = false;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -47,6 +50,19 @@ public class ManageCouponsFragment extends Fragment {
         binding.editCouponExpiration.setOnClickListener(v -> showDatePicker());
 
         binding.buttonSaveCoupon.setOnClickListener(v -> saveCoupon());
+
+        binding.buttonDeleteCoupon.setOnClickListener(v -> {
+            if (editingCouponId != null) {
+                firestore.collection("coupons").document(editingCouponId)
+                        .delete()
+                        .addOnSuccessListener(unused -> {
+                            Toast.makeText(getContext(), "Cupón eliminado", Toast.LENGTH_SHORT).show();
+                            resetForm();
+                            loadCoupons();
+                        })
+                        .addOnFailureListener(e -> Toast.makeText(getContext(), "Error al eliminar: " + e.getMessage(), Toast.LENGTH_LONG).show());
+            }
+        });
         binding.recyclerCoupons.setLayoutManager(new LinearLayoutManager(requireContext()));
         loadCoupons();
     }
@@ -100,17 +116,29 @@ public class ManageCouponsFragment extends Fragment {
         couponData.put("code", code);
         couponData.put("discountPercentage", discount);
         couponData.put("maxUses", maxUses);
-        couponData.put("uses", 0);
         couponData.put("expirationTimestamp", expiration);
         couponData.put("sellerId", sellerId);
         couponData.put("applicableProductIds", java.util.Arrays.asList(productId));
 
-        firestore.collection("coupons").add(couponData)
-                .addOnSuccessListener(docRef -> {
-                    Toast.makeText(getContext(), "Cupón creado", Toast.LENGTH_SHORT).show();
-                    loadCoupons();
-                })
-                .addOnFailureListener(e -> Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show());
+        if (isEditing && editingCouponId != null) {
+            firestore.collection("coupons").document(editingCouponId)
+                    .update(couponData)
+                    .addOnSuccessListener(unused -> {
+                        Toast.makeText(getContext(), "Cupón actualizado", Toast.LENGTH_SHORT).show();
+                        resetForm();
+                        loadCoupons();
+                    })
+                    .addOnFailureListener(e -> Toast.makeText(getContext(), "Error al actualizar: " + e.getMessage(), Toast.LENGTH_LONG).show());
+        } else {
+            couponData.put("uses", 0); // Solo al crear
+            firestore.collection("coupons").add(couponData)
+                    .addOnSuccessListener(docRef -> {
+                        Toast.makeText(getContext(), "Cupón creado", Toast.LENGTH_SHORT).show();
+                        resetForm();
+                        loadCoupons();
+                    })
+                    .addOnFailureListener(e -> Toast.makeText(getContext(), "Error al guardar: " + e.getMessage(), Toast.LENGTH_LONG).show());
+        }
     }
 
     private void loadCoupons() {
@@ -121,31 +149,48 @@ public class ManageCouponsFragment extends Fragment {
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     List<Map<String, Object>> coupons = new ArrayList<>();
+                    List<String> documentIds = new ArrayList<>();
+
                     for (var doc : querySnapshot.getDocuments()) {
                         coupons.add(doc.getData());
+                        documentIds.add(doc.getId());
                     }
+
                     binding.recyclerCoupons.setAdapter(new CouponAdapter(coupons, (position, couponData) -> {
-                        new android.app.AlertDialog.Builder(requireContext())
-                                .setTitle("Eliminar cupón")
-                                .setMessage("¿Estás seguro de eliminar este cupón?")
-                                .setPositiveButton("Sí", (dialog, which) -> {
-                                    firestore.collection("coupons")
-                                            .whereEqualTo("code", couponData.get("code"))
-                                            .whereArrayContains("applicableProductIds", productId)
-                                            .get()
-                                            .addOnSuccessListener(query -> {
-                                                for (var doc : query.getDocuments()) {
-                                                    doc.getReference().delete();
-                                                }
-                                                Toast.makeText(getContext(), "Cupón eliminado", Toast.LENGTH_SHORT).show();
-                                                loadCoupons();
-                                            });
-                                })
-                                .setNegativeButton("Cancelar", null)
-                                .show();
+                        editingCouponId = documentIds.get(position);
+                        isEditing = true;
+
+                        binding.editCouponCode.setText((String) couponData.get("code"));
+                        binding.editCouponDiscount.setText(String.valueOf(couponData.get("discountPercentage")));
+                        binding.editCouponMaxUses.setText(String.valueOf(couponData.get("maxUses")));
+
+                        Long expiration = (Long) couponData.get("expirationTimestamp");
+                        if (expiration != null) {
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.setTimeInMillis(expiration);
+                            binding.editCouponExpiration.setText(calendar.get(Calendar.DAY_OF_MONTH) + "/" +
+                                    (calendar.get(Calendar.MONTH) + 1) + "/" +
+                                    calendar.get(Calendar.YEAR));
+                            binding.editCouponExpiration.setTag(expiration);
+                        }
+
+                        binding.buttonSaveCoupon.setText("Update coupon");
+                        binding.buttonDeleteCoupon.setVisibility(View.VISIBLE);
                     }));
                 })
-                .addOnFailureListener(e -> Toast.makeText(getContext(), "Error loading coupons", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> Toast.makeText(getContext(), "Error cargando cupones", Toast.LENGTH_SHORT).show());
+    }
+
+    private void resetForm() {
+        binding.editCouponCode.setText("");
+        binding.editCouponDiscount.setText("");
+        binding.editCouponMaxUses.setText("");
+        binding.editCouponExpiration.setText("");
+        binding.editCouponExpiration.setTag(null);
+        binding.buttonSaveCoupon.setText("Save Coupon");
+        binding.buttonDeleteCoupon.setVisibility(View.GONE);
+        isEditing = false;
+        editingCouponId = null;
     }
 
     @Override

@@ -38,5 +38,22 @@
             android:textStyle="italic"
             android:paddingTop="4dp" />
 
+        <TextView
+            android:id="@+id/text_coupon_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Status: active"
+            android:textStyle="bold"
+            android:paddingTop="4dp"
+            android:textColor="@android:color/holo_red_dark"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/button_edit_coupon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit"
+            android:layout_marginTop="8dp" />
+
     </LinearLayout>
 </androidx.cardview.widget.CardView>
