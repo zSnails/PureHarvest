@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-// No longer need java.util.Map for productRefs
+import java.util.Map; // Import Map
 
 import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.adapters.PurchasedProductsAdapter;
@@ -222,17 +222,23 @@ public class OrderDetailsFragment extends Fragment {
                 });
     }
 
-    private void fetchProductsForDisplay(List<String> productIds) { // Parameter changed to List<String>
-        if (productIds == null || productIds.isEmpty()) {
+    private void fetchProductsForDisplay(List<Map<String, Object>> productRefs) { // Parameter changed to List<Map<String, Object>>
+        if (productRefs == null || productRefs.isEmpty()) {
             updateProductDisplay(new ArrayList<>());
             finalizeFetch();
             return;
         }
 
         List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
-        for (String productId : productIds) { // Iterate over String productIds
-            if (productId != null && !productId.isEmpty()) {
-                tasks.add(db.collection("products").document(productId).get());
+        for (Map<String, Object> productRef : productRefs) { // Iterate over Maps
+            Object idObject = productRef.get("id"); // Get the ID object
+            if (idObject instanceof String) { // Check if it's a String
+                String productId = (String) idObject;
+                if (!productId.isEmpty()) {
+                    tasks.add(db.collection("products").document(productId).get());
+                }
+            } else if (idObject != null) {
+                Log.w(TAG, "Product ID in productsBought is not a String: " + idObject.getClass().getName());
             }
         }
 

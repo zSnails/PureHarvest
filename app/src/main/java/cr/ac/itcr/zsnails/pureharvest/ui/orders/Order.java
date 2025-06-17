@@ -4,7 +4,7 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentId;
 
 import java.util.List;
-// No longer need java.util.Map for productsBought
+import java.util.Map; // Import Map
 
 public class Order {
     @DocumentId
@@ -14,13 +14,14 @@ public class Order {
     private String userId;
     private String sellerId;
     private Integer status;
-    private List<String> productsBought; // Changed to List<String>
+    private List<Map<String, Object>> productsBought; // Changed back to List<Map<String, Object>>
 
     public Order() {
 
     }
 
-    public Order(Timestamp date, String userId, String sellerId, List<String> productsBought, Integer status) {
+    // Constructor updated to reflect the new productsBought type
+    public Order(Timestamp date, String userId, String sellerId, List<Map<String, Object>> productsBought, Integer status) {
         this.date = date;
         this.userId = userId;
         this.sellerId = sellerId;
@@ -60,11 +61,11 @@ public class Order {
         this.sellerId = sellerId;
     }
 
-    public List<String> getProductsBought() { // Getter updated
+    public List<Map<String, Object>> getProductsBought() { // Getter updated
         return productsBought;
     }
 
-    public void setProductsBought(List<String> productsBought) { // Setter updated
+    public void setProductsBought(List<Map<String, Object>> productsBought) { // Setter updated
         this.productsBought = productsBought;
     }
 
