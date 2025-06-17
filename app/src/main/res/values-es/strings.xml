@@ -490,4 +490,18 @@
         <item>@string/status_delivered</item>
     </string-array>
 
+    <string name="customer_details_title">Detalles del Cliente</string>
+    <string name="customer_name_label">Nombre del Cliente:</string>
+    <string name="customer_email_label">Email del Cliente:</string>
+    <string name="customer_phone_label">Teléfono del Cliente:</string>
+    <string name="contact_buyer_button">Contactar Comprador</string>
+    <string name="contact_options_title">Opciones de Contacto</string>
+    <string name="contact_option_call">Llamar</string>
+    <string name="contact_option_sms">Enviar SMS</string>
+    <string name="contact_option_whatsapp">Enviar WhatsApp</string>
+    <string name="contact_option_email">Enviar Email</string>
+    <string name="error_no_phone_number">Número de teléfono no disponible.</string>
+    <string name="error_no_email_address">Dirección de email no disponible.</string>
+    <string name="error_app_not_found_for_action">No se encontró una aplicación para realizar esta acción.</string>
+
 </resources>

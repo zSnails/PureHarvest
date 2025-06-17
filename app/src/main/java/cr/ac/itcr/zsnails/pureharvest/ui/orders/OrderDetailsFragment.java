@@ -1,7 +1,9 @@
-// File: cr.ac.itcr.zsnails.pureharvest.ui.orders.OrderDetailsFragment.java
 package cr.ac.itcr.zsnails.pureharvest.ui.orders;
 
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,9 +27,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import cr.ac.itcr.zsnails.pureharvest.R;
+// Import the User model (adjust package if necessary)
+// import cr.ac.itcr.zsnails.pureharvest.models.User;
+
 
 public class OrderDetailsFragment extends Fragment {
 
@@ -37,13 +44,19 @@ public class OrderDetailsFragment extends Fragment {
     private String orderId;
     private FirebaseFirestore db;
     private Order currentOrder;
+    private User currentUserDetails; // To store fetched user details
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault());
     private final NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("es", "CR"));
 
-    private TextView tvOrderIdValue, tvOrderDateValue, tvSellerIdValue, tvUserIdValue, tvProductIdFromOrder;
-    private TextView tvLabelProductName, tvProductName, tvLabelProductPrice, tvProductPrice;
+    private TextView tvOrderIdValue, tvOrderDateValue, tvSellerIdValue;
+    private TextView tvLabelProductName, tvProductName, tvLabelProductPrice, tvProductPrice, tvProductIdFromOrder;
     private TextView tvOrderStatus, tvLabelOrderStatus;
     private Button btnChangeStatus;
+
+    // New TextViews for User Details
+    private TextView tvLabelUserFullName, tvUserFullName, tvLabelUserEmail, tvUserEmail, tvLabelUserPhone, tvUserPhone;
+    private Button btnContactBuyer;
+
 
     private TextView tvOrderDetailsTitle;
     private ProgressBar progressBarOrderDetails;
@@ -73,9 +86,9 @@ public class OrderDetailsFragment extends Fragment {
         tvOrderIdValue = view.findViewById(R.id.tvOrderId);
         tvOrderDateValue = view.findViewById(R.id.tvOrderDate);
         tvSellerIdValue = view.findViewById(R.id.tvSellerId);
-        tvUserIdValue = view.findViewById(R.id.tvUserId);
-        tvProductIdFromOrder = view.findViewById(R.id.tvProductIds);
+        // tvUserIdValue removed, will be replaced by detailed user info
 
+        tvProductIdFromOrder = view.findViewById(R.id.tvProductIds);
         tvLabelProductName = view.findViewById(R.id.tvLabelProductName);
         tvProductName = view.findViewById(R.id.tvProductName);
         tvLabelProductPrice = view.findViewById(R.id.tvLabelProductPrice);
@@ -84,6 +97,15 @@ public class OrderDetailsFragment extends Fragment {
         tvLabelOrderStatus = view.findViewById(R.id.tvLabelOrderStatus);
         tvOrderStatus = view.findViewById(R.id.tvOrderStatus);
         btnChangeStatus = view.findViewById(R.id.btnChangeStatus);
+
+        // Initialize new User Detail TextViews
+        tvLabelUserFullName = view.findViewById(R.id.tvLabelUserFullName);
+        tvUserFullName = view.findViewById(R.id.tvUserFullName);
+        tvLabelUserEmail = view.findViewById(R.id.tvLabelUserEmail);
+        tvUserEmail = view.findViewById(R.id.tvUserEmail);
+        tvLabelUserPhone = view.findViewById(R.id.tvLabelUserPhone);
+        tvUserPhone = view.findViewById(R.id.tvUserPhone);
+        btnContactBuyer = view.findViewById(R.id.btnContactBuyer);
 
         progressBarOrderDetails = view.findViewById(R.id.progressBarOrderDetails);
         contentLayout = view.findViewById(R.id.orderDetailsContent);
@@ -105,6 +127,8 @@ public class OrderDetailsFragment extends Fragment {
         } else {
             showErrorAndGoBack(getString(R.string.error_invalid_order_id_display));
         }
+
+        btnContactBuyer.setOnClickListener(v -> showContactOptionsDialog());
     }
 
     private void setupToolbar() {
@@ -130,11 +154,19 @@ public class OrderDetailsFragment extends Fragment {
                                 displayOrderBaseDetails(currentOrder);
                                 setupStatusSection(currentOrder);
 
+                                if (currentOrder.getUserId() != null && !currentOrder.getUserId().isEmpty()) {
+                                    fetchUserDetails(currentOrder.getUserId());
+                                } else {
+                                    Log.w(TAG, "Order does not have a userId.");
+                                    displayUserDetails(null); // Show N/A for user details
+                                }
+
                                 if (currentOrder.getProductId() != null && !currentOrder.getProductId().isEmpty()) {
                                     fetchProductDetails(currentOrder.getProductId());
                                 } else {
                                     Log.w(TAG, "Order does not have a productId.");
                                     showProductDetailsAsNotAvailable();
+                                    // Make content visible if product details aren't fetched
                                     if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.GONE);
                                     if (contentLayout != null) contentLayout.setVisibility(View.VISIBLE);
                                 }
@@ -155,18 +187,55 @@ public class OrderDetailsFragment extends Fragment {
                 });
     }
 
+    private void fetchUserDetails(String userId) {
+        Log.d(TAG, "Fetching user details for userId: " + userId);
+        db.collection("users").document(userId).get()
+                .addOnCompleteListener(userTask -> {
+                    if (!isAdded() || getContext() == null) return;
+
+                    if (userTask.isSuccessful()) {
+                        DocumentSnapshot userDocument = userTask.getResult();
+                        if (userDocument != null && userDocument.exists()) {
+                            currentUserDetails = userDocument.toObject(User.class);
+                            if (currentUserDetails != null) {
+                                Log.d(TAG, "User details fetched: " + currentUserDetails.getFullName());
+                                displayUserDetails(currentUserDetails);
+                                btnContactBuyer.setVisibility(View.VISIBLE);
+                            } else {
+                                Log.w(TAG, "Failed to deserialize user document.");
+                                displayUserDetails(null);
+                                btnContactBuyer.setVisibility(View.GONE);
+                            }
+                        } else {
+                            Log.w(TAG, "User document not found for userId: " + userId);
+                            displayUserDetails(null);
+                            btnContactBuyer.setVisibility(View.GONE);
+                        }
+                    } else {
+                        Log.e(TAG, "Error fetching user details", userTask.getException());
+                        displayUserDetails(null);
+                        btnContactBuyer.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "Error fetching user details", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
     private void fetchProductDetails(String productIdToFetch) {
         Log.d(TAG, "Fetching product details for productId: " + productIdToFetch);
+        // Keep progress bar visible until product details are also fetched or fail
+        // progressBarOrderDetails.setVisibility(View.VISIBLE); // Already visible from fetchOrderDetails
+
         db.collection("products").document(productIdToFetch).get()
                 .addOnCompleteListener(productTask -> {
                     if (!isAdded() || getContext() == null) return;
+                    // Hide progress bar and show content after product details attempt
                     if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.GONE);
                     if (contentLayout != null) contentLayout.setVisibility(View.VISIBLE);
 
                     if (productTask.isSuccessful()) {
                         DocumentSnapshot productDocument = productTask.getResult();
                         if (productDocument != null && productDocument.exists()) {
-                            Product product = productDocument.toObject(Product.class);
+                            Product product = productDocument.toObject(Product.class); // Ensure you have Product.class
                             if (product != null) {
                                 displayProductSpecificDetails(product);
                             } else {
@@ -194,13 +263,42 @@ public class OrderDetailsFragment extends Fragment {
             } else { tvOrderDateValue.setText(naText); }
         }
         if (tvSellerIdValue != null) tvSellerIdValue.setText(order.getSellerId() != null ? order.getSellerId() : naText);
-        if (tvUserIdValue != null) tvUserIdValue.setText(order.getUserId() != null ? order.getUserId() : naText);
+        // tvUserIdValue removed
 
         if (tvProductIdFromOrder != null) {
             tvProductIdFromOrder.setText(order.getProductId() != null && !order.getProductId().isEmpty() ?
                     order.getProductId() : naText);
         }
     }
+
+    private void displayUserDetails(User user) {
+        String naText = getString(R.string.not_available_short);
+
+        // Make labels visible
+        if (tvLabelUserFullName != null) tvLabelUserFullName.setVisibility(View.VISIBLE);
+        if (tvLabelUserEmail != null) tvLabelUserEmail.setVisibility(View.VISIBLE);
+        if (tvLabelUserPhone != null) tvLabelUserPhone.setVisibility(View.VISIBLE);
+
+        if (tvUserFullName != null) {
+            tvUserFullName.setText((user != null && user.getFullName() != null) ? user.getFullName() : naText);
+            tvUserFullName.setVisibility(View.VISIBLE);
+        }
+        if (tvUserEmail != null) {
+            tvUserEmail.setText((user != null && user.getEmail() != null) ? user.getEmail() : naText);
+            tvUserEmail.setVisibility(View.VISIBLE);
+        }
+        if (tvUserPhone != null) {
+            tvUserPhone.setText((user != null && user.getPhone() != null) ? user.getPhone() : naText);
+            tvUserPhone.setVisibility(View.VISIBLE);
+        }
+
+        if (user != null && (user.getPhone() != null || user.getEmail() != null)) {
+            btnContactBuyer.setVisibility(View.VISIBLE);
+        } else {
+            btnContactBuyer.setVisibility(View.GONE);
+        }
+    }
+
 
     private void setupStatusSection(Order order) {
         Integer status = order.getStatus();
@@ -248,12 +346,12 @@ public class OrderDetailsFragment extends Fragment {
 
     private void updateOrderStatusInFirestore(final int newStatus) {
         if (orderId == null || orderId.isEmpty()) return;
-        progressBarOrderDetails.setVisibility(View.VISIBLE);
+        if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.VISIBLE); // Show progress for this specific action
         db.collection("orders").document(orderId)
                 .update("status", newStatus)
                 .addOnSuccessListener(aVoid -> {
                     if (getContext() == null || !isAdded()) return;
-                    progressBarOrderDetails.setVisibility(View.GONE);
+                    if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.GONE);
                     Toast.makeText(getContext(), getString(R.string.status_update_success), Toast.LENGTH_SHORT).show();
                     currentOrder.setStatus(newStatus);
                     tvOrderStatus.setText(getStatusString(newStatus));
@@ -261,7 +359,7 @@ public class OrderDetailsFragment extends Fragment {
                 })
                 .addOnFailureListener(e -> {
                     if (getContext() == null || !isAdded()) return;
-                    progressBarOrderDetails.setVisibility(View.GONE);
+                    if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.GONE);
                     Toast.makeText(getContext(), getString(R.string.status_update_failed) + ": " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
     }
@@ -345,4 +443,132 @@ public class OrderDetailsFragment extends Fragment {
             }
         }
     }
+
+    // --- CONTACT BUYER METHODS ---
+    private void showContactOptionsDialog() {
+        if (getContext() == null || currentUserDetails == null) return;
+
+        final List<String> optionsList = new ArrayList<>();
+        final String phone = currentUserDetails.getPhone();
+        final String email = currentUserDetails.getEmail();
+
+        if (phone != null && !phone.trim().isEmpty()) {
+            optionsList.add(getString(R.string.contact_option_call));
+            optionsList.add(getString(R.string.contact_option_sms));
+            optionsList.add(getString(R.string.contact_option_whatsapp));
+        }
+        if (email != null && !email.trim().isEmpty()) {
+            optionsList.add(getString(R.string.contact_option_email));
+        }
+
+        if (optionsList.isEmpty()) {
+            Toast.makeText(getContext(), "No contact information available.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        final CharSequence[] options = optionsList.toArray(new CharSequence[0]);
+
+        new AlertDialog.Builder(getContext())
+                .setTitle(getString(R.string.contact_options_title))
+                .setItems(options, (dialog, which) -> {
+                    String selectedOption = options[which].toString();
+                    if (selectedOption.equals(getString(R.string.contact_option_call))) {
+                        initiateCall(phone);
+                    } else if (selectedOption.equals(getString(R.string.contact_option_sms))) {
+                        sendSms(phone);
+                    } else if (selectedOption.equals(getString(R.string.contact_option_whatsapp))) {
+                        sendWhatsAppMessage(phone);
+                    } else if (selectedOption.equals(getString(R.string.contact_option_email))) {
+                        sendEmail(email);
+                    }
+                })
+                .show();
+    }
+
+    private void initiateCall(String phoneNumber) {
+        if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
+            Toast.makeText(getContext(), getString(R.string.error_no_phone_number), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + phoneNumber.replaceAll("[^0-9+]", ""))); // Clean number
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(getContext(), getString(R.string.error_app_not_found_for_action), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void sendSms(String phoneNumber) {
+        if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
+            Toast.makeText(getContext(), getString(R.string.error_no_phone_number), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("smsto:" + phoneNumber.replaceAll("[^0-9+]", ""))); // Clean number
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(getContext(), getString(R.string.error_app_not_found_for_action), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void sendWhatsAppMessage(String phoneNumber) {
+        if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
+            Toast.makeText(getContext(), getString(R.string.error_no_phone_number), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // Ensure phone number is in international format for WhatsApp, e.g., +506XXXXXXXX for Costa Rica
+        // This might require a utility or knowledge of the stored phone number format.
+        // For simplicity, we assume it's somewhat correct or let WhatsApp handle it.
+        // A common practice is to remove non-digits and prepend country code if missing.
+        String cleanedPhoneNumber = phoneNumber.replaceAll("[^0-9]", "");
+        // Example: if numbers are stored locally without country code, you might prepend it.
+        // if (!cleanedPhoneNumber.startsWith("+") && getContext() != null) {
+        //     // This is a placeholder. You'd need a more robust way to get/assume country code.
+        //     String countryCode = "506"; // Example for Costa Rica
+        //     if(cleanedPhoneNumber.length() == 8) { // Common length for CR numbers without CC
+        //        cleanedPhoneNumber = countryCode + cleanedPhoneNumber;
+        //     }
+        // }
+
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("https://api.whatsapp.com/send?phone=" + cleanedPhoneNumber)); // Use cleaned number
+        // intent.setPackage("com.whatsapp"); // Optional: to directly target WhatsApp
+
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(getContext(), getString(R.string.error_whatsapp_not_installed), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void sendEmail(String emailAddress) {
+        if (emailAddress == null || emailAddress.trim().isEmpty()) {
+            Toast.makeText(getContext(), getString(R.string.error_no_email_address), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.fromParts("mailto", emailAddress, null));
+        // You can add subject and body if needed
+        // intent.putExtra(Intent.EXTRA_SUBJECT, "Regarding your order " + (currentOrder != null ? currentOrder.getDocumentId() : ""));
+        // intent.putExtra(Intent.EXTRA_TEXT, "Hello " + (currentUserDetails != null ? currentUserDetails.getFullName() : "Customer") + ",\n\n");
+        try {
+            startActivity(Intent.createChooser(intent, "Send email..."));
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(getContext(), getString(R.string.error_app_not_found_for_action), Toast.LENGTH_SHORT).show();
+        }
+    }
+    // Make sure you have a Product.java class, similar to Order.java, if you don't already.
+    // e.g.
+    // public class Product {
+    //     @DocumentId private String documentId;
+    //     private String name;
+    //     private Double price;
+    //     // other fields, constructors, getters, setters
+    //     public Product() {}
+    //     public String getName() { return name; }
+    //     public Double getPrice() { return price; }
+    // }
 }

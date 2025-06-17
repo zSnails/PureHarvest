@@ -540,4 +540,18 @@
         <item>@string/status_delivered</item>
     </string-array>
 
+    <string name="customer_details_title">Customer Details</string>
+    <string name="customer_name_label">Customer Name:</string>
+    <string name="customer_email_label">Customer Email:</string>
+    <string name="customer_phone_label">Customer Phone:</string>
+    <string name="contact_buyer_button">Contact Buyer</string>
+    <string name="contact_options_title">Contact Options</string>
+    <string name="contact_option_call">Call</string>
+    <string name="contact_option_sms">Send SMS</string>
+    <string name="contact_option_whatsapp">Send WhatsApp</string>
+    <string name="contact_option_email">Send Email</string>
+    <string name="error_no_phone_number">Phone number not available.</string>
+    <string name="error_no_email_address">Email address not available.</string>
+    <string name="error_app_not_found_for_action">No application found to perform this action.</string>
+
 </resources>
