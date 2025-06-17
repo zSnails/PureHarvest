@@ -66,6 +66,9 @@ public class OrderDetailsFragment extends Fragment {
     private PurchasedProductOrderAdapter purchasedProductOrderAdapter;
     private List<PurchasedProductOrder> productDisplayListWithQuantity;
 
+    private LinearLayout layoutOrderTotal;
+    private TextView tvOrderTotalValue;
+
 
     public OrderDetailsFragment() {
     }
@@ -105,6 +108,9 @@ public class OrderDetailsFragment extends Fragment {
         progressBarOrderDetails = view.findViewById(R.id.progressBarOrderDetails);
         contentLayout = view.findViewById(R.id.orderDetailsContent);
 
+        layoutOrderTotal = view.findViewById(R.id.layoutOrderTotal);
+        tvOrderTotalValue = view.findViewById(R.id.tvOrderTotalValue);
+
         recyclerViewOrderProductsWithQuantity = view.findViewById(R.id.recyclerViewOrderProductsWithQuantity);
         setupRecyclerView();
 
@@ -116,6 +122,9 @@ public class OrderDetailsFragment extends Fragment {
         recyclerViewOrderProductsWithQuantity.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewOrderProductsWithQuantity.setAdapter(purchasedProductOrderAdapter);
         recyclerViewOrderProductsWithQuantity.setVisibility(View.GONE);
+        if (layoutOrderTotal != null) {
+            layoutOrderTotal.setVisibility(View.GONE);
+        }
     }
 
 
@@ -147,6 +156,7 @@ public class OrderDetailsFragment extends Fragment {
         if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.VISIBLE);
         if (contentLayout != null) contentLayout.setVisibility(View.GONE);
         if (recyclerViewOrderProductsWithQuantity != null) recyclerViewOrderProductsWithQuantity.setVisibility(View.GONE);
+        if (layoutOrderTotal != null) layoutOrderTotal.setVisibility(View.GONE);
 
 
         db.collection("orders").document(orderId).get()
@@ -172,6 +182,7 @@ public class OrderDetailsFragment extends Fragment {
                                 } else {
                                     Log.w(TAG, "Order does not have any productsBought.");
                                     updateProductDisplay(new ArrayList<>());
+                                    displayOrderTotal(0.0);
                                     finalizeFetch();
                                 }
                             } else {
@@ -222,6 +233,7 @@ public class OrderDetailsFragment extends Fragment {
     private void fetchProductsForDisplay(List<Map<String, Object>> productRefs) {
         if (productRefs == null || productRefs.isEmpty()) {
             updateProductDisplay(new ArrayList<>());
+            displayOrderTotal(0.0);
             finalizeFetch();
             return;
         }
@@ -241,16 +253,14 @@ public class OrderDetailsFragment extends Fragment {
                     try {
                         currentProductQuantity = Integer.parseInt((String) amountObject);
                         if (currentProductQuantity <= 0) {
-                            Log.w(TAG, "Parsed product amount '" + currentProductQuantity + "' is zero or negative. Defaulting to 1 for product ID: " + (productIdString != null ? productIdString : "UNKNOWN_ID"));
                             currentProductQuantity = 1;
                         }
                     } catch (NumberFormatException e) {
                         Log.w(TAG, "Product amount ('" + amountObject.toString() + "') is a String but not a valid integer. Defaulting to 1 for product ID: " + (productIdString != null ? productIdString : "UNKNOWN_ID"), e);
                     }
-                } else if (amountObject instanceof Number) { // Keep handling for Number just in case
+                } else if (amountObject instanceof Number) {
                     currentProductQuantity = ((Number) amountObject).intValue();
                     if (currentProductQuantity <= 0) {
-                        Log.w(TAG, "Product amount '" + currentProductQuantity + "' is zero or negative. Defaulting to 1 for product ID: " + (productIdString != null ? productIdString : "UNKNOWN_ID"));
                         currentProductQuantity = 1;
                     }
                 } else {
@@ -273,6 +283,7 @@ public class OrderDetailsFragment extends Fragment {
 
         if (tasks.isEmpty()) {
             updateProductDisplay(new ArrayList<>());
+            displayOrderTotal(0.0);
             finalizeFetch();
             return;
         }
@@ -280,6 +291,7 @@ public class OrderDetailsFragment extends Fragment {
         Tasks.whenAllSuccess(tasks).addOnSuccessListener(results -> {
             if (!isAdded() || getContext() == null) return;
             List<PurchasedProductOrder> fetchedProducts = new ArrayList<>();
+            double orderTotal = 0.0;
 
             for (int i = 0; i < results.size(); i++) {
                 Object result = results.get(i);
@@ -299,6 +311,8 @@ public class OrderDetailsFragment extends Fragment {
                     List<String> imageUrls = (List<String>) productDocument.get("imageUrls");
                     String imageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
 
+                    orderTotal += (price * productQuantityForThisItem);
+
                     PurchasedProductOrder product = new PurchasedProductOrder(
                             productDocument.getId(),
                             name != null ? name : getString(R.string.not_available_short),
@@ -310,15 +324,25 @@ public class OrderDetailsFragment extends Fragment {
                 }
             }
             updateProductDisplay(fetchedProducts);
+            displayOrderTotal(orderTotal);
             finalizeFetch();
         }).addOnFailureListener(e -> {
             if (!isAdded() || getContext() == null) return;
             Log.e(TAG, "Error fetching some product details", e);
             Toast.makeText(getContext(), getString(R.string.error_fetching_some_product_details), Toast.LENGTH_SHORT).show();
             updateProductDisplay(new ArrayList<>());
+            displayOrderTotal(0.0);
             finalizeFetch();
         });
     }
+
+    private void displayOrderTotal(double total) {
+        if (tvOrderTotalValue != null && layoutOrderTotal != null && getContext() != null) {
+            tvOrderTotalValue.setText(String.format(Locale.US, getString(R.string.order_total_price_format), total));
+            layoutOrderTotal.setVisibility(View.VISIBLE);
+        }
+    }
+
 
     private void finalizeFetch() {
         if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.GONE);

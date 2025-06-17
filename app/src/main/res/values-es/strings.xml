@@ -517,4 +517,7 @@
     <string name="product_id_prefix_display">ID: %1$s</string>
     <string name="product_quantity_prefix_display">Cantidad: %1$d</string>
 
+    <string name="order_total_label">Total del Pedido:</string>
+    <string name="order_total_price_format">₡%.2f</string>
+
 </resources>
