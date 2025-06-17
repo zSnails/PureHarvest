@@ -7,7 +7,7 @@
     <string name="rating_format">⭐ %.1f</string>
     <string name="carousel_special_offers">Special Offers</string>
     <string name="discount_format">-%d%%</string>
-    <string name="title_dashboard">Dashboard</string>
+    <string name="title_dashboard">Company</string>
     <string name="title_account">Account</string>
     <string name="title_activity_example">ExampleActivity</string>
     <string name="settingsButton">Settings</string>

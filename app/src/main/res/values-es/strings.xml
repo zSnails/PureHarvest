@@ -4,7 +4,7 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_home">Inicio</string>
 
-    <string name="title_dashboard">Tablero</string>
+    <string name="title_dashboard">Empresa</string>
     <string name="title_account">Cuenta</string>
     <string name="title_activity_example">ExampleActivity</string>
     <string name="settingsButton">Ajustes</string>
