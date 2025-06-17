@@ -227,28 +227,47 @@ public class OrderDetailsFragment extends Fragment {
         }
 
         List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
-        List<Integer> quantities = new ArrayList<>();
+        List<Integer> quantitiesAssociatedWithTasks = new ArrayList<>();
 
         for (Map<String, Object> productRef : productRefs) {
             Object idObject = productRef.get("id");
-            Object amountObject = productRef.get("amount");
-            int quantity = 1; // Default quantity if not found or invalid
+            String productIdString = (idObject instanceof String) ? (String) idObject : null;
 
-            if (amountObject instanceof Number) {
-                quantity = ((Number) amountObject).intValue();
-            } else if (amountObject != null) {
-                Log.w(TAG, "Product amount in productsBought is not a Number: " + amountObject.getClass().getName());
+            Object amountObject = productRef.get("amount");
+            int currentProductQuantity = 1;
+
+            if (amountObject != null) {
+                if (amountObject instanceof String) {
+                    try {
+                        currentProductQuantity = Integer.parseInt((String) amountObject);
+                        if (currentProductQuantity <= 0) {
+                            Log.w(TAG, "Parsed product amount '" + currentProductQuantity + "' is zero or negative. Defaulting to 1 for product ID: " + (productIdString != null ? productIdString : "UNKNOWN_ID"));
+                            currentProductQuantity = 1;
+                        }
+                    } catch (NumberFormatException e) {
+                        Log.w(TAG, "Product amount ('" + amountObject.toString() + "') is a String but not a valid integer. Defaulting to 1 for product ID: " + (productIdString != null ? productIdString : "UNKNOWN_ID"), e);
+                    }
+                } else if (amountObject instanceof Number) { // Keep handling for Number just in case
+                    currentProductQuantity = ((Number) amountObject).intValue();
+                    if (currentProductQuantity <= 0) {
+                        Log.w(TAG, "Product amount '" + currentProductQuantity + "' is zero or negative. Defaulting to 1 for product ID: " + (productIdString != null ? productIdString : "UNKNOWN_ID"));
+                        currentProductQuantity = 1;
+                    }
+                } else {
+                    Log.w(TAG, "Product amount ('" + amountObject.toString() + "') in productsBought is not a String or Number. Type: " + amountObject.getClass().getName() + ". Defaulting to 1 for product ID: " + (productIdString != null ? productIdString : "UNKNOWN_ID"));
+                }
+            } else {
+                Log.w(TAG, "Product amount is null in productsBought. Defaulting to 1 for product ID: " + (productIdString != null ? productIdString : "UNKNOWN_ID"));
             }
 
 
-            if (idObject instanceof String) {
-                String productId = (String) idObject;
-                if (!productId.isEmpty()) {
-                    tasks.add(db.collection("products").document(productId).get());
-                    quantities.add(quantity);
-                }
+            if (productIdString != null && !productIdString.isEmpty()) {
+                tasks.add(db.collection("products").document(productIdString).get());
+                quantitiesAssociatedWithTasks.add(currentProductQuantity);
             } else if (idObject != null) {
                 Log.w(TAG, "Product ID in productsBought is not a String: " + idObject.getClass().getName());
+            } else {
+                Log.w(TAG, "Product ID is null in productsBought.");
             }
         }
 
@@ -265,21 +284,27 @@ public class OrderDetailsFragment extends Fragment {
             for (int i = 0; i < results.size(); i++) {
                 Object result = results.get(i);
                 DocumentSnapshot productDocument = (DocumentSnapshot) result;
+
+                int productQuantityForThisItem = 1;
+                if (i < quantitiesAssociatedWithTasks.size()) {
+                    productQuantityForThisItem = quantitiesAssociatedWithTasks.get(i);
+                } else {
+                    Log.w(TAG, "Mismatch between fetched products and quantities list size. Defaulting quantity for product ID: " + productDocument.getId());
+                }
+
                 if (productDocument.exists()) {
                     String name = productDocument.getString("name");
                     Double priceDouble = productDocument.getDouble("price");
                     double price = (priceDouble != null) ? priceDouble : 0.0;
                     List<String> imageUrls = (List<String>) productDocument.get("imageUrls");
                     String imageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
-                    int currentQuantity = (quantities.size() > i) ? quantities.get(i) : 1;
-
 
                     PurchasedProductOrder product = new PurchasedProductOrder(
                             productDocument.getId(),
                             name != null ? name : getString(R.string.not_available_short),
                             price,
                             imageUrl,
-                            currentQuantity
+                            productQuantityForThisItem
                     );
                     fetchedProducts.add(product);
                 }
