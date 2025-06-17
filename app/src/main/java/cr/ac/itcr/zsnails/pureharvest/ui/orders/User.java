@@ -1,6 +1,5 @@
-// File: cr.ac.itcr.zsnails.pureharvest.ui.orders.User.java
-// Or: cr.ac.itcr.zsnails.pureharvest.models.User.java
-package cr.ac.itcr.zsnails.pureharvest.ui.orders; // Adjust package if it's in a 'models' directory
+
+package cr.ac.itcr.zsnails.pureharvest.ui.orders;
 
 import com.google.firebase.firestore.DocumentId;
 
@@ -8,15 +7,14 @@ public class User {
     @DocumentId
     private String documentId;
 
-    private String fullName; // Nombre completo del usuario
-    private String email;    // Correo electrónico del usuario
-    private String phone;    // Número de teléfono del usuario
+    private String fullName;
+    private String email;
+    private String phone;
 
     public User() {
-        // Constructor vacío requerido por Firestore
-    }
 
-    // Getters y Setters
+    }
+    
     public String getDocumentId() {
         return documentId;
     }
