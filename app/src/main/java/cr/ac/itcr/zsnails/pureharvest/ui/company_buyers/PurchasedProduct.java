@@ -1,4 +1,4 @@
-package cr.ac.itcr.zsnails.pureharvest.data.model;
+package cr.ac.itcr.zsnails.pureharvest.ui.company_buyers;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

@@ -242,7 +242,7 @@
     <string name="order_date">Fecha:</string>
     <string name="sold_by">Vendido por:</string>
     <string name="customer">Cliente:</string>
-    <string name="product_included">Producto Incluido</string>
+    <string name="product_included">Productos Incluidos</string>
     <string name="product_id">ID del Producto:</string>
 
     <string name="edit_profile_title">Editar Perfil de la Empresa</string>

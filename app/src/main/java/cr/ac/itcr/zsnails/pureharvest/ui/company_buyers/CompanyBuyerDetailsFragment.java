@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import cr.ac.itcr.zsnails.pureharvest.R;
-import cr.ac.itcr.zsnails.pureharvest.adapters.PurchasedProductsAdapter;
-import cr.ac.itcr.zsnails.pureharvest.data.model.PurchasedProduct;
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentCompanyBuyerDetailsBinding;
 
 public class CompanyBuyerDetailsFragment extends Fragment {

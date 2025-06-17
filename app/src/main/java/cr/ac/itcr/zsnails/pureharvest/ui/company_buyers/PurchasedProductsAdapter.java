@@ -1,4 +1,4 @@
-package cr.ac.itcr.zsnails.pureharvest.adapters;
+package cr.ac.itcr.zsnails.pureharvest.ui.company_buyers;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Locale;
 
 import cr.ac.itcr.zsnails.pureharvest.R;
-import cr.ac.itcr.zsnails.pureharvest.data.model.PurchasedProduct; // Ensure correct import
 
 public class PurchasedProductsAdapter extends RecyclerView.Adapter<PurchasedProductsAdapter.ProductViewHolder> {
 
