@@ -40,7 +40,7 @@
     <!-- label_email y label_phone están en la segunda parte, si son idénticos no los repetimos -->
     <!-- <string name="label_email">Email:</string> --> <!-- Existe en la segunda parte -->
     <!-- <string name="label_phone">Teléfono:</string> --> <!-- Existe en la segunda parte -->
-    <string name="label_items_bought">Items Comprados:</string>
+    <string name="label_items_bought">Órdenes hechas:</string>
     <string name="button_contact">Contactar</string>
 
     <string name="fragment_title_company_buyers_list">Lista de Compradores</string>

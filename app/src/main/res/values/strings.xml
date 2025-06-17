@@ -414,7 +414,7 @@
     <string name="text_no_buyers_list_empty">No buyers to display.</string>
     <string name="label_id">ID:</string>
     <string name="label_name">Name:</string>
-    <string name="label_items_bought">Items Bought:</string>
+    <string name="label_items_bought">Orders placed:</string>
     <string name="button_contact">Contact</string>
     <string name="fragment_title_company_buyers_list">List of Buyers</string>
     <string name="text_no_buyers_found_initial">No buyers found for this company.</string>
