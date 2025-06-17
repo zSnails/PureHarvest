@@ -1,8 +1,10 @@
-
 package cr.ac.itcr.zsnails.pureharvest.ui.orders;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentId;
+
+import java.util.List;
+// No longer need java.util.Map for productsBought
 
 public class Order {
     @DocumentId
@@ -11,22 +13,20 @@ public class Order {
     private Timestamp date;
     private String userId;
     private String sellerId;
-    private String productId;
     private Integer status;
+    private List<String> productsBought; // Changed to List<String>
 
     public Order() {
 
     }
 
-
-    public Order(Timestamp date, String userId, String sellerId, String productId, Integer status) {
+    public Order(Timestamp date, String userId, String sellerId, List<String> productsBought, Integer status) {
         this.date = date;
         this.userId = userId;
         this.sellerId = sellerId;
-        this.productId = productId;
+        this.productsBought = productsBought;
         this.status = status;
     }
-
 
     public String getDocumentId() {
         return documentId;
@@ -60,14 +60,13 @@ public class Order {
         this.sellerId = sellerId;
     }
 
-    public String getProductId() {
-        return productId;
+    public List<String> getProductsBought() { // Getter updated
+        return productsBought;
     }
 
-    public void setProductId(String productId) {
-        this.productId = productId;
+    public void setProductsBought(List<String> productsBought) { // Setter updated
+        this.productsBought = productsBought;
     }
-
 
     public Integer getStatus() {
         return status;

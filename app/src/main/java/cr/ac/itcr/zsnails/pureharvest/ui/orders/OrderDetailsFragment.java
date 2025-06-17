@@ -25,16 +25,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+// No longer need java.util.Map for productRefs
 
 import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.adapters.PurchasedProductsAdapter;
@@ -169,13 +170,12 @@ public class OrderDetailsFragment extends Fragment {
                                     displayUserDetails(null);
                                 }
 
-                                if (currentOrder.getProductId() != null && !currentOrder.getProductId().isEmpty()) {
-                                    fetchProductDetailsForDisplay(currentOrder.getProductId());
+                                if (currentOrder.getProductsBought() != null && !currentOrder.getProductsBought().isEmpty()) {
+                                    fetchProductsForDisplay(currentOrder.getProductsBought());
                                 } else {
-                                    Log.w(TAG, "Order does not have a productId.");
+                                    Log.w(TAG, "Order does not have any productsBought.");
                                     updateProductDisplay(new ArrayList<>());
-                                    if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.GONE);
-                                    if (contentLayout != null) contentLayout.setVisibility(View.VISIBLE);
+                                    finalizeFetch();
                                 }
                             } else {
                                 if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.GONE);
@@ -217,61 +217,82 @@ public class OrderDetailsFragment extends Fragment {
                     } else {
                         displayUserDetails(null);
                         btnContactBuyer.setVisibility(View.GONE);
-                        Toast.makeText(getContext(), "Error fetching user details", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), getString(R.string.error_fetching_user_details_toast), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
-    private void fetchProductDetailsForDisplay(String productIdToFetch) {
-        db.collection("products").document(productIdToFetch).get()
-                .addOnCompleteListener(productTask -> {
-                    if (!isAdded() || getContext() == null) {
-                        if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.GONE);
-                        if (contentLayout != null) contentLayout.setVisibility(View.VISIBLE);
-                        return;
-                    }
+    private void fetchProductsForDisplay(List<String> productIds) { // Parameter changed to List<String>
+        if (productIds == null || productIds.isEmpty()) {
+            updateProductDisplay(new ArrayList<>());
+            finalizeFetch();
+            return;
+        }
 
-                    if (productTask.isSuccessful()) {
-                        DocumentSnapshot productDocument = productTask.getResult();
-                        if (productDocument != null && productDocument.exists()) {
-                            String name = productDocument.getString("name");
-                            Double priceDouble = productDocument.getDouble("price");
-                            double price = (priceDouble != null) ? priceDouble : 0.0;
-                            List<String> imageUrls = (List<String>) productDocument.get("imageUrls");
-                            String imageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
-                            Date orderDateForProduct = (currentOrder != null && currentOrder.getDate() != null) ? currentOrder.getDate().toDate() : new Date();
+        List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
+        for (String productId : productIds) { // Iterate over String productIds
+            if (productId != null && !productId.isEmpty()) {
+                tasks.add(db.collection("products").document(productId).get());
+            }
+        }
 
-                            PurchasedProduct product = new PurchasedProduct(
-                                    productDocument.getId(),
-                                    name != null ? name : getString(R.string.not_available_short),
-                                    price,
-                                    orderDateForProduct,
-                                    imageUrl
-                            );
-                            updateProductDisplay(Collections.singletonList(product));
+        if (tasks.isEmpty()) {
+            updateProductDisplay(new ArrayList<>());
+            finalizeFetch();
+            return;
+        }
 
-                        } else {
-                            updateProductDisplay(new ArrayList<>());
-                            Toast.makeText(getContext(), getString(R.string.error_product_not_found), Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        updateProductDisplay(new ArrayList<>());
-                        Toast.makeText(getContext(), getString(R.string.error_fetching_product_details), Toast.LENGTH_SHORT).show();
-                    }
-                    if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.GONE);
-                    if (contentLayout != null) contentLayout.setVisibility(View.VISIBLE);
-                    if (recyclerViewOrderProduct != null) recyclerViewOrderProduct.setVisibility(View.VISIBLE);
-                });
+        Tasks.whenAllSuccess(tasks).addOnSuccessListener(results -> {
+            if (!isAdded() || getContext() == null) return;
+            List<PurchasedProduct> fetchedProducts = new ArrayList<>();
+            Date orderDateForProduct = (currentOrder != null && currentOrder.getDate() != null) ? currentOrder.getDate().toDate() : new Date();
+
+            for (Object result : results) {
+                DocumentSnapshot productDocument = (DocumentSnapshot) result;
+                if (productDocument.exists()) {
+                    String name = productDocument.getString("name");
+                    Double priceDouble = productDocument.getDouble("price");
+                    double price = (priceDouble != null) ? priceDouble : 0.0;
+                    List<String> imageUrls = (List<String>) productDocument.get("imageUrls");
+                    String imageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
+
+                    PurchasedProduct product = new PurchasedProduct(
+                            productDocument.getId(),
+                            name != null ? name : getString(R.string.not_available_short),
+                            price,
+                            orderDateForProduct,
+                            imageUrl
+                    );
+                    fetchedProducts.add(product);
+                }
+            }
+            updateProductDisplay(fetchedProducts);
+            finalizeFetch();
+        }).addOnFailureListener(e -> {
+            if (!isAdded() || getContext() == null) return;
+            Log.e(TAG, "Error fetching some product details", e);
+            Toast.makeText(getContext(), getString(R.string.error_fetching_some_product_details), Toast.LENGTH_SHORT).show();
+            updateProductDisplay(new ArrayList<>());
+            finalizeFetch();
+        });
     }
+
+    private void finalizeFetch() {
+        if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.GONE);
+        if (contentLayout != null) contentLayout.setVisibility(View.VISIBLE);
+        if (recyclerViewOrderProduct != null && productDisplayList != null && !productDisplayList.isEmpty()) {
+            recyclerViewOrderProduct.setVisibility(View.VISIBLE);
+        } else if (recyclerViewOrderProduct != null) {
+            recyclerViewOrderProduct.setVisibility(View.GONE);
+        }
+    }
+
 
     private void updateProductDisplay(List<PurchasedProduct> products) {
         if (purchasedProductsAdapter != null) {
             productDisplayList.clear();
             productDisplayList.addAll(products);
             purchasedProductsAdapter.notifyDataSetChanged();
-            if (recyclerViewOrderProduct != null) {
-                recyclerViewOrderProduct.setVisibility(products.isEmpty() ? View.GONE : View.VISIBLE);
-            }
         }
     }
 

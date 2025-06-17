@@ -561,7 +561,8 @@
     <string name="no_contact_info_available">No contact information available.</string>
     <string name="error_product_not_found">Product not found.</string>
 
-
+    <string name="error_fetching_user_details_toast">Error fetching user details</string>
+    <string name="error_fetching_some_product_details">Error fetching some product details</string>
 
 
 
