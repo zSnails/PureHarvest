@@ -16,6 +16,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -24,6 +26,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import cr.ac.itcr.zsnails.pureharvest.R;
@@ -63,7 +66,7 @@ public class CompanyBuyerDetailsFragment extends Fragment {
 
         if (buyerId != null && !buyerId.isEmpty() && sellerId != null && !sellerId.isEmpty()) {
             fetchBuyerDetails(buyerId);
-            fetchPurchasedProducts(buyerId, sellerId);
+            fetchOrdersAndProductDetails(buyerId, sellerId);
         } else {
             Log.e(TAG, "Buyer ID or Seller ID is null or empty.");
             binding.progressBarDetails.setVisibility(View.GONE);
@@ -115,7 +118,7 @@ public class CompanyBuyerDetailsFragment extends Fragment {
                 });
     }
 
-    private void fetchPurchasedProducts(String bId, String sId) {
+    private void fetchOrdersAndProductDetails(String bId, String sId) {
         binding.progressBarProducts.setVisibility(View.VISIBLE);
         binding.recyclerViewPurchasedProducts.setVisibility(View.GONE);
         binding.textViewNoProducts.setVisibility(View.GONE);
@@ -134,14 +137,79 @@ public class CompanyBuyerDetailsFragment extends Fragment {
                         if (orderTask.getResult().isEmpty()) {
                             binding.progressBarProducts.setVisibility(View.GONE);
                             binding.textViewNoProducts.setVisibility(View.VISIBLE);
+                            updateProductListUI(new ArrayList<>());
                             return;
                         }
 
-                        List<QueryDocumentSnapshot> orders = new ArrayList<>();
-                        for (QueryDocumentSnapshot doc : orderTask.getResult()) {
-                            orders.add(doc);
+                        List<Task<DocumentSnapshot>> productDetailTasks = new ArrayList<>();
+                        List<Date> orderDatesForProducts = new ArrayList<>();
+                        String unknownProduct = getString(R.string.product_name_unknown);
+                        String notFoundProduct = getString(R.string.product_not_found);
+
+
+                        for (QueryDocumentSnapshot orderDoc : orderTask.getResult()) {
+                            List<Map<String, Object>> productsBoughtInOrder = (List<Map<String, Object>>) orderDoc.get("productsBought");
+                            Timestamp timestamp = orderDoc.getTimestamp("date");
+                            Date orderDate = (timestamp != null) ? timestamp.toDate() : null;
+
+                            if (productsBoughtInOrder != null && !productsBoughtInOrder.isEmpty()) {
+                                for (Map<String, Object> productRef : productsBoughtInOrder) {
+                                    Object idObject = productRef.get("id");
+                                    if (idObject instanceof String) {
+                                        String productId = (String) idObject;
+                                        if (!productId.isEmpty()) {
+                                            productDetailTasks.add(db.collection("products").document(productId).get());
+                                            orderDatesForProducts.add(orderDate);
+                                        }
+                                    }
+                                }
+                            }
                         }
-                        processProductDetails(orders);
+
+                        if (productDetailTasks.isEmpty()) {
+                            updateProductListUI(new ArrayList<>());
+                            return;
+                        }
+
+                        Tasks.whenAllSuccess(productDetailTasks).addOnSuccessListener(results -> {
+                            if (!isAdded() || binding == null) return;
+                            List<PurchasedProduct> fetchedProducts = new ArrayList<>();
+                            for (int i = 0; i < results.size(); i++) {
+                                Object result = results.get(i);
+                                DocumentSnapshot productDoc = (DocumentSnapshot) result;
+                                Date currentOrderDate = (i < orderDatesForProducts.size()) ? orderDatesForProducts.get(i) : new Date();
+
+                                if (productDoc.exists()) {
+                                    String name = productDoc.getString("name");
+                                    Double price = productDoc.getDouble("price");
+                                    String firstImageUrl = null;
+                                    try {
+                                        List<String> imageUrls = (List<String>) productDoc.get("imageUrls");
+                                        if (imageUrls != null && !imageUrls.isEmpty()) {
+                                            firstImageUrl = imageUrls.get(0);
+                                        }
+                                    } catch (Exception e) {
+                                        Log.e(TAG, "Error parsing imageUrls for product " + productDoc.getId(), e);
+                                    }
+                                    fetchedProducts.add(new PurchasedProduct(productDoc.getId(), name != null ? name : unknownProduct, price != null ? price : 0.0, currentOrderDate, firstImageUrl));
+                                } else {
+                                    String failedProductId = "UNKNOWN_ID";
+                                    if (i < productDetailTasks.size()) {
+                                        // Attempt to get ID from original task if result doesn't exist
+                                        // This is a bit indirect, ideally you'd pass the ID along with the task
+                                        // For now, we'll log a generic message or use a placeholder.
+                                        Log.w(TAG, "Product document does not exist. Could not get ID from task's source path for failed fetch.");
+                                    }
+                                    Log.w(TAG, "Product not found. ID could not be determined from failed task or product document.");
+                                    fetchedProducts.add(new PurchasedProduct(failedProductId, notFoundProduct, 0.0, currentOrderDate, null));
+                                }
+                            }
+                            updateProductListUI(fetchedProducts);
+
+                        }).addOnFailureListener(e -> {
+                            Log.e(TAG, "Error fetching some product details for buyer's orders", e);
+                            updateProductListUI(new ArrayList<>());
+                        });
 
                     } else {
                         Log.e(TAG, "Error getting orders for product list", orderTask.getException());
@@ -149,57 +217,11 @@ public class CompanyBuyerDetailsFragment extends Fragment {
                         binding.textViewNoProducts.setText(getString(R.string.error_loading_products));
                         binding.textViewNoProducts.setVisibility(View.VISIBLE);
                         binding.textViewBuyerDetailItemsBought.setText(getString(R.string.info_not_available));
+                        updateProductListUI(new ArrayList<>());
                     }
                 });
     }
 
-    private void processProductDetails(List<QueryDocumentSnapshot> orders) {
-        List<PurchasedProduct> fetchedProducts = new ArrayList<>();
-        AtomicInteger counter = new AtomicInteger(0);
-        int totalOrders = orders.size();
-        String unknownProduct = getString(R.string.product_name_unknown);
-        String notFoundProduct = getString(R.string.product_not_found);
-
-
-        for (QueryDocumentSnapshot orderDoc : orders) {
-            String productId = orderDoc.getString("productId");
-            Timestamp timestamp = orderDoc.getTimestamp("date");
-            Date date = (timestamp != null) ? timestamp.toDate() : null;
-
-            if (productId == null || productId.isEmpty()) {
-                if (counter.incrementAndGet() == totalOrders) {
-                    updateProductListUI(fetchedProducts);
-                }
-                continue;
-            }
-
-            db.collection("products").document(productId).get()
-                    .addOnCompleteListener(productTask -> {
-                        if (productTask.isSuccessful() && productTask.getResult() != null && productTask.getResult().exists()) {
-                            DocumentSnapshot productDoc = productTask.getResult();
-                            String name = productDoc.getString("name");
-                            Double price = productDoc.getDouble("price");
-                            String firstImageUrl = null;
-                            try {
-                                List<String> imageUrls = (List<String>) productDoc.get("imageUrls");
-                                if (imageUrls != null && !imageUrls.isEmpty()) {
-                                    firstImageUrl = imageUrls.get(0);
-                                }
-                            } catch (Exception e) {
-                                Log.e(TAG, "Error parsing imageUrls", e);
-                            }
-                            fetchedProducts.add(new PurchasedProduct(productId, name != null ? name : unknownProduct, price != null ? price : 0.0, date, firstImageUrl));
-                        } else {
-                            Log.w(TAG, "Product not found for ID: " + productId);
-                            fetchedProducts.add(new PurchasedProduct(productId, notFoundProduct, 0.0, date, null));
-                        }
-
-                        if (counter.incrementAndGet() == totalOrders) {
-                            updateProductListUI(fetchedProducts);
-                        }
-                    });
-        }
-    }
 
     private void updateProductListUI(List<PurchasedProduct> productList) {
         if (!isAdded() || binding == null) return;
@@ -221,21 +243,21 @@ public class CompanyBuyerDetailsFragment extends Fragment {
         builder.setTitle(getString(R.string.contact_dialog_title));
         builder.setItems(options, (dialog, item) -> {
             switch (item) {
-                case 0: // Call
+                case 0:
                     if (buyerPhone != null && !buyerPhone.isEmpty()) {
                         startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + buyerPhone)));
                     } else {
                         Toast.makeText(getContext(), getString(R.string.error_phone_not_available), Toast.LENGTH_SHORT).show();
                     }
                     break;
-                case 1: // SMS
+                case 1:
                     if (buyerPhone != null && !buyerPhone.isEmpty()) {
                         startActivity(new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:" + buyerPhone)));
                     } else {
                         Toast.makeText(getContext(), getString(R.string.error_phone_not_available), Toast.LENGTH_SHORT).show();
                     }
                     break;
-                case 2: // WhatsApp
+                case 2:
                     if (buyerPhone != null && !buyerPhone.isEmpty()) {
                         try {
                             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://api.whatsapp.com/send?phone=" + buyerPhone)));
@@ -246,7 +268,7 @@ public class CompanyBuyerDetailsFragment extends Fragment {
                         Toast.makeText(getContext(), getString(R.string.error_phone_not_available), Toast.LENGTH_SHORT).show();
                     }
                     break;
-                case 3: // Email
+                case 3:
                     if (buyerEmail != null && !buyerEmail.isEmpty()) {
                         try {
                             startActivity(new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + buyerEmail)));
