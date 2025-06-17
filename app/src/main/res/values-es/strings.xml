@@ -504,4 +504,10 @@
     <string name="error_no_email_address">Dirección de email no disponible.</string>
     <string name="error_app_not_found_for_action">No se encontró una aplicación para realizar esta acción.</string>
 
+    <string name="loading_text_placeholder">Cargando...</string>
+    <string name="user_not_found_short">Usuario no encontrado</string>
+    <string name="error_loading_user_short">Error cargando usuario</string>
+
+
+
 </resources>

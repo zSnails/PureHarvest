@@ -554,4 +554,10 @@
     <string name="error_no_email_address">Email address not available.</string>
     <string name="error_app_not_found_for_action">No application found to perform this action.</string>
 
+    <string name="loading_text_placeholder">Loading...</string>
+    <string name="user_not_found_short">User not found</string>
+    <string name="error_loading_user_short">Error loading user</string>
+
+
+
 </resources>
