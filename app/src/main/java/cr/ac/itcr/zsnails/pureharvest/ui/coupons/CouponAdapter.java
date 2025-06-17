@@ -15,10 +15,16 @@ import java.util.Map;
 
 public class CouponAdapter extends RecyclerView.Adapter<CouponAdapter.CouponViewHolder> {
 
-    private final List<Map<String, Object>> couponList;
+    public interface OnCouponDeleteListener {
+        void onDeleteCoupon(int position, Map<String, Object> couponData);
+    }
 
-    public CouponAdapter(List<Map<String, Object>> couponList) {
+    private final List<Map<String, Object>> couponList;
+    private final OnCouponDeleteListener deleteListener;
+
+    public CouponAdapter(List<Map<String, Object>> couponList, OnCouponDeleteListener deleteListener) {
         this.couponList = couponList;
+        this.deleteListener = deleteListener;
     }
 
     @NonNull
@@ -40,6 +46,15 @@ public class CouponAdapter extends RecyclerView.Adapter<CouponAdapter.CouponView
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             holder.expiration.setText("Expires: " + sdf.format(date));
         }
+
+        int maxUses = ((Number) coupon.get("maxUses")).intValue();
+        int uses = ((Number) coupon.get("uses")).intValue();
+        holder.remaining.setText("Remaining uses: " + (maxUses - uses));
+
+        holder.itemView.setOnLongClickListener(v -> {
+            deleteListener.onDeleteCoupon(position, coupon);
+            return true;
+        });
     }
 
     @Override
@@ -48,13 +63,14 @@ public class CouponAdapter extends RecyclerView.Adapter<CouponAdapter.CouponView
     }
 
     static class CouponViewHolder extends RecyclerView.ViewHolder {
-        TextView code, discount, expiration;
+        TextView code, discount, expiration, remaining;
 
         public CouponViewHolder(@NonNull View itemView) {
             super(itemView);
             code = itemView.findViewById(R.id.text_coupon_code);
             discount = itemView.findViewById(R.id.text_coupon_discount);
             expiration = itemView.findViewById(R.id.text_coupon_expiration);
+            remaining = itemView.findViewById(R.id.text_coupon_remaining);
         }
     }
 }

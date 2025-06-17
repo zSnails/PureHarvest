@@ -8,19 +8,17 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.Toast;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import java.util.ArrayList;
-import java.util.List;
-
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentManageCouponsBinding;
@@ -75,9 +73,28 @@ public class ManageCouponsFragment extends Fragment {
             return;
         }
 
-        double discount = Double.parseDouble(discountStr);
-        int maxUses = Integer.parseInt(maxUsesStr);
+        double discount;
+        int maxUses;
+        try {
+            discount = Double.parseDouble(discountStr);
+            maxUses = Integer.parseInt(maxUsesStr);
+        } catch (NumberFormatException e) {
+            Toast.makeText(getContext(), "Formato inválido en descuento o usos", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
+        if (discount <= 0 || discount > 100) {
+            Toast.makeText(getContext(), "El descuento debe ser entre 1% y 100%", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (maxUses <= 0) {
+            Toast.makeText(getContext(), "El número de usos debe ser mayor a 0", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        String sellerId = auth.getCurrentUser() != null ? auth.getCurrentUser().getUid() : "unknown";
 
         Map<String, Object> couponData = new HashMap<>();
         couponData.put("code", code);
@@ -85,11 +102,14 @@ public class ManageCouponsFragment extends Fragment {
         couponData.put("maxUses", maxUses);
         couponData.put("uses", 0);
         couponData.put("expirationTimestamp", expiration);
-        couponData.put("sellerId", "CURRENT_USER_ID"); //Luego aqui se pone el seller id cuando se logea
+        couponData.put("sellerId", sellerId);
         couponData.put("applicableProductIds", java.util.Arrays.asList(productId));
 
         firestore.collection("coupons").add(couponData)
-                .addOnSuccessListener(docRef -> Toast.makeText(getContext(), "Cupón creado", Toast.LENGTH_SHORT).show())
+                .addOnSuccessListener(docRef -> {
+                    Toast.makeText(getContext(), "Cupón creado", Toast.LENGTH_SHORT).show();
+                    loadCoupons();
+                })
                 .addOnFailureListener(e -> Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show());
     }
 
@@ -104,7 +124,26 @@ public class ManageCouponsFragment extends Fragment {
                     for (var doc : querySnapshot.getDocuments()) {
                         coupons.add(doc.getData());
                     }
-                    binding.recyclerCoupons.setAdapter(new CouponAdapter(coupons));
+                    binding.recyclerCoupons.setAdapter(new CouponAdapter(coupons, (position, couponData) -> {
+                        new android.app.AlertDialog.Builder(requireContext())
+                                .setTitle("Eliminar cupón")
+                                .setMessage("¿Estás seguro de eliminar este cupón?")
+                                .setPositiveButton("Sí", (dialog, which) -> {
+                                    firestore.collection("coupons")
+                                            .whereEqualTo("code", couponData.get("code"))
+                                            .whereArrayContains("applicableProductIds", productId)
+                                            .get()
+                                            .addOnSuccessListener(query -> {
+                                                for (var doc : query.getDocuments()) {
+                                                    doc.getReference().delete();
+                                                }
+                                                Toast.makeText(getContext(), "Cupón eliminado", Toast.LENGTH_SHORT).show();
+                                                loadCoupons();
+                                            });
+                                })
+                                .setNegativeButton("Cancelar", null)
+                                .show();
+                    }));
                 })
                 .addOnFailureListener(e -> Toast.makeText(getContext(), "Error loading coupons", Toast.LENGTH_SHORT).show());
     }
