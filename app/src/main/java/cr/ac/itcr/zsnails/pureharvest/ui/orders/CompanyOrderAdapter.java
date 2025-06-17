@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.SimpleDateFormat;
@@ -15,7 +16,6 @@ import java.util.List;
 import java.util.Locale;
 
 import cr.ac.itcr.zsnails.pureharvest.R;
-// Order model import is correct
 
 public class CompanyOrderAdapter extends RecyclerView.Adapter<CompanyOrderAdapter.OrderViewHolder> {
 
@@ -55,7 +55,7 @@ public class CompanyOrderAdapter extends RecyclerView.Adapter<CompanyOrderAdapte
         }
 
         String orderDocumentIdString = order.getDocumentId() != null ?
-                context.getString(R.string.order_doc_id_prefix) + order.getDocumentId() : // Usar el ID del documento
+                context.getString(R.string.order_doc_id_prefix) + order.getDocumentId() :
                 context.getString(R.string.order_doc_id_prefix) + context.getString(R.string.not_available_short);
         holder.orderName.setText(orderDocumentIdString);
 
@@ -64,6 +64,26 @@ public class CompanyOrderAdapter extends RecyclerView.Adapter<CompanyOrderAdapte
                 context.getString(R.string.order_user_prefix) + order.getUserId() :
                 context.getString(R.string.order_user_prefix) + context.getString(R.string.not_available_short);
         holder.orderUserName.setText(userIdString);
+
+        Integer status = order.getStatus();
+        holder.orderStatus.setText(getStatusString(status));
+
+        if (status != null) {
+            switch (status) {
+                case 1: // On the Way
+                    holder.orderStatus.setTextColor(ContextCompat.getColor(context, R.color.orange));
+                    break;
+                case 2: // Delivered
+                    holder.orderStatus.setTextColor(ContextCompat.getColor(context, R.color.leaf_green));
+                    break;
+                case 0: // In Warehouse
+                default:
+                    holder.orderStatus.setTextColor(ContextCompat.getColor(context, R.color.text_secondary_on_background));
+                    break;
+            }
+        } else {
+            holder.orderStatus.setTextColor(ContextCompat.getColor(context, R.color.text_secondary_on_background));
+        }
 
         holder.viewDetailsButton.setOnClickListener(v -> {
             if (listener != null) {
@@ -78,6 +98,22 @@ public class CompanyOrderAdapter extends RecyclerView.Adapter<CompanyOrderAdapte
         });
     }
 
+    private String getStatusString(Integer status) {
+        if (status == null) {
+            return context.getString(R.string.status_not_available);
+        }
+        switch (status) {
+            case 0:
+                return context.getString(R.string.status_in_warehouse);
+            case 1:
+                return context.getString(R.string.status_on_the_way);
+            case 2:
+                return context.getString(R.string.status_delivered);
+            default:
+                return context.getString(R.string.status_not_available);
+        }
+    }
+
     @Override
     public int getItemCount() {
         return orderList.size();
@@ -90,14 +126,15 @@ public class CompanyOrderAdapter extends RecyclerView.Adapter<CompanyOrderAdapte
     }
 
     static class OrderViewHolder extends RecyclerView.ViewHolder {
-        TextView orderDate, orderName, orderUserName;
+        TextView orderDate, orderName, orderUserName, orderStatus;
         Button viewDetailsButton;
 
         public OrderViewHolder(@NonNull View itemView) {
             super(itemView);
             orderDate = itemView.findViewById(R.id.orderDate);
-            orderName = itemView.findViewById(R.id.orderName); // Mostrará ID del Documento de la Orden
-            orderUserName = itemView.findViewById(R.id.orderUserName); // Mostrará ID del Usuario
+            orderName = itemView.findViewById(R.id.orderName);
+            orderUserName = itemView.findViewById(R.id.orderUserName);
+            orderStatus = itemView.findViewById(R.id.orderStatus); 
             viewDetailsButton = itemView.findViewById(R.id.viewDetailsButton);
         }
     }
