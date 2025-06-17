@@ -1,13 +1,13 @@
 // File: cr.ac.itcr.zsnails.pureharvest.ui.orders.OrderDetailsFragment.java
 package cr.ac.itcr.zsnails.pureharvest.ui.orders;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
-// import android.text.TextUtils; // No se usa directamente aquí
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -22,13 +22,11 @@ import androidx.navigation.Navigation;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.text.NumberFormat; // Para formatear el precio
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import cr.ac.itcr.zsnails.pureharvest.R;
-import cr.ac.itcr.zsnails.pureharvest.ui.orders.Order;
-import cr.ac.itcr.zsnails.pureharvest.ui.orders.Product; // IMPORTAR EL NUEVO MODELO PRODUCT
 
 public class OrderDetailsFragment extends Fragment {
 
@@ -37,23 +35,22 @@ public class OrderDetailsFragment extends Fragment {
 
     private String orderId;
     private FirebaseFirestore db;
+    private Order currentOrder;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault());
-    private final NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("es", "CR")); // Formato de moneda para Costa Rica (Colones)
+    private final NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("es", "CR"));
 
-    // TextViews para la orden
     private TextView tvOrderIdValue, tvOrderDateValue, tvSellerIdValue, tvUserIdValue, tvProductIdFromOrder;
-    // TextViews para el producto (nuevos)
     private TextView tvLabelProductName, tvProductName, tvLabelProductPrice, tvProductPrice;
+    private TextView tvOrderStatus, tvLabelOrderStatus;
+    private Button btnChangeStatus;
 
     private TextView tvOrderDetailsTitle;
-    private ImageButton backButtonOrderDetails;
     private ProgressBar progressBarOrderDetails;
     private LinearLayout contentLayout;
 
     private NavController navController;
 
     public OrderDetailsFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -63,7 +60,6 @@ public class OrderDetailsFragment extends Fragment {
             orderId = getArguments().getString(ARG_ORDER_ID);
         }
         db = FirebaseFirestore.getInstance();
-        // currencyFormat.setCurrency(Currency.getInstance("USD")); // Si quieres USD u otra moneda
     }
 
     @Nullable
@@ -72,20 +68,21 @@ public class OrderDetailsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_order_details, container, false);
 
         tvOrderDetailsTitle = view.findViewById(R.id.tvOrderDetailsTitle);
-        // backButtonOrderDetails = view.findViewById(R.id.your_back_button_id);
 
-        // TextViews de la Orden
         tvOrderIdValue = view.findViewById(R.id.tvOrderId);
         tvOrderDateValue = view.findViewById(R.id.tvOrderDate);
         tvSellerIdValue = view.findViewById(R.id.tvSellerId);
         tvUserIdValue = view.findViewById(R.id.tvUserId);
-        tvProductIdFromOrder = view.findViewById(R.id.tvProductIds); // Este es el ID del producto EN la orden
+        tvProductIdFromOrder = view.findViewById(R.id.tvProductIds);
 
-        // TextViews del Producto (nuevos)
         tvLabelProductName = view.findViewById(R.id.tvLabelProductName);
         tvProductName = view.findViewById(R.id.tvProductName);
         tvLabelProductPrice = view.findViewById(R.id.tvLabelProductPrice);
         tvProductPrice = view.findViewById(R.id.tvProductPrice);
+
+        tvLabelOrderStatus = view.findViewById(R.id.tvLabelOrderStatus);
+        tvOrderStatus = view.findViewById(R.id.tvOrderStatus);
+        btnChangeStatus = view.findViewById(R.id.btnChangeStatus);
 
         progressBarOrderDetails = view.findViewById(R.id.progressBarOrderDetails);
         contentLayout = view.findViewById(R.id.orderDetailsContent);
@@ -113,44 +110,38 @@ public class OrderDetailsFragment extends Fragment {
         if (tvOrderDetailsTitle != null) {
             tvOrderDetailsTitle.setText(getString(R.string.title_order_details));
         }
-        // if (backButtonOrderDetails != null) {
-        //     backButtonOrderDetails.setOnClickListener(v -> navigateBack());
-        // }
     }
 
     private void fetchOrderDetails() {
         if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.VISIBLE);
-        if (contentLayout != null) contentLayout.setVisibility(View.GONE); // Ocultar contenido hasta que todo esté listo
+        if (contentLayout != null) contentLayout.setVisibility(View.GONE);
 
         db.collection("orders").document(orderId).get()
                 .addOnCompleteListener(task -> {
-                    // No ocultar el progressBar aquí todavía si vamos a hacer otra consulta
                     if (!isAdded() || getContext() == null) return;
 
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document != null && document.exists()) {
-                            Order order = document.toObject(Order.class);
-                            if (order != null) {
-                                Log.d(TAG, "Order Fetched: " + order.getDocumentId() + ", ProductId in Order: " + order.getProductId());
-                                displayOrderBaseDetails(order); // Muestra detalles base de la orden
+                            currentOrder = document.toObject(Order.class);
+                            if (currentOrder != null) {
+                                Log.d(TAG, "Order Fetched: " + currentOrder.getDocumentId() + ", ProductId: " + currentOrder.getProductId() + ", Status: " + currentOrder.getStatus());
+                                displayOrderBaseDetails(currentOrder);
+                                setupStatusSection(currentOrder);
 
-                                // Ahora, si la orden tiene un productId, busca ese producto
-                                if (order.getProductId() != null && !order.getProductId().isEmpty()) {
-                                    fetchProductDetails(order.getProductId());
+                                if (currentOrder.getProductId() != null && !currentOrder.getProductId().isEmpty()) {
+                                    fetchProductDetails(currentOrder.getProductId());
                                 } else {
                                     Log.w(TAG, "Order does not have a productId.");
                                     showProductDetailsAsNotAvailable();
                                     if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.GONE);
-                                    if (contentLayout != null) contentLayout.setVisibility(View.VISIBLE); // Mostrar contenido de la orden
+                                    if (contentLayout != null) contentLayout.setVisibility(View.VISIBLE);
                                 }
                             } else {
-                                Log.e(TAG, "Order object is NULL after document.toObject() for ID: " + orderId);
                                 if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.GONE);
                                 showErrorAndGoBack(getString(R.string.error_deserializing_order));
                             }
                         } else {
-                            Log.w(TAG, "No such order document with ID: " + orderId);
                             if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.GONE);
                             showErrorAndGoBack(getString(R.string.error_order_not_found));
                         }
@@ -168,26 +159,22 @@ public class OrderDetailsFragment extends Fragment {
         db.collection("products").document(productIdToFetch).get()
                 .addOnCompleteListener(productTask -> {
                     if (!isAdded() || getContext() == null) return;
-                    if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.GONE); // Ahora sí ocultar
-                    if (contentLayout != null) contentLayout.setVisibility(View.VISIBLE); //
+                    if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.GONE);
+                    if (contentLayout != null) contentLayout.setVisibility(View.VISIBLE);
 
                     if (productTask.isSuccessful()) {
                         DocumentSnapshot productDocument = productTask.getResult();
                         if (productDocument != null && productDocument.exists()) {
                             Product product = productDocument.toObject(Product.class);
                             if (product != null) {
-                                Log.d(TAG, "Product Fetched: " + product.getName() + ", Price: " + product.getPrice());
                                 displayProductSpecificDetails(product);
                             } else {
-                                Log.e(TAG, "Product object is NULL after document.toObject() for ID: " + productIdToFetch);
                                 showProductDetailsAsNotAvailable();
                             }
                         } else {
-                            Log.w(TAG, "No such product document with ID: " + productIdToFetch);
                             showProductDetailsAsNotAvailable();
                         }
                     } else {
-                        Log.e(TAG, "Error fetching product details for ID: " + productIdToFetch, productTask.getException());
                         showProductDetailsAsNotAvailable();
                         Toast.makeText(getContext(), getString(R.string.error_fetching_product_details), Toast.LENGTH_SHORT).show();
                     }
@@ -208,11 +195,81 @@ public class OrderDetailsFragment extends Fragment {
         if (tvSellerIdValue != null) tvSellerIdValue.setText(order.getSellerId() != null ? order.getSellerId() : naText);
         if (tvUserIdValue != null) tvUserIdValue.setText(order.getUserId() != null ? order.getUserId() : naText);
 
-        // Mostrar el ID del producto que viene en la orden
         if (tvProductIdFromOrder != null) {
             tvProductIdFromOrder.setText(order.getProductId() != null && !order.getProductId().isEmpty() ?
                     order.getProductId() : naText);
         }
+    }
+
+    private void setupStatusSection(Order order) {
+        Integer status = order.getStatus();
+
+        if (status == null) {
+            tvOrderStatus.setText(getString(R.string.status_not_available));
+            btnChangeStatus.setVisibility(View.GONE);
+        } else {
+            tvOrderStatus.setText(getStatusString(status));
+            btnChangeStatus.setVisibility(View.VISIBLE);
+            btnChangeStatus.setOnClickListener(v -> showStatusSelectionDialog());
+        }
+    }
+
+    private void showStatusSelectionDialog() {
+        if (getContext() == null) return;
+        String[] statusOptions = getResources().getStringArray(R.array.order_status_options);
+
+        new AlertDialog.Builder(getContext())
+                .setTitle(getString(R.string.select_new_status_title))
+                .setItems(statusOptions, (dialog, which) -> {
+                    if (currentOrder != null && currentOrder.getStatus() != null && which != currentOrder.getStatus()) {
+                        showConfirmationDialog(which);
+                    } else {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
+    }
+
+
+    private void showConfirmationDialog(final int newStatusIndex) {
+        if (getContext() == null) return;
+        String[] statusOptions = getResources().getStringArray(R.array.order_status_options);
+        String newStatusText = statusOptions[newStatusIndex];
+
+        new AlertDialog.Builder(getContext())
+                .setTitle(getString(R.string.confirm_status_change_title))
+                .setMessage(getString(R.string.confirm_status_change_message, newStatusText))
+                .setPositiveButton(getString(R.string.confirm_button), (dialog, which) -> updateOrderStatusInFirestore(newStatusIndex))
+                .setNegativeButton(getString(R.string.cancel_button), null)
+                .show();
+    }
+
+    private void updateOrderStatusInFirestore(final int newStatus) {
+        if (orderId == null || orderId.isEmpty()) return;
+        progressBarOrderDetails.setVisibility(View.VISIBLE);
+        db.collection("orders").document(orderId)
+                .update("status", newStatus)
+                .addOnSuccessListener(aVoid -> {
+                    if (getContext() == null || !isAdded()) return;
+                    progressBarOrderDetails.setVisibility(View.GONE);
+                    Toast.makeText(getContext(), getString(R.string.status_update_success), Toast.LENGTH_SHORT).show();
+                    currentOrder.setStatus(newStatus);
+                    tvOrderStatus.setText(getStatusString(newStatus));
+                })
+                .addOnFailureListener(e -> {
+                    if (getContext() == null || !isAdded()) return;
+                    progressBarOrderDetails.setVisibility(View.GONE);
+                    Toast.makeText(getContext(), getString(R.string.status_update_failed) + ": " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
+    }
+
+    private String getStatusString(Integer status) {
+        if (getContext() == null || status == null) return getString(R.string.status_not_available);
+        String[] statusOptions = getResources().getStringArray(R.array.order_status_options);
+        if (status >= 0 && status < statusOptions.length) {
+            return statusOptions[status];
+        }
+        return getString(R.string.status_not_available);
     }
 
     private void displayProductSpecificDetails(Product product) {
@@ -224,7 +281,6 @@ public class OrderDetailsFragment extends Fragment {
         }
         if (tvLabelProductPrice != null) tvLabelProductPrice.setVisibility(View.VISIBLE);
         if (tvProductPrice != null) {
-            // Formatear el precio. Ejemplo: ₡1,250.00
             tvProductPrice.setText(currencyFormat.format(product.getPrice()));
             tvProductPrice.setVisibility(View.VISIBLE);
         }

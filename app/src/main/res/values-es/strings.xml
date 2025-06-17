@@ -470,4 +470,24 @@
     <string name="label_price">Precio: </string>
     <string name="label_date">Fecha: </string>
 
+    <string name="order_status_label">Estado de la Orden</string>
+    <string name="status_in_warehouse">En Bodega</string>
+    <string name="status_on_the_way">De Camino</string>
+    <string name="status_delivered">Entregado</string>
+    <string name="status_not_available">No hay información del estado de la orden</string>
+    <string name="confirm_status_change_title">Confirmar Cambio de Estado</string>
+    <string name="confirm_status_change_message">¿Estás seguro de que quieres cambiar el estado a %1$s?</string>
+    <string name="confirm_button">Confirmar</string>
+    <string name="cancel_button">Cancelar</string>
+    <string name="status_update_success">Estado actualizado correctamente</string>
+    <string name="status_update_failed">Error al actualizar el estado</string>
+    <string name="change_status_button">Cambiar Estado</string>
+    <string name="select_new_status_title">Seleccionar Nuevo Estado</string>
+
+    <string-array name="order_status_options">
+        <item>@string/status_in_warehouse</item>
+        <item>@string/status_on_the_way</item>
+        <item>@string/status_delivered</item>
+    </string-array>
+
 </resources>

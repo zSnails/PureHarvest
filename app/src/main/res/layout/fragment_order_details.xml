@@ -98,6 +98,55 @@
                 android:background="@color/subtle_divider"
                 android:layout_marginVertical="16dp"/>
 
+            <!-- INICIO DE SECCIÓN DE ESTADO MODIFICADA -->
+            <TextView
+                android:id="@+id/tvLabelOrderStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/order_status_label"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                android:textColor="@color/text_secondary_on_background"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="24dp">
+
+                <TextView
+                    android:id="@+id/tvOrderStatus"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    tools:text="Delivered"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    android:textStyle="bold"
+                    android:textColor="@color/leaf_green"
+                    />
+
+                <Button
+                    android:id="@+id/btnChangeStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:text="@string/change_status_button"
+                    android:textAllCaps="false"
+                    android:textSize="14sp"
+                    android:textColor="#FFFFFF"
+                    android:background="@drawable/rounded_button"
+                    android:paddingHorizontal="16dp"
+                    />
+            </LinearLayout>
+            <!-- FIN DE SECCIÓN DE ESTADO MODIFICADA -->
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/subtle_divider"
+                android:layout_marginVertical="16dp"/>
+
+
             <TextView
                 android:id="@+id/tvLabelSellerId"
                 android:layout_width="wrap_content"

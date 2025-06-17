@@ -520,4 +520,24 @@
     <string name="label_price">Price: </string>
     <string name="label_date">Date: </string>
 
+    <string name="order_status_label">Order Status</string>
+    <string name="status_in_warehouse">In Warehouse</string>
+    <string name="status_on_the_way">On the Way</string>
+    <string name="status_delivered">Delivered</string>
+    <string name="status_not_available">No order status information available</string>
+    <string name="confirm_status_change_title">Confirm Status Change</string>
+    <string name="confirm_status_change_message">Are you sure you want to change the status to %1$s?</string>
+    <string name="confirm_button">Confirm</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="status_update_success">Status updated successfully</string>
+    <string name="status_update_failed">Failed to update status</string>
+    <string name="change_status_button">Change Status</string>
+    <string name="select_new_status_title">Select New Status</string>
+
+    <string-array name="order_status_options">
+        <item>@string/status_in_warehouse</item>
+        <item>@string/status_on_the_way</item>
+        <item>@string/status_delivered</item>
+    </string-array>
+
 </resources>
