@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -212,6 +213,7 @@ public class OrderDetailsFragment extends Fragment {
             btnChangeStatus.setVisibility(View.VISIBLE);
             btnChangeStatus.setOnClickListener(v -> showStatusSelectionDialog());
         }
+        setStatusTextColor(status);
     }
 
     private void showStatusSelectionDialog() {
@@ -255,6 +257,7 @@ public class OrderDetailsFragment extends Fragment {
                     Toast.makeText(getContext(), getString(R.string.status_update_success), Toast.LENGTH_SHORT).show();
                     currentOrder.setStatus(newStatus);
                     tvOrderStatus.setText(getStatusString(newStatus));
+                    setStatusTextColor(newStatus);
                 })
                 .addOnFailureListener(e -> {
                     if (getContext() == null || !isAdded()) return;
@@ -271,6 +274,30 @@ public class OrderDetailsFragment extends Fragment {
         }
         return getString(R.string.status_not_available);
     }
+
+    private void setStatusTextColor(Integer status) {
+        if (getContext() == null || tvOrderStatus == null) return;
+
+        int colorResId;
+        if (status != null) {
+            switch (status) {
+                case 1: // On the Way
+                    colorResId = R.color.orange;
+                    break;
+                case 2: // Delivered
+                    colorResId = R.color.leaf_green;
+                    break;
+                case 0: // In Warehouse
+                default:
+                    colorResId = R.color.text_secondary_on_background;
+                    break;
+            }
+        } else {
+            colorResId = R.color.text_secondary_on_background;
+        }
+        tvOrderStatus.setTextColor(ContextCompat.getColor(getContext(), colorResId));
+    }
+
 
     private void displayProductSpecificDetails(Product product) {
         String naText = getString(R.string.not_available_short);

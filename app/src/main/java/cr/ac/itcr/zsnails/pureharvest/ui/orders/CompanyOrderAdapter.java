@@ -134,7 +134,7 @@ public class CompanyOrderAdapter extends RecyclerView.Adapter<CompanyOrderAdapte
             orderDate = itemView.findViewById(R.id.orderDate);
             orderName = itemView.findViewById(R.id.orderName);
             orderUserName = itemView.findViewById(R.id.orderUserName);
-            orderStatus = itemView.findViewById(R.id.orderStatus); 
+            orderStatus = itemView.findViewById(R.id.orderStatus);
             viewDetailsButton = itemView.findViewById(R.id.viewDetailsButton);
         }
     }
