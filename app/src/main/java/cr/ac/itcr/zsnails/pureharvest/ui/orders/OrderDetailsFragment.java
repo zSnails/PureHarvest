@@ -32,9 +32,6 @@ import java.util.List;
 import java.util.Locale;
 
 import cr.ac.itcr.zsnails.pureharvest.R;
-// Import the User model (adjust package if necessary)
-// import cr.ac.itcr.zsnails.pureharvest.models.User;
-
 
 public class OrderDetailsFragment extends Fragment {
 
@@ -44,16 +41,15 @@ public class OrderDetailsFragment extends Fragment {
     private String orderId;
     private FirebaseFirestore db;
     private Order currentOrder;
-    private User currentUserDetails; // To store fetched user details
+    private User currentUserDetails;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault());
     private final NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("es", "CR"));
 
-    private TextView tvOrderIdValue, tvOrderDateValue, tvSellerIdValue;
+    private TextView tvOrderIdValue, tvOrderDateValue;
     private TextView tvLabelProductName, tvProductName, tvLabelProductPrice, tvProductPrice, tvProductIdFromOrder;
     private TextView tvOrderStatus, tvLabelOrderStatus;
     private Button btnChangeStatus;
 
-    // New TextViews for User Details
     private TextView tvLabelUserFullName, tvUserFullName, tvLabelUserEmail, tvUserEmail, tvLabelUserPhone, tvUserPhone;
     private Button btnContactBuyer;
 
@@ -85,8 +81,6 @@ public class OrderDetailsFragment extends Fragment {
 
         tvOrderIdValue = view.findViewById(R.id.tvOrderId);
         tvOrderDateValue = view.findViewById(R.id.tvOrderDate);
-        tvSellerIdValue = view.findViewById(R.id.tvSellerId);
-        // tvUserIdValue removed, will be replaced by detailed user info
 
         tvProductIdFromOrder = view.findViewById(R.id.tvProductIds);
         tvLabelProductName = view.findViewById(R.id.tvLabelProductName);
@@ -98,7 +92,6 @@ public class OrderDetailsFragment extends Fragment {
         tvOrderStatus = view.findViewById(R.id.tvOrderStatus);
         btnChangeStatus = view.findViewById(R.id.btnChangeStatus);
 
-        // Initialize new User Detail TextViews
         tvLabelUserFullName = view.findViewById(R.id.tvLabelUserFullName);
         tvUserFullName = view.findViewById(R.id.tvUserFullName);
         tvLabelUserEmail = view.findViewById(R.id.tvLabelUserEmail);
@@ -158,7 +151,7 @@ public class OrderDetailsFragment extends Fragment {
                                     fetchUserDetails(currentOrder.getUserId());
                                 } else {
                                     Log.w(TAG, "Order does not have a userId.");
-                                    displayUserDetails(null); // Show N/A for user details
+                                    displayUserDetails(null);
                                 }
 
                                 if (currentOrder.getProductId() != null && !currentOrder.getProductId().isEmpty()) {
@@ -166,7 +159,6 @@ public class OrderDetailsFragment extends Fragment {
                                 } else {
                                     Log.w(TAG, "Order does not have a productId.");
                                     showProductDetailsAsNotAvailable();
-                                    // Make content visible if product details aren't fetched
                                     if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.GONE);
                                     if (contentLayout != null) contentLayout.setVisibility(View.VISIBLE);
                                 }
@@ -222,20 +214,17 @@ public class OrderDetailsFragment extends Fragment {
 
     private void fetchProductDetails(String productIdToFetch) {
         Log.d(TAG, "Fetching product details for productId: " + productIdToFetch);
-        // Keep progress bar visible until product details are also fetched or fail
-        // progressBarOrderDetails.setVisibility(View.VISIBLE); // Already visible from fetchOrderDetails
 
         db.collection("products").document(productIdToFetch).get()
                 .addOnCompleteListener(productTask -> {
                     if (!isAdded() || getContext() == null) return;
-                    // Hide progress bar and show content after product details attempt
                     if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.GONE);
                     if (contentLayout != null) contentLayout.setVisibility(View.VISIBLE);
 
                     if (productTask.isSuccessful()) {
                         DocumentSnapshot productDocument = productTask.getResult();
                         if (productDocument != null && productDocument.exists()) {
-                            Product product = productDocument.toObject(Product.class); // Ensure you have Product.class
+                            Product product = productDocument.toObject(Product.class);
                             if (product != null) {
                                 displayProductSpecificDetails(product);
                             } else {
@@ -262,8 +251,6 @@ public class OrderDetailsFragment extends Fragment {
                 catch (Exception e) { tvOrderDateValue.setText(naText); }
             } else { tvOrderDateValue.setText(naText); }
         }
-        if (tvSellerIdValue != null) tvSellerIdValue.setText(order.getSellerId() != null ? order.getSellerId() : naText);
-        // tvUserIdValue removed
 
         if (tvProductIdFromOrder != null) {
             tvProductIdFromOrder.setText(order.getProductId() != null && !order.getProductId().isEmpty() ?
@@ -274,7 +261,6 @@ public class OrderDetailsFragment extends Fragment {
     private void displayUserDetails(User user) {
         String naText = getString(R.string.not_available_short);
 
-        // Make labels visible
         if (tvLabelUserFullName != null) tvLabelUserFullName.setVisibility(View.VISIBLE);
         if (tvLabelUserEmail != null) tvLabelUserEmail.setVisibility(View.VISIBLE);
         if (tvLabelUserPhone != null) tvLabelUserPhone.setVisibility(View.VISIBLE);
@@ -346,7 +332,7 @@ public class OrderDetailsFragment extends Fragment {
 
     private void updateOrderStatusInFirestore(final int newStatus) {
         if (orderId == null || orderId.isEmpty()) return;
-        if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.VISIBLE); // Show progress for this specific action
+        if (progressBarOrderDetails != null) progressBarOrderDetails.setVisibility(View.VISIBLE);
         db.collection("orders").document(orderId)
                 .update("status", newStatus)
                 .addOnSuccessListener(aVoid -> {
@@ -379,13 +365,13 @@ public class OrderDetailsFragment extends Fragment {
         int colorResId;
         if (status != null) {
             switch (status) {
-                case 1: // On the Way
+                case 1:
                     colorResId = R.color.orange;
                     break;
-                case 2: // Delivered
+                case 2:
                     colorResId = R.color.leaf_green;
                     break;
-                case 0: // In Warehouse
+                case 0:
                 default:
                     colorResId = R.color.text_secondary_on_background;
                     break;
@@ -444,7 +430,6 @@ public class OrderDetailsFragment extends Fragment {
         }
     }
 
-    // --- CONTACT BUYER METHODS ---
     private void showContactOptionsDialog() {
         if (getContext() == null || currentUserDetails == null) return;
 
@@ -491,7 +476,7 @@ public class OrderDetailsFragment extends Fragment {
             return;
         }
         Intent intent = new Intent(Intent.ACTION_DIAL);
-        intent.setData(Uri.parse("tel:" + phoneNumber.replaceAll("[^0-9+]", ""))); // Clean number
+        intent.setData(Uri.parse("tel:" + phoneNumber.replaceAll("[^0-9+]", "")));
         try {
             startActivity(intent);
         } catch (ActivityNotFoundException e) {
@@ -505,7 +490,7 @@ public class OrderDetailsFragment extends Fragment {
             return;
         }
         Intent intent = new Intent(Intent.ACTION_SENDTO);
-        intent.setData(Uri.parse("smsto:" + phoneNumber.replaceAll("[^0-9+]", ""))); // Clean number
+        intent.setData(Uri.parse("smsto:" + phoneNumber.replaceAll("[^0-9+]", "")));
         try {
             startActivity(intent);
         } catch (ActivityNotFoundException e) {
@@ -518,24 +503,10 @@ public class OrderDetailsFragment extends Fragment {
             Toast.makeText(getContext(), getString(R.string.error_no_phone_number), Toast.LENGTH_SHORT).show();
             return;
         }
-        // Ensure phone number is in international format for WhatsApp, e.g., +506XXXXXXXX for Costa Rica
-        // This might require a utility or knowledge of the stored phone number format.
-        // For simplicity, we assume it's somewhat correct or let WhatsApp handle it.
-        // A common practice is to remove non-digits and prepend country code if missing.
         String cleanedPhoneNumber = phoneNumber.replaceAll("[^0-9]", "");
-        // Example: if numbers are stored locally without country code, you might prepend it.
-        // if (!cleanedPhoneNumber.startsWith("+") && getContext() != null) {
-        //     // This is a placeholder. You'd need a more robust way to get/assume country code.
-        //     String countryCode = "506"; // Example for Costa Rica
-        //     if(cleanedPhoneNumber.length() == 8) { // Common length for CR numbers without CC
-        //        cleanedPhoneNumber = countryCode + cleanedPhoneNumber;
-        //     }
-        // }
-
 
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse("https://api.whatsapp.com/send?phone=" + cleanedPhoneNumber)); // Use cleaned number
-        // intent.setPackage("com.whatsapp"); // Optional: to directly target WhatsApp
+        intent.setData(Uri.parse("https://api.whatsapp.com/send?phone=" + cleanedPhoneNumber));
 
         try {
             startActivity(intent);
@@ -551,24 +522,10 @@ public class OrderDetailsFragment extends Fragment {
         }
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.fromParts("mailto", emailAddress, null));
-        // You can add subject and body if needed
-        // intent.putExtra(Intent.EXTRA_SUBJECT, "Regarding your order " + (currentOrder != null ? currentOrder.getDocumentId() : ""));
-        // intent.putExtra(Intent.EXTRA_TEXT, "Hello " + (currentUserDetails != null ? currentUserDetails.getFullName() : "Customer") + ",\n\n");
         try {
             startActivity(Intent.createChooser(intent, "Send email..."));
         } catch (ActivityNotFoundException e) {
             Toast.makeText(getContext(), getString(R.string.error_app_not_found_for_action), Toast.LENGTH_SHORT).show();
         }
     }
-    // Make sure you have a Product.java class, similar to Order.java, if you don't already.
-    // e.g.
-    // public class Product {
-    //     @DocumentId private String documentId;
-    //     private String name;
-    //     private Double price;
-    //     // other fields, constructors, getters, setters
-    //     public Product() {}
-    //     public String getName() { return name; }
-    //     public Double getPrice() { return price; }
-    // }
 }

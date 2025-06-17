@@ -144,29 +144,6 @@
                 android:background="@color/subtle_divider"
                 android:layout_marginVertical="16dp"/>
 
-
-            <TextView
-                android:id="@+id/tvLabelSellerId"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/sold_by"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                android:textColor="@color/text_secondary_on_background"/>
-            <TextView
-                android:id="@+id/tvSellerId"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="Tienda PureHarvest (ID: Seller789)"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                android:textColor="@color/text_primary_on_background"
-                android:layout_marginBottom="24dp"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/subtle_divider"
-                android:layout_marginVertical="16dp"/>
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -242,8 +219,6 @@
                 android:background="@drawable/rounded_button"
                 android:textColor="#FFFFFF"
                 android:visibility="gone"/>
-            <!-- END CUSTOMER DETAILS SECTION -->
-
 
             <View
                 android:layout_width="match_parent"
