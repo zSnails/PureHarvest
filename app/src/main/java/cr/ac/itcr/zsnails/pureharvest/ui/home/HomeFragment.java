@@ -156,7 +156,7 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
             if (!discountedProducts.isEmpty()) {
                 // Only create the section if there are discounted products
                 specialOffersAdapter.updateData(discountedProducts);
-                binding.containerSections.addView(specialOffersSection, 1); // Insertar en la posición 1 (entre topSold y randomList)
+                binding.containerSections.addView(specialOffersSection, 2); // Insertar en la posición 1 (entre topSold y randomList)
             }
         });
 
