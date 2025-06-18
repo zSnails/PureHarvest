@@ -582,4 +582,5 @@
     <string name="order_total_label">Order Total:</string>
     <string name="order_total_price_format">₡%.2f</string>
     <string name="title_shopping_cart_past_orders">Past Orders</string>
+    <string name="order_id_template">ID: %1$s</string>
 </resources>
