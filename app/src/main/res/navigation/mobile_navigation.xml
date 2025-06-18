@@ -190,6 +190,15 @@
     <fragment
         android:id="@+id/clientOrdersFragment2"
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.orders.client.ClientOrdersFragment"
-        android:label="fragment_client_orders"
-        tools:layout="@layout/fragment_client_orders" />
+        android:label="@string/title_my_orders"
+        tools:layout="@layout/fragment_client_orders" >
+        <action
+            android:id="@+id/action_clientOrdersFragment2_to_clientOrderDetailsFragment"
+            app:destination="@id/clientOrderDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/clientOrderDetailsFragment"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.orders.client.ClientOrderDetailsFragment"
+        android:label="@string/order_details_title"
+        tools:layout="@layout/fragment_client_order_details" />
 </navigation>
