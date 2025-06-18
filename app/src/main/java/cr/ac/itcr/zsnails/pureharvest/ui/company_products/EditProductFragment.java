@@ -6,31 +6,26 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-
 import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentEditProductBinding;
 
@@ -39,11 +34,15 @@ public class EditProductFragment extends Fragment {
     private FragmentEditProductBinding binding;
     private FirebaseFirestore firestore;
     private FirebaseStorage storage;
-
     private String productId;
-
     private static final String TAG = "EditProductFragment";
     private static final String ARG_PRODUCT_ID = "productId";
+    private String[] productTypesArray;
+    private String coffeeTypeString;
+
+    private static final String[] CANONICAL_PRODUCT_TYPE_KEYS_ENGLISH = {"Coffee", "Honey", "Vegetable", "Specialty", "Gourmet", "Base/Normal", "Organic"};
+    private static final String[] CANONICAL_PRODUCT_TYPE_KEYS_SPANISH = {"Café", "Miel", "Hortaliza", "Especialidad", "Gourmet", "Base/Normal", "Orgánico"};
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,6 +55,10 @@ public class EditProductFragment extends Fragment {
             Log.d(TAG, "Received Product ID: " + productId);
         } else {
             Log.e(TAG, "Product ID not provided in arguments.");
+        }
+        productTypesArray = getResources().getStringArray(R.array.product_types_array);
+        if (productTypesArray.length > 0) {
+            coffeeTypeString = productTypesArray[0];
         }
     }
 
@@ -70,20 +73,114 @@ public class EditProductFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
+                android.R.layout.simple_dropdown_item_1line, productTypesArray);
+        binding.spinnerProductType.setAdapter(adapter);
+
+        binding.spinnerProductType.setOnItemClickListener((parent, v, position, id) -> {
+            String selectedType = (String) parent.getItemAtPosition(position);
+            updateFieldVisibility(selectedType);
+        });
+
+
         if (productId != null && !productId.isEmpty()) {
             loadProductData();
         } else {
             Log.e(TAG, "Cannot load data: Product ID is null or empty.");
             showErrorState(getString(R.string.error_invalid_product_id));
             setButtonsEnabled(false);
+            binding.buttonPayToStandOut.setEnabled(false);
+            updateFieldVisibility(productTypesArray.length > 0 ? productTypesArray[0] : "");
         }
-
-
+        binding.buttonManageCoupons.setOnClickListener(v -> handleManageCoupons());
         binding.buttonChangeImage.setOnClickListener(v -> handleManageImages());
         binding.buttonSave.setOnClickListener(v -> handleSaveChanges());
         binding.buttonCancel.setOnClickListener(v -> handleCancel());
         binding.buttonDeleteProduct.setOnClickListener(v -> handleDeleteProductConfirmation());
+        binding.buttonPayToStandOut.setOnClickListener(v -> handlePayToStandOut());
     }
+
+    private void handlePayToStandOut() {
+        if (productId != null && !productId.isEmpty()) {
+            Bundle bundle = new Bundle();
+            bundle.putString(ARG_PRODUCT_ID, productId);
+            NavController navController = Navigation.findNavController(requireView());
+            try {
+                navController.navigate(R.id.action_editProductFragment_to_standOutPaymentFragment, bundle);
+            } catch (IllegalArgumentException e) {
+                Log.e(TAG, "Navigation action to StandOutPaymentFragment not found. Ensure it's defined in your nav graph.", e);
+                showErrorState(getString(R.string.error_navigation_generic));
+            }
+        } else {
+            Toast.makeText(getContext(), "Product ID is missing. Cannot proceed.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void handleManageCoupons() {
+        if (getContext() != null && isAdded() && getView() != null) {
+            if (productId != null && !productId.isEmpty()) {
+                Log.d(TAG, "Navigating to Manage Coupons for product ID: " + productId);
+                Bundle args = new Bundle();
+                args.putString("productId", productId);
+                try {
+                    Navigation.findNavController(requireView()).navigate(
+                            R.id.action_editProductFragment_to_manageCouponsFragment, args);
+                } catch (IllegalArgumentException e) {
+                    Log.e(TAG, "Navigation action not found. Ensure it's defined in your nav graph.", e);
+                    showErrorState(getString(R.string.error_navigation_generic));
+                }
+            } else {
+                showErrorState("Product ID inválido para administrar cupones.");
+            }
+        } else {
+            Log.w(TAG, "No se puede navegar: estado del fragmento no válido.");
+        }
+    }
+
+
+    private void updateFieldVisibility(String selectedLocalizedType) {
+        if (binding == null || coffeeTypeString == null) return;
+
+        boolean isCoffeeProduct;
+        if (selectedLocalizedType == null) {
+            isCoffeeProduct = false;
+        } else {
+            isCoffeeProduct = selectedLocalizedType.equalsIgnoreCase(coffeeTypeString);
+        }
+
+        binding.layoutProductCertifications.setVisibility(isCoffeeProduct ? View.VISIBLE : View.GONE);
+        binding.layoutProductFlavorsAromas.setVisibility(isCoffeeProduct ? View.VISIBLE : View.GONE);
+        binding.layoutProductAcidity.setVisibility(isCoffeeProduct ? View.VISIBLE : View.GONE);
+        binding.layoutProductBody.setVisibility(isCoffeeProduct ? View.VISIBLE : View.GONE);
+        binding.layoutProductAftertaste.setVisibility(isCoffeeProduct ? View.VISIBLE : View.GONE);
+        binding.layoutProductIngredients.setVisibility(isCoffeeProduct ? View.VISIBLE : View.GONE);
+        binding.layoutProductPreparation.setVisibility(isCoffeeProduct ? View.VISIBLE : View.GONE);
+
+        View anchorViewForDeleteButton;
+        if (isCoffeeProduct) {
+            anchorViewForDeleteButton = binding.layoutProductPreparation;
+        } else {
+            anchorViewForDeleteButton = binding.layoutProductDescription;
+        }
+
+        androidx.constraintlayout.widget.ConstraintLayout.LayoutParams deleteParams =
+                (androidx.constraintlayout.widget.ConstraintLayout.LayoutParams) binding.buttonDeleteProduct.getLayoutParams();
+        deleteParams.topToBottom = anchorViewForDeleteButton.getId();
+
+        androidx.constraintlayout.widget.ConstraintLayout.LayoutParams payParams =
+                (androidx.constraintlayout.widget.ConstraintLayout.LayoutParams) binding.buttonPayToStandOut.getLayoutParams();
+        payParams.topToBottom = binding.buttonDeleteProduct.getId();
+
+
+        androidx.constraintlayout.widget.ConstraintLayout.LayoutParams cancelParams =
+                (androidx.constraintlayout.widget.ConstraintLayout.LayoutParams) binding.buttonCancel.getLayoutParams();
+        cancelParams.topToBottom = binding.buttonPayToStandOut.getId();
+
+        binding.buttonDeleteProduct.requestLayout();
+        binding.buttonPayToStandOut.requestLayout();
+        binding.buttonCancel.requestLayout();
+    }
+
 
     private void handleDeleteProductConfirmation() {
         if (getContext() == null || !isAdded() || productId == null || productId.isEmpty()) {
@@ -109,12 +206,12 @@ public class EditProductFragment extends Fragment {
         firestore.collection("products").document(productId).delete()
                 .addOnSuccessListener(aVoid -> {
                     Log.d(TAG, "Firestore document deleted successfully for ID: " + productId);
-                    deleteProductImagesFromStorage(); // Clean up storage afterwards
+                    deleteProductImagesFromStorage();
                 })
                 .addOnFailureListener(e -> {
                     showLoading(false);
                     Log.e(TAG, "Error deleting Firestore document for ID: " + productId, e);
-                    showErrorState(String.format(getString(R.string.error_updating_product_generic), e.getMessage())); // Re-used generic update error string
+                    showErrorState(String.format(getString(R.string.error_updating_product_generic), e.getMessage()));
                 });
     }
     private void deleteProductImagesFromStorage() {
@@ -156,14 +253,13 @@ public class EditProductFragment extends Fragment {
                                 showLoading(false);
                                 Log.e(TAG, "Error deleting some images from storage for product ID: " + productId, e);
                                 showErrorState(getString(R.string.error_product_deleted_images_error));
-                                navigateBack(); // Navigate back even if image deletion fails partially
+                                navigateBack();
                             });
                 })
                 .addOnFailureListener(e -> {
                     if (!isAdded()) return;
                     showLoading(false);
                     Log.e(TAG, "Error listing images in storage for product ID: " + productId, e);
-                    // Show success for product deletion, but acknowledge image listing issue
                     showSuccessMessage(getString(R.string.success_product_deleted_no_images_or_list_error));
                     navigateBack();
                 });
@@ -181,35 +277,103 @@ public class EditProductFragment extends Fragment {
                     if (documentSnapshot.exists()) {
                         populateFields(documentSnapshot);
                         setButtonsEnabled(true);
+                        binding.buttonPayToStandOut.setEnabled(true);
                     } else {
                         showErrorState(getString(R.string.error_product_does_not_exist));
                         setButtonsEnabled(false);
+                        binding.buttonPayToStandOut.setEnabled(false);
                     }
                 })
                 .addOnFailureListener(e -> {
                     if (!isAdded() || binding == null) return;
                     showLoading(false);
                     showErrorState(String.format(getString(R.string.error_loading_data_generic), e.getMessage()));
-                    binding.imageProduct.setImageResource(R.drawable.ic_error_image);
+                    if (binding != null && binding.imageProduct != null) {
+                        binding.imageProduct.setImageResource(R.drawable.ic_error_image);
+                    }
                     setButtonsEnabled(false);
+                    binding.buttonPayToStandOut.setEnabled(false);
                 });
     }
     private void populateFields(DocumentSnapshot doc) {
         if (binding == null) return;
         binding.editProductName.setText(doc.getString("name"));
-        binding.editProductType.setText(doc.getString("type"));
+
+        String typeFromFirestore = doc.getString("type");
+        String localizedTypeToDisplay = null;
+        int typeIndex = -1;
+
+        if (typeFromFirestore != null && !typeFromFirestore.trim().isEmpty()) {
+            String cleanedTypeFromFirestore = typeFromFirestore.trim();
+
+            for (int i = 0; i < CANONICAL_PRODUCT_TYPE_KEYS_ENGLISH.length; i++) {
+                if (CANONICAL_PRODUCT_TYPE_KEYS_ENGLISH[i].equalsIgnoreCase(cleanedTypeFromFirestore)) {
+                    typeIndex = i;
+                    break;
+                }
+            }
+
+            if (typeIndex == -1 && CANONICAL_PRODUCT_TYPE_KEYS_SPANISH.length == CANONICAL_PRODUCT_TYPE_KEYS_ENGLISH.length) {
+                for (int i = 0; i < CANONICAL_PRODUCT_TYPE_KEYS_SPANISH.length; i++) {
+                    if (CANONICAL_PRODUCT_TYPE_KEYS_SPANISH[i].equalsIgnoreCase(cleanedTypeFromFirestore)) {
+                        typeIndex = i;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (typeIndex != -1 && typeIndex < productTypesArray.length) {
+            localizedTypeToDisplay = productTypesArray[typeIndex];
+        } else {
+            if (productTypesArray.length > 0) {
+                localizedTypeToDisplay = productTypesArray[0];
+                Log.w(TAG, "Product type from Firestore '" + typeFromFirestore +
+                        "' not matched or invalid. Defaulting to: " + localizedTypeToDisplay);
+            } else {
+                Log.e(TAG, "Product type from Firestore not matched, and productTypesArray is empty.");
+            }
+        }
+
+        if (localizedTypeToDisplay != null) {
+            binding.spinnerProductType.setText(localizedTypeToDisplay, false);
+            updateFieldVisibility(localizedTypeToDisplay);
+        } else {
+            Log.e(TAG, "Could not determine localized product type to display for spinner.");
+            updateFieldVisibility(null);
+        }
+
+
+        Long ratingLong = doc.getLong("rating");
+        if (ratingLong != null) {
+            binding.editProductRating.setText(String.valueOf(ratingLong.intValue()));
+        } else {
+            binding.editProductRating.setText("");
+        }
+
         binding.editProductDescription.setText(doc.getString("description"));
         binding.editProductIngredients.setText(doc.getString("ingredients"));
         binding.editProductPreparation.setText(doc.getString("preparation"));
         binding.editProductAcidity.setText(doc.getString("acidity"));
         binding.editProductBody.setText(doc.getString("body"));
         binding.editProductAftertaste.setText(doc.getString("aftertaste"));
+        binding.editProductCertifications.setText(doc.getString("certifications"));
+        binding.editProductFlavorsAromas.setText(doc.getString("flavorsAndAromas"));
+
         Double price = doc.getDouble("price");
         if (price != null) {
             binding.editProductPrice.setText(String.format(java.util.Locale.US, "%.2f", price));
         } else {
             binding.editProductPrice.setText("");
         }
+
+        Double discount = doc.getDouble("saleDiscount");
+        if (discount != null) {
+            binding.editProductDiscount.setText(String.format(java.util.Locale.US, "%.0f", discount * 100));
+        } else {
+            binding.editProductDiscount.setText("");
+        }
+
         Object imageUrlsObj = doc.get("imageUrls");
         String imageUrlToLoad = null;
         if (imageUrlsObj instanceof List) {
@@ -223,7 +387,7 @@ public class EditProductFragment extends Fragment {
         if (imageUrlToLoad != null && getContext() != null && isAdded()) {
             Glide.with(this).load(imageUrlToLoad).placeholder(R.drawable.ic_placeholder_image).error(R.drawable.ic_error_image).into(binding.imageProduct);
         } else {
-            if(binding != null) binding.imageProduct.setImageResource(R.drawable.ic_placeholder_image);
+            if(binding != null && binding.imageProduct != null) binding.imageProduct.setImageResource(R.drawable.ic_placeholder_image);
         }
     }
 
@@ -239,7 +403,7 @@ public class EditProductFragment extends Fragment {
             if (productId != null && !productId.isEmpty()) {
                 Log.d(TAG, "Navigating to Manage Images for product ID: " + productId);
                 Bundle args = new Bundle();
-                args.putString(ARG_PRODUCT_ID, productId); // Use defined constant
+                args.putString(ARG_PRODUCT_ID, productId);
                 try {
                     Navigation.findNavController(requireView()).navigate(R.id.action_editProductFragment_to_manageImagesFragment, args);
                 } catch (IllegalArgumentException e) {
@@ -266,34 +430,120 @@ public class EditProductFragment extends Fragment {
             return;
         }
 
-
         String name = Objects.requireNonNull(binding.editProductName.getText()).toString().trim();
+        String selectedLocalizedType = binding.spinnerProductType.getText().toString();
+        String ratingStr = Objects.requireNonNull(binding.editProductRating.getText()).toString().trim();
         String priceStr = Objects.requireNonNull(binding.editProductPrice.getText()).toString().trim();
+        String description = Objects.requireNonNull(binding.editProductDescription.getText()).toString().trim();
+        String discountStr = Objects.requireNonNull(binding.editProductDiscount.getText()).toString().trim();
+
         boolean valid = true;
         if (name.isEmpty()) { binding.layoutProductName.setError(getString(R.string.error_name_required)); valid = false; } else { binding.layoutProductName.setError(null); }
         if (priceStr.isEmpty()) { binding.layoutProductPrice.setError(getString(R.string.error_price_required)); valid = false; } else { binding.layoutProductPrice.setError(null); }
+        if (ratingStr.isEmpty()) { binding.layoutProductRating.setError(getString(R.string.error_rating_required)); valid = false; } else { binding.layoutProductRating.setError(null); }
+
+        if (description.isEmpty()) { binding.layoutProductDescription.setError(getString(R.string.error_description_required)); valid = false; } else { binding.layoutProductDescription.setError(null); }
+
         double price = 0;
-        if (valid && !priceStr.isEmpty()) { // Check priceStr not empty before parsing
+        if (valid && !priceStr.isEmpty()) {
             try { price = Double.parseDouble(priceStr.replace(',', '.')); if (price < 0) throw new NumberFormatException("Price cannot be negative"); binding.layoutProductPrice.setError(null); }
             catch (NumberFormatException e) { binding.layoutProductPrice.setError(getString(R.string.error_invalid_price)); valid = false; }
         }
-        if (!valid) return;
+
+        int rating = 0;
+        if (valid && !ratingStr.isEmpty()) {
+            try {
+                rating = Integer.parseInt(ratingStr);
+                if (rating < 1 || rating > 5) {
+                    binding.layoutProductRating.setError(getString(R.string.error_invalid_rating_range));
+                    valid = false;
+                } else {
+                    binding.layoutProductRating.setError(null);
+                }
+            } catch (NumberFormatException e) {
+                binding.layoutProductRating.setError(getString(R.string.error_invalid_rating_format));
+                valid = false;
+            }
+        }
+
+        Double discount = null;
+        if (!discountStr.isEmpty()) {
+            try {
+                double parsedDiscount = Double.parseDouble(discountStr.replace(',', '.'));
+                if (parsedDiscount < 0 || parsedDiscount > 100) {
+                    binding.layoutProductDiscount.setError("El descuento debe estar entre 0% y 100%");
+                    valid = false;
+                } else {
+                    discount = parsedDiscount / 100.0;
+                    binding.layoutProductDiscount.setError(null);
+                }
+            } catch (NumberFormatException e) {
+                binding.layoutProductDiscount.setError("Formato de descuento inválido");
+                valid = false;
+            }
+        } else {
+            binding.layoutProductDiscount.setError(null);
+        }
 
 
-        showLoading(true);
+        String canonicalTypeToSave = null;
+        int selectedIndex = -1;
+        for(int i=0; i < productTypesArray.length; i++){
+            if(productTypesArray[i].equalsIgnoreCase(selectedLocalizedType)){
+                selectedIndex = i;
+                break;
+            }
+        }
+        if(selectedIndex != -1 && selectedIndex < CANONICAL_PRODUCT_TYPE_KEYS_ENGLISH.length){
+            canonicalTypeToSave = CANONICAL_PRODUCT_TYPE_KEYS_ENGLISH[selectedIndex];
+        } else if (selectedIndex != -1 && selectedIndex < CANONICAL_PRODUCT_TYPE_KEYS_SPANISH.length) {
+            canonicalTypeToSave = CANONICAL_PRODUCT_TYPE_KEYS_ENGLISH[selectedIndex];
+        }
+
+        if(canonicalTypeToSave == null){
+            Log.w(TAG, "Could not find canonical key for localized type: " + selectedLocalizedType + ". Saving localized string as fallback or a default.");
+            canonicalTypeToSave = selectedLocalizedType;
+        }
+
 
         Map<String, Object> productUpdates = new HashMap<>();
         productUpdates.put("name", name);
-        productUpdates.put("type", Objects.requireNonNull(binding.editProductType.getText()).toString().trim());
-        productUpdates.put("description", Objects.requireNonNull(binding.editProductDescription.getText()).toString().trim());
-        productUpdates.put("ingredients", Objects.requireNonNull(binding.editProductIngredients.getText()).toString().trim());
-        productUpdates.put("preparation", Objects.requireNonNull(binding.editProductPreparation.getText()).toString().trim());
+        productUpdates.put("type", canonicalTypeToSave);
+        productUpdates.put("rating", rating);
         productUpdates.put("price", price);
-        productUpdates.put("acidity", Objects.requireNonNull(binding.editProductAcidity.getText()).toString().trim());
-        productUpdates.put("body", Objects.requireNonNull(binding.editProductBody.getText()).toString().trim());
-        productUpdates.put("aftertaste", Objects.requireNonNull(binding.editProductAftertaste.getText()).toString().trim());
+        productUpdates.put("description", description);
 
+        if (discount != null) {
+            productUpdates.put("saleDiscount", discount);
+        }
 
+        if (coffeeTypeString != null && selectedLocalizedType.equalsIgnoreCase(coffeeTypeString)) {
+            String acidity = Objects.requireNonNull(binding.editProductAcidity.getText()).toString().trim();
+            String body = Objects.requireNonNull(binding.editProductBody.getText()).toString().trim();
+            String aftertaste = Objects.requireNonNull(binding.editProductAftertaste.getText()).toString().trim();
+            String ingredients = Objects.requireNonNull(binding.editProductIngredients.getText()).toString().trim();
+            String preparation = Objects.requireNonNull(binding.editProductPreparation.getText()).toString().trim();
+
+            if (acidity.isEmpty()) { binding.layoutProductAcidity.setError(getString(R.string.error_acidity_required)); valid = false; } else { binding.layoutProductAcidity.setError(null); }
+            if (body.isEmpty()) { binding.layoutProductBody.setError(getString(R.string.error_body_required)); valid = false; } else { binding.layoutProductBody.setError(null); }
+            if (aftertaste.isEmpty()) { binding.layoutProductAftertaste.setError(getString(R.string.error_aftertaste_required)); valid = false; } else { binding.layoutProductAftertaste.setError(null); }
+            if (ingredients.isEmpty()) { binding.layoutProductIngredients.setError(getString(R.string.error_ingredients_required)); valid = false; } else { binding.layoutProductIngredients.setError(null); }
+            if (preparation.isEmpty()) { binding.layoutProductPreparation.setError(getString(R.string.error_preparation_required)); valid = false; } else { binding.layoutProductPreparation.setError(null); }
+
+            productUpdates.put("certifications", Objects.requireNonNull(binding.editProductCertifications.getText()).toString().trim());
+            productUpdates.put("flavorsAndAromas", Objects.requireNonNull(binding.editProductFlavorsAromas.getText()).toString().trim());
+            productUpdates.put("acidity", acidity);
+            productUpdates.put("body", body);
+            productUpdates.put("aftertaste", aftertaste);
+            productUpdates.put("ingredients", ingredients);
+            productUpdates.put("preparation", preparation);
+        }
+
+        if (!valid) {
+            showLoading(false);
+            return;
+        }
+        showLoading(true);
         updateProductFirestoreOnlyText(productUpdates);
     }
 
@@ -303,8 +553,6 @@ public class EditProductFragment extends Fragment {
             showErrorState(getString(R.string.error_internal_while_saving));
             return;
         }
-
-
         firestore.collection("products").document(productId)
                 .update(productUpdates)
                 .addOnSuccessListener(aVoid -> {
@@ -330,7 +578,6 @@ public class EditProductFragment extends Fragment {
                 Navigation.findNavController(requireView()).navigateUp();
             } catch (IllegalStateException e) {
                 Log.e(TAG, "Error navigating up, controller not found or view not attached.", e);
-                // Fallback if NavController fails (e.g., during rapid configuration changes)
                 if (getActivity() != null) {
                     getActivity().getSupportFragmentManager().popBackStack();
                 }
@@ -346,21 +593,27 @@ public class EditProductFragment extends Fragment {
         binding.buttonCancel.setEnabled(enabled);
         binding.buttonChangeImage.setEnabled(enabled);
         binding.buttonDeleteProduct.setEnabled(enabled);
+        binding.buttonPayToStandOut.setEnabled(enabled && productId != null && !productId.isEmpty());
+
         binding.editProductName.setEnabled(enabled);
-        binding.editProductType.setEnabled(enabled);
-        binding.editProductDescription.setEnabled(enabled);
-        binding.editProductIngredients.setEnabled(enabled);
-        binding.editProductPreparation.setEnabled(enabled);
+        binding.spinnerProductType.setEnabled(enabled);
+        binding.editProductRating.setEnabled(enabled);
         binding.editProductPrice.setEnabled(enabled);
+        binding.editProductDescription.setEnabled(enabled);
+
+        binding.editProductCertifications.setEnabled(enabled);
+        binding.editProductFlavorsAromas.setEnabled(enabled);
         binding.editProductAcidity.setEnabled(enabled);
         binding.editProductBody.setEnabled(enabled);
         binding.editProductAftertaste.setEnabled(enabled);
+        binding.editProductIngredients.setEnabled(enabled);
+        binding.editProductPreparation.setEnabled(enabled);
     }
 
     private void showLoading(boolean isLoading) {
         if (binding == null) return;
         binding.progressBarEdit.setVisibility(isLoading ? View.VISIBLE : View.GONE);
-        setButtonsEnabled(!isLoading); // Disable buttons while loading
+        setButtonsEnabled(!isLoading);
     }
 
     private void showErrorState(String message) {

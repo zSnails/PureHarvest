@@ -32,14 +32,14 @@ public class CompanyProductsFragment extends Fragment {
 
 
         binding.button.setOnClickListener(v -> {
-            // Accede a los EditTexts a través del binding
+
             String name = binding.productName.getText().toString();
             String type = binding.productType.getText().toString();
             String priceStr = binding.productPrice.getText().toString();
             String acidityStr = binding.productAcidity.getText().toString();
             String description = binding.productDescription.getText().toString();
 
-            // Validación básica (puedes expandirla)
+
             if (name.isEmpty() || type.isEmpty() || priceStr.isEmpty() || acidityStr.isEmpty() || description.isEmpty()) {
                 Toast.makeText(getContext(), R.string.error_fields_cannot_be_empty, Toast.LENGTH_SHORT).show(); // Necesitarás añadir este string
                 return;

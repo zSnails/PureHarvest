@@ -17,11 +17,9 @@ public class MarginItemDecoration extends ItemDecoration {
 
     @Override
     public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-        if (parent.getChildAdapterPosition(view) == 0) {
-            outRect.top = this.space;
-        }
+        outRect.top = this.space;
         outRect.left = this.space;
         outRect.right = this.space;
-        outRect.bottom = this.space;
+        //outRect.bottom = this.space;
     }
 }

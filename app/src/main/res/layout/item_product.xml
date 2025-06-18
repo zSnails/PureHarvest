@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:maxWidth="175dp"
     android:layout_height="wrap_content"
     android:background="@android:color/white"
     android:clickable="true"
@@ -27,6 +28,24 @@
             android:layout_height="match_parent"
             android:contentDescription="@string/product_image"
             android:scaleType="centerCrop" />
+
+        <TextView
+            android:id="@+id/productBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:background="@drawable/rounded_green_badge"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/imageCard"
+            app:layout_constraintTop_toTopOf="@id/imageCard"/>
+
     </androidx.cardview.widget.CardView>
 
     <!-- Product Name -->
@@ -37,6 +56,7 @@
         android:layout_marginTop="8dp"
         android:ellipsize="end"
         android:maxLines="2"
+        android:minLines="2"
         android:text="@string/product_name"
         android:textColor="@color/black"
         android:textSize="14sp"
@@ -44,18 +64,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/imageCard" />
 
-    <!-- Product Price -->
+    <!-- Original Price (strikethrough) -->
+    <TextView
+        android:id="@+id/productOriginalPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/colones"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="14sp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/productName" />
+
+    <!-- Discounted Price -->
     <TextView
         android:id="@+id/productPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="2dp"
         android:text="@string/colones"
         android:textColor="@color/leaf_green"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/productName" />
+        app:layout_constraintTop_toBottomOf="@id/productOriginalPrice" />
 
     <!-- Shopping cart icon button -->
     <ImageView

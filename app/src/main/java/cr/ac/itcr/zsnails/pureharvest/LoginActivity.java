@@ -126,7 +126,7 @@ public class LoginActivity extends AppCompatActivity {
         authViewModel.getLoginResult().observe(this, success -> {
             if (Boolean.TRUE.equals(success)) {
                 Toast.makeText(this, "Login exitoso", Toast.LENGTH_SHORT).show();
-                // TODO: navegar a la siguiente pantalla
+                finish();
             } else {
                 Toast.makeText(this, "Error en login", Toast.LENGTH_SHORT).show();
             }
