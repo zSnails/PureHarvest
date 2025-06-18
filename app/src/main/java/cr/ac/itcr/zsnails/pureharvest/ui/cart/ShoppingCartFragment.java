@@ -95,6 +95,13 @@ public final class ShoppingCartFragment extends Fragment
     }
 
     private void onCheckout(View view) {
+        FirebaseUser user = auth.getCurrentUser();
+        if (user == null) {
+            Toast.makeText(requireContext(), "You must be logged in to perform this action", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(requireContext(), LoginActivity.class);
+            startActivity(intent);
+            return;
+        }
         // STATUS: 0 = BODEGA, 1 = TRANSITO, 2 = ENTREGADO
         List<Order.OrderItem> products = shoppingCart.items.getValue()
                 .stream()
@@ -103,7 +110,7 @@ public final class ShoppingCartFragment extends Fragment
                 .collect(Collectors.toList());
         Order order = new Order(
                 Timestamp.now(),
-                auth.getCurrentUser().getUid(),
+                user.getUid(),
                 "NO APLICABLE",
                 products,
                 0);
