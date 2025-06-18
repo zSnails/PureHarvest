@@ -13,9 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -83,55 +86,91 @@ public class CompanyBuyersListFragment extends Fragment implements CompanyBuyers
         binding.recyclerViewCompanyBuyers.setVisibility(View.GONE);
         binding.textViewNoBuyers.setVisibility(View.GONE);
 
-        db.collection("orders")
-                .whereEqualTo("sellerId", currentSellerId)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (!isAdded() || getContext() == null || binding == null) {
-                        if (binding != null) binding.progressBarCompanyBuyers.setVisibility(View.GONE);
-                        return;
-                    }
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        Map<String, Integer> userOrderCounts = new HashMap<>();
-                        List<String> uniqueUserIds = new ArrayList<>();
+        db.collection("orders").get().addOnCompleteListener(task -> {
+            if (!isAdded() || getContext() == null || binding == null) {
+                if (binding != null) binding.progressBarCompanyBuyers.setVisibility(View.GONE);
+                return;
+            }
+            if (task.isSuccessful() && task.getResult() != null) {
+                QuerySnapshot ordersSnapshot = task.getResult();
+                if (ordersSnapshot.isEmpty()) {
+                    binding.progressBarCompanyBuyers.setVisibility(View.GONE);
+                    binding.textViewNoBuyers.setText(getString(R.string.info_no_buyers_found));
+                    binding.textViewNoBuyers.setVisibility(View.VISIBLE);
+                    adapter.updateData(new ArrayList<>());
+                    return;
+                }
 
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            String userId = document.getString("userId");
-                            if (userId != null && !userId.isEmpty()) {
-                                userOrderCounts.put(userId, userOrderCounts.getOrDefault(userId, 0) + 1);
-                                if (!uniqueUserIds.contains(userId)) {
-                                    uniqueUserIds.add(userId);
+                Map<String, Integer> userPurchaseCounts = new HashMap<>();
+                AtomicInteger ordersProcessed = new AtomicInteger(0);
+                int totalOrders = ordersSnapshot.size();
+
+                for (QueryDocumentSnapshot orderDoc : ordersSnapshot) {
+                    String userId = orderDoc.getString("userId");
+                    List<Map<String, Object>> productsBought = (List<Map<String, Object>>) orderDoc.get("productsBought");
+
+                    if (userId == null || productsBought == null || productsBought.isEmpty()) {
+                        if (ordersProcessed.incrementAndGet() == totalOrders) {
+                            fetchUserDetailsFromFirebase(userPurchaseCounts);
+                        }
+                        continue;
+                    }
+
+                    List<Task<DocumentSnapshot>> productTasks = new ArrayList<>();
+                    for (Map<String, Object> productRef : productsBought) {
+                        Object idObject = productRef.get("id");
+                        if (idObject instanceof String) {
+                            productTasks.add(db.collection("products").document((String) idObject).get());
+                        }
+                    }
+
+                    if (productTasks.isEmpty()) {
+                        if (ordersProcessed.incrementAndGet() == totalOrders) {
+                            fetchUserDetailsFromFirebase(userPurchaseCounts);
+                        }
+                        continue;
+                    }
+
+                    Tasks.whenAllSuccess(productTasks).addOnSuccessListener(results -> {
+                        int itemsFromThisSeller = 0;
+                        for (int i = 0; i < results.size(); i++) {
+                            DocumentSnapshot productDoc = (DocumentSnapshot) results.get(i);
+                            if (productDoc.exists() && currentSellerId.equals(productDoc.getString("sellerId"))) {
+                                Map<String, Object> productRef = productsBought.get(i);
+                                Object amountObj = productRef.get("amount");
+                                if (amountObj instanceof Number) {
+                                    itemsFromThisSeller += ((Number) amountObj).intValue();
+                                } else {
+                                    itemsFromThisSeller += 1;
                                 }
                             }
                         }
+                        if (itemsFromThisSeller > 0) {
+                            userPurchaseCounts.put(userId, userPurchaseCounts.getOrDefault(userId, 0) + itemsFromThisSeller);
+                        }
 
-                        if (uniqueUserIds.isEmpty()) {
-                            binding.progressBarCompanyBuyers.setVisibility(View.GONE);
-                            binding.textViewNoBuyers.setText(getString(R.string.info_no_buyers_found));
-                            binding.textViewNoBuyers.setVisibility(View.VISIBLE);
-                            adapter.updateData(new ArrayList<>());
-                            Log.d(TAG, "No orders found for this seller, or no userIds in orders.");
-                        } else {
-                            fetchUserDetailsFromFirebase(uniqueUserIds, userOrderCounts);
+                        if (ordersProcessed.incrementAndGet() == totalOrders) {
+                            fetchUserDetailsFromFirebase(userPurchaseCounts);
                         }
-                    } else {
-                        binding.progressBarCompanyBuyers.setVisibility(View.GONE);
-                        binding.textViewNoBuyers.setText(getString(R.string.error_fetching_orders));
-                        binding.textViewNoBuyers.setVisibility(View.VISIBLE);
-                        Log.e(TAG, "Error getting orders: ", task.getException());
-                        String errorMessage = getString(R.string.error_could_not_fetch_orders);
-                        if (task.getException() != null && task.getException().getMessage() != null) {
-                            errorMessage += ": " + task.getException().getMessage();
+                    }).addOnFailureListener(e -> {
+                        Log.e(TAG, "Error fetching product details for an order", e);
+                        if (ordersProcessed.incrementAndGet() == totalOrders) {
+                            fetchUserDetailsFromFirebase(userPurchaseCounts);
                         }
-                        Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
-                    }
-                });
+                    });
+                }
+            } else {
+                binding.progressBarCompanyBuyers.setVisibility(View.GONE);
+                binding.textViewNoBuyers.setText(getString(R.string.error_fetching_orders));
+                binding.textViewNoBuyers.setVisibility(View.VISIBLE);
+                Log.e(TAG, "Error getting orders: ", task.getException());
+            }
+        });
     }
 
-    private void fetchUserDetailsFromFirebase(List<String> userIds, Map<String, Integer> userOrderCounts) {
-        List<CompanyBuyer> fetchedBuyers = new ArrayList<>();
-        if (userIds.isEmpty()) {
-            if (binding != null) {
+    private void fetchUserDetailsFromFirebase(Map<String, Integer> userOrderCounts) {
+        if (userOrderCounts.isEmpty()) {
+            if(binding != null) {
                 binding.progressBarCompanyBuyers.setVisibility(View.GONE);
                 binding.textViewNoBuyers.setText(getString(R.string.info_no_buyers_found));
                 binding.textViewNoBuyers.setVisibility(View.VISIBLE);
@@ -140,60 +179,48 @@ public class CompanyBuyersListFragment extends Fragment implements CompanyBuyers
             return;
         }
 
+        List<CompanyBuyer> fetchedBuyers = new ArrayList<>();
         AtomicInteger tasksCompleted = new AtomicInteger(0);
-        int totalTasks = userIds.size();
+        int totalTasks = userOrderCounts.size();
         final String naValue = getString(R.string.info_not_available_short);
 
-        for (String userId : userIds) {
-            db.collection("users").document(userId).get()
-                    .addOnCompleteListener(userTask -> {
-                        if (!isAdded() || getContext() == null) {
-                            if (tasksCompleted.incrementAndGet() == totalTasks) {
-                                if (binding != null) binding.progressBarCompanyBuyers.setVisibility(View.GONE);
-                            }
-                            return;
-                        }
-                        if (userTask.isSuccessful()) {
-                            DocumentSnapshot userDocument = userTask.getResult();
-                            if (userDocument != null && userDocument.exists()) {
-                                String fullName = userDocument.getString("fullName");
-                                if (fullName == null || fullName.trim().isEmpty()) fullName = naValue;
+        for (String userId : userOrderCounts.keySet()) {
+            db.collection("users").document(userId).get().addOnCompleteListener(userTask -> {
+                if (!isAdded() || getContext() == null) {
+                    if (tasksCompleted.incrementAndGet() == totalTasks && binding != null) {
+                        binding.progressBarCompanyBuyers.setVisibility(View.GONE);
+                    }
+                    return;
+                }
+                if (userTask.isSuccessful()) {
+                    DocumentSnapshot userDocument = userTask.getResult();
+                    if (userDocument != null && userDocument.exists()) {
+                        String fullName = userDocument.getString("fullName");
+                        String email = userDocument.getString("email");
+                        String phone = userDocument.getString("phone");
+                        int orderCount = userOrderCounts.getOrDefault(userId, 0);
 
-                                String email = userDocument.getString("email");
-                                if (email == null || email.trim().isEmpty()) email = naValue;
-
-                                String phone = userDocument.getString("phone");
-                                if (phone == null || phone.trim().isEmpty()) phone = naValue;
-
-                                int orderCount = userOrderCounts.getOrDefault(userId, 0);
-                                fetchedBuyers.add(new CompanyBuyer(userDocument.getId(), fullName, orderCount, email, phone));
-                            } else {
-                                Log.w(TAG, "User document not found for ID: " + userId + ". Using ID as name.");
-                                int orderCount = userOrderCounts.getOrDefault(userId, 0);
-                                String fallbackName = getString(R.string.fallback_user_name_with_id, userId.substring(0, Math.min(userId.length(), 5)));
-                                fetchedBuyers.add(new CompanyBuyer(userId, fallbackName, orderCount, naValue, naValue));
-                            }
+                        fetchedBuyers.add(new CompanyBuyer(
+                                userDocument.getId(),
+                                (fullName != null ? fullName : naValue),
+                                orderCount,
+                                (email != null ? email : naValue),
+                                (phone != null ? phone : naValue)
+                        ));
+                    }
+                }
+                if (tasksCompleted.incrementAndGet() == totalTasks) {
+                    if (binding != null) {
+                        binding.progressBarCompanyBuyers.setVisibility(View.GONE);
+                        if (fetchedBuyers.isEmpty()) {
+                            binding.textViewNoBuyers.setVisibility(View.VISIBLE);
                         } else {
-                            Log.e(TAG, "Error fetching user details for " + userId, userTask.getException());
-                            int orderCount = userOrderCounts.getOrDefault(userId, 0);
-                            String errorFallbackName = getString(R.string.fallback_user_name_error);
-                            fetchedBuyers.add(new CompanyBuyer(userId, errorFallbackName, orderCount, naValue, naValue));
+                            binding.recyclerViewCompanyBuyers.setVisibility(View.VISIBLE);
                         }
-
-                        if (tasksCompleted.incrementAndGet() == totalTasks) {
-                            if (binding != null) {
-                                binding.progressBarCompanyBuyers.setVisibility(View.GONE);
-                                if (fetchedBuyers.isEmpty()) {
-                                    binding.textViewNoBuyers.setText(getString(R.string.info_no_buyers_found));
-                                    binding.textViewNoBuyers.setVisibility(View.VISIBLE);
-                                } else {
-                                    binding.recyclerViewCompanyBuyers.setVisibility(View.VISIBLE);
-                                    binding.textViewNoBuyers.setVisibility(View.GONE);
-                                }
-                            }
-                            adapter.updateData(fetchedBuyers);
-                        }
-                    });
+                    }
+                    adapter.updateData(fetchedBuyers);
+                }
+            });
         }
     }
 
@@ -208,30 +235,20 @@ public class CompanyBuyersListFragment extends Fragment implements CompanyBuyers
     public void onViewDetailsClick(CompanyBuyer buyer) {
         if (getContext() == null || !isAdded() || navController == null) {
             Log.w(TAG, "Cannot navigate: context/fragment not added or NavController is null.");
-            if (getContext() != null) {
-                Toast.makeText(getContext(), getString(R.string.error_navigating_to_details), Toast.LENGTH_SHORT).show();
-            }
             return;
         }
-
         String buyerId = buyer.getId();
-
         if (buyerId == null || buyerId.isEmpty()) {
             Log.e(TAG, "Buyer ID is null or empty, cannot navigate to details.");
             return;
         }
-
-        Log.d(TAG, "Navigating to details for buyer: " + buyerId);
-
         Bundle bundle = new Bundle();
         bundle.putString("buyer_id", buyerId);
         bundle.putString("seller_id", currentSellerId);
-
         try {
             navController.navigate(R.id.action_companyBuyersListFragment_to_companyBuyerDetailsFragment, bundle);
         } catch (IllegalArgumentException e) {
             Log.e(TAG, "Navigation action/destination not found or other navigation error.", e);
-            Toast.makeText(getContext(), getString(R.string.error_navigating_to_details), Toast.LENGTH_SHORT).show();
         }
     }
 }

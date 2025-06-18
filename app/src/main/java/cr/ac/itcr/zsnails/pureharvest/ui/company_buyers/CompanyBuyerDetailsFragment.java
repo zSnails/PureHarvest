@@ -22,6 +22,7 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -123,103 +124,80 @@ public class CompanyBuyerDetailsFragment extends Fragment {
         binding.recyclerViewPurchasedProducts.setVisibility(View.GONE);
         binding.textViewNoProducts.setVisibility(View.GONE);
 
-        db.collection("orders")
-                .whereEqualTo("userId", bId)
-                .whereEqualTo("sellerId", sId)
-                .get()
-                .addOnCompleteListener(orderTask -> {
-                    if (!isAdded() || binding == null) return;
+        db.collection("orders").whereEqualTo("userId", bId).get().addOnCompleteListener(orderTask -> {
+            if (!isAdded() || binding == null) return;
 
-                    if (orderTask.isSuccessful() && orderTask.getResult() != null) {
-                        int orderCount = orderTask.getResult().size();
-                        binding.textViewBuyerDetailItemsBought.setText(String.valueOf(orderCount));
+            if (orderTask.isSuccessful() && orderTask.getResult() != null) {
+                QuerySnapshot ordersSnapshot = orderTask.getResult();
+                if (ordersSnapshot.isEmpty()) {
+                    binding.progressBarProducts.setVisibility(View.GONE);
+                    binding.textViewNoProducts.setVisibility(View.VISIBLE);
+                    binding.textViewBuyerDetailItemsBought.setText("0");
+                    updateProductListUI(new ArrayList<>());
+                    return;
+                }
 
-                        if (orderTask.getResult().isEmpty()) {
-                            binding.progressBarProducts.setVisibility(View.GONE);
-                            binding.textViewNoProducts.setVisibility(View.VISIBLE);
-                            updateProductListUI(new ArrayList<>());
-                            return;
-                        }
+                List<Task<DocumentSnapshot>> productTasks = new ArrayList<>();
+                List<Date> productOrderDates = new ArrayList<>();
+                AtomicInteger totalItemsCount = new AtomicInteger(0);
+                List<Map<String, Object>> allProductsBought = new ArrayList<>();
 
-                        List<Task<DocumentSnapshot>> productDetailTasks = new ArrayList<>();
-                        List<Date> orderDatesForProducts = new ArrayList<>();
-                        String unknownProduct = getString(R.string.product_name_unknown);
-                        String notFoundProduct = getString(R.string.product_not_found);
+                for (QueryDocumentSnapshot orderDoc : ordersSnapshot) {
+                    List<Map<String, Object>> productsInOrder = (List<Map<String, Object>>) orderDoc.get("productsBought");
+                    Timestamp timestamp = orderDoc.getTimestamp("date");
+                    Date orderDate = (timestamp != null) ? timestamp.toDate() : new Date();
 
-
-                        for (QueryDocumentSnapshot orderDoc : orderTask.getResult()) {
-                            List<Map<String, Object>> productsBoughtInOrder = (List<Map<String, Object>>) orderDoc.get("productsBought");
-                            Timestamp timestamp = orderDoc.getTimestamp("date");
-                            Date orderDate = (timestamp != null) ? timestamp.toDate() : null;
-
-                            if (productsBoughtInOrder != null && !productsBoughtInOrder.isEmpty()) {
-                                for (Map<String, Object> productRef : productsBoughtInOrder) {
-                                    Object idObject = productRef.get("id");
-                                    if (idObject instanceof String) {
-                                        String productId = (String) idObject;
-                                        if (!productId.isEmpty()) {
-                                            productDetailTasks.add(db.collection("products").document(productId).get());
-                                            orderDatesForProducts.add(orderDate);
-                                        }
-                                    }
-                                }
+                    if (productsInOrder != null) {
+                        for (Map<String, Object> productRef : productsInOrder) {
+                            Object idObject = productRef.get("id");
+                            if (idObject instanceof String) {
+                                productTasks.add(db.collection("products").document((String) idObject).get());
+                                productOrderDates.add(orderDate);
+                                allProductsBought.add(productRef);
                             }
                         }
-
-                        if (productDetailTasks.isEmpty()) {
-                            updateProductListUI(new ArrayList<>());
-                            return;
-                        }
-
-                        Tasks.whenAllSuccess(productDetailTasks).addOnSuccessListener(results -> {
-                            if (!isAdded() || binding == null) return;
-                            List<PurchasedProduct> fetchedProducts = new ArrayList<>();
-                            for (int i = 0; i < results.size(); i++) {
-                                Object result = results.get(i);
-                                DocumentSnapshot productDoc = (DocumentSnapshot) result;
-                                Date currentOrderDate = (i < orderDatesForProducts.size()) ? orderDatesForProducts.get(i) : new Date();
-
-                                if (productDoc.exists()) {
-                                    String name = productDoc.getString("name");
-                                    Double price = productDoc.getDouble("price");
-                                    String firstImageUrl = null;
-                                    try {
-                                        List<String> imageUrls = (List<String>) productDoc.get("imageUrls");
-                                        if (imageUrls != null && !imageUrls.isEmpty()) {
-                                            firstImageUrl = imageUrls.get(0);
-                                        }
-                                    } catch (Exception e) {
-                                        Log.e(TAG, "Error parsing imageUrls for product " + productDoc.getId(), e);
-                                    }
-                                    fetchedProducts.add(new PurchasedProduct(productDoc.getId(), name != null ? name : unknownProduct, price != null ? price : 0.0, currentOrderDate, firstImageUrl));
-                                } else {
-                                    String failedProductId = "UNKNOWN_ID";
-                                    if (i < productDetailTasks.size()) {
-                                        // Attempt to get ID from original task if result doesn't exist
-                                        // This is a bit indirect, ideally you'd pass the ID along with the task
-                                        // For now, we'll log a generic message or use a placeholder.
-                                        Log.w(TAG, "Product document does not exist. Could not get ID from task's source path for failed fetch.");
-                                    }
-                                    Log.w(TAG, "Product not found. ID could not be determined from failed task or product document.");
-                                    fetchedProducts.add(new PurchasedProduct(failedProductId, notFoundProduct, 0.0, currentOrderDate, null));
-                                }
-                            }
-                            updateProductListUI(fetchedProducts);
-
-                        }).addOnFailureListener(e -> {
-                            Log.e(TAG, "Error fetching some product details for buyer's orders", e);
-                            updateProductListUI(new ArrayList<>());
-                        });
-
-                    } else {
-                        Log.e(TAG, "Error getting orders for product list", orderTask.getException());
-                        binding.progressBarProducts.setVisibility(View.GONE);
-                        binding.textViewNoProducts.setText(getString(R.string.error_loading_products));
-                        binding.textViewNoProducts.setVisibility(View.VISIBLE);
-                        binding.textViewBuyerDetailItemsBought.setText(getString(R.string.info_not_available));
-                        updateProductListUI(new ArrayList<>());
                     }
+                }
+
+                if (productTasks.isEmpty()) {
+                    binding.progressBarProducts.setVisibility(View.GONE);
+                    binding.textViewBuyerDetailItemsBought.setText("0");
+                    updateProductListUI(new ArrayList<>());
+                    return;
+                }
+
+                Tasks.whenAllSuccess(productTasks).addOnSuccessListener(results -> {
+                    if (!isAdded() || binding == null) return;
+                    List<PurchasedProduct> filteredProducts = new ArrayList<>();
+
+                    for (int i = 0; i < results.size(); i++) {
+                        DocumentSnapshot productDoc = (DocumentSnapshot) results.get(i);
+                        if (productDoc.exists() && sId.equals(productDoc.getString("sellerId"))) {
+                            String name = productDoc.getString("name");
+                            Double price = productDoc.getDouble("price");
+                            List<String> imageUrls = (List<String>) productDoc.get("imageUrls");
+                            String imageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
+                            Date orderDate = productOrderDates.get(i);
+
+                            filteredProducts.add(new PurchasedProduct(productDoc.getId(), name, price != null ? price : 0.0, orderDate, imageUrl));
+                            Object amountObj = allProductsBought.get(i).get("amount");
+                            totalItemsCount.addAndGet(amountObj instanceof Number ? ((Number) amountObj).intValue() : 1);
+                        }
+                    }
+                    binding.textViewBuyerDetailItemsBought.setText(String.valueOf(totalItemsCount.get()));
+                    updateProductListUI(filteredProducts);
+                }).addOnFailureListener(e -> {
+                    Log.e(TAG, "Error fetching product details for orders", e);
+                    updateProductListUI(new ArrayList<>());
                 });
+
+            } else {
+                Log.e(TAG, "Error getting orders for product list", orderTask.getException());
+                binding.progressBarProducts.setVisibility(View.GONE);
+                binding.textViewNoProducts.setText(getString(R.string.error_loading_products));
+                binding.textViewNoProducts.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
 
