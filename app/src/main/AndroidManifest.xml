@@ -8,6 +8,7 @@
     <queries>
         <package android:name="com.google.android.apps.maps" />
         <package android:name="com.waze" />
+
         <intent>
             <action android:name="android.intent.action.VIEW" />
             <data android:scheme="geo" />
@@ -32,6 +33,7 @@
     </queries>
 
     <application
+        android:name=".LanguageApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -39,7 +41,6 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:name=".LanguageApplication"
         android:theme="@style/Theme.PureHarvest"
         tools:targetApi="31">
 
@@ -69,8 +70,7 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true"
-            android:label="@string/title_activity_main">
+            android:exported="true">
             <!-- android:theme="@style/Theme.PureHarvest.NoActionBar"> -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

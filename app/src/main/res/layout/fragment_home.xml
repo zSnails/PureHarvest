@@ -1,35 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/homeScroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".ui.home.HomeFragment">
+    android:fillViewport="true">
 
-    <!-- Header Text (stays on top, outside of grid columns) -->
-    <TextView
-        android:id="@+id/text_home"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/products_list_home"
-        android:textColor="@color/leaf_green"
-        android:textStyle="bold"
-        android:textSize="22sp"
-        android:gravity="start" />
-
-    <!-- RecyclerView Grid (two columns) -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <LinearLayout
+        android:id="@+id/containerSections"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:padding="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:listitem="@layout/item_product" />
-</LinearLayout>
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+</androidx.core.widget.NestedScrollView>

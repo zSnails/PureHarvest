@@ -13,8 +13,6 @@
         android:padding="16dp"
         tools:context=".ui.company_products.EditProductFragment">
 
-
-        <!-- Product Image -->
         <ImageView
             android:id="@+id/image_product"
             android:layout_width="0dp"
@@ -24,10 +22,10 @@
             android:layout_marginTop="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth_percent="0.6"
             tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
-        <!-- Changed text for this button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_change_image"
             style="@style/Widget.MaterialComponents.Button.TextButton"
@@ -40,6 +38,20 @@
             app:layout_constraintStart_toStartOf="@id/image_product"
             app:layout_constraintEnd_toEndOf="@id/image_product"/>
 
+        <!-- Botón: Administrar cupones -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_manage_coupons"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Manage Coupons"
+            android:textColor="@color/leaf_green"
+            app:strokeColor="@color/leaf_green"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/button_change_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
         <!-- Input Fields -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layout_product_name"
@@ -47,7 +59,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/button_change_image"
+            app:layout_constraintTop_toBottomOf="@id/button_manage_coupons"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:hint="@string/hint_edit_product_name">
@@ -60,8 +72,8 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_product_type"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:id="@+id/layout_product_type_spinner"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -70,12 +82,67 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:hint="@string/hint_edit_product_type">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edit_product_type"
+            <AutoCompleteTextView
+                android:id="@+id/spinner_product_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textCapWords"/>
+                android:inputType="none" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_product_rating"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/layout_product_type_spinner"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:hint="@string/hint_product_rating">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_product_rating"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_product_price"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/layout_product_rating"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:hint="@string/hint_price">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_product_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_product_discount"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/layout_product_price"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:hint="Descuento (%)">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_product_discount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layout_product_description"
@@ -83,7 +150,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@id/layout_product_type"
+            app:layout_constraintTop_toBottomOf="@id/layout_product_discount"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:hint="@string/hint_description">
@@ -98,7 +165,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_product_ingredients"
+            android:id="@+id/layout_product_certifications"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -106,7 +173,109 @@
             app:layout_constraintTop_toBottomOf="@id/layout_product_description"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:hint="@string/hint_ingredients">
+            android:hint="@string/hint_product_certifications"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_product_certifications"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapSentences"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_product_flavors_aromas"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/layout_product_certifications"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:hint="@string/hint_product_flavors_aromas"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_product_flavors_aromas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapSentences"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_product_acidity"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/layout_product_flavors_aromas"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:hint="@string/hint_acidity"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_product_acidity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapSentences"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_product_body"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/layout_product_acidity"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:hint="@string/hint_body"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_product_body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapSentences"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_product_aftertaste"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/layout_product_body"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:hint="@string/hint_aftertaste"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_product_aftertaste"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapSentences"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_product_ingredients"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/layout_product_aftertaste"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:hint="@string/hint_ingredients"
+            android:visibility="gone"
+            tools:visibility="visible">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_product_ingredients"
@@ -126,7 +295,9 @@
             app:layout_constraintTop_toBottomOf="@id/layout_product_ingredients"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:hint="@string/hint_preparation">
+            android:hint="@string/hint_preparation"
+            android:visibility="gone"
+            tools:visibility="visible">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_product_preparation"
@@ -137,83 +308,14 @@
                 android:gravity="top|start"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_product_price"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@id/layout_product_preparation"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:hint="@string/hint_price">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edit_product_price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_product_acidity"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@id/layout_product_price"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:hint="@string/hint_acidity">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edit_product_acidity"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textCapSentences"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_product_body"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@id/layout_product_acidity"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:hint="@string/hint_body">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edit_product_body"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textCapSentences"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_product_aftertaste"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@id/layout_product_body"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:hint="@string/hint_aftertaste">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edit_product_aftertaste"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textCapSentences"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Delete button now constrained to layout_product_aftertaste -->
+<<<<<<< HEAD
+=======
+        <!-- Delete button: top constraint should be to the last field that could be visible -->
+>>>>>>> testing
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_delete_product"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/button_delete_product"
@@ -221,11 +323,21 @@
             app:strokeColor="@android:color/holo_red_dark"
             app:icon="@drawable/ic_delete_24"
             app:iconTint="@android:color/holo_red_dark"
-            app:layout_constraintTop_toBottomOf="@id/layout_product_aftertaste"
+            app:layout_constraintTop_toBottomOf="@id/button_manage_coupons"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_pay_to_stand_out"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/button_pay_to_stand_out"
+            app:layout_constraintTop_toBottomOf="@id/button_delete_product"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <!-- Action Buttons (top constraint remains pointing to delete button) -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_cancel"
             style="@style/Widget.MaterialComponents.Button.TextButton"
@@ -236,7 +348,7 @@
             android:text="@string/button_cancel"
             android:textColor="@color/leaf_green"
             app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintTop_toBottomOf="@id/button_delete_product"
+            app:layout_constraintTop_toBottomOf="@id/button_pay_to_stand_out"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/button_save"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -254,7 +366,6 @@
             app:layout_constraintStart_toEndOf="@id/button_cancel"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <!-- ProgressBar Overlay -->
         <ProgressBar
             android:id="@+id/progressBarEdit"
             style="?android:attr/progressBarStyleLarge"

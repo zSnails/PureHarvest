@@ -1,6 +1,7 @@
 package cr.ac.itcr.zsnails.pureharvest.ui.orders;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,14 +9,18 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.DocumentSnapshot;
+
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
 import cr.ac.itcr.zsnails.pureharvest.R;
-// Order model import is correct
 
 public class CompanyOrderAdapter extends RecyclerView.Adapter<CompanyOrderAdapter.OrderViewHolder> {
 
@@ -23,6 +28,7 @@ public class CompanyOrderAdapter extends RecyclerView.Adapter<CompanyOrderAdapte
     private Context context;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault());
     private OnOrderClickListener listener;
+    private FirebaseFirestore db;
 
 
     public interface OnOrderClickListener {
@@ -34,6 +40,7 @@ public class CompanyOrderAdapter extends RecyclerView.Adapter<CompanyOrderAdapte
         this.context = context;
         this.orderList = orderList;
         this.listener = listener;
+        this.db = FirebaseFirestore.getInstance();
     }
 
     @NonNull
@@ -55,15 +62,61 @@ public class CompanyOrderAdapter extends RecyclerView.Adapter<CompanyOrderAdapte
         }
 
         String orderDocumentIdString = order.getDocumentId() != null ?
-                context.getString(R.string.order_doc_id_prefix) + order.getDocumentId() : // Usar el ID del documento
+                context.getString(R.string.order_doc_id_prefix) + order.getDocumentId() :
                 context.getString(R.string.order_doc_id_prefix) + context.getString(R.string.not_available_short);
         holder.orderName.setText(orderDocumentIdString);
 
 
-        String userIdString = order.getUserId() != null ?
-                context.getString(R.string.order_user_prefix) + order.getUserId() :
-                context.getString(R.string.order_user_prefix) + context.getString(R.string.not_available_short);
-        holder.orderUserName.setText(userIdString);
+        String userId = order.getUserId();
+        if (userId != null && !userId.isEmpty()) {
+            holder.orderUserName.setText(context.getString(R.string.order_user_prefix) + context.getString(R.string.loading_text_placeholder));
+            db.collection("users").document(userId).get()
+                    .addOnCompleteListener(task -> {
+                        // Check if the holder is still valid for this position
+                        if (holder.getAdapterPosition() != position && holder.getAdapterPosition() != RecyclerView.NO_POSITION) {
+                            return; // ViewHolder has been recycled or position is no longer valid
+                        }
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document != null && document.exists()) {
+                                User user = document.toObject(User.class);
+                                if (user != null && user.getFullName() != null && !user.getFullName().isEmpty()) {
+                                    holder.orderUserName.setText(context.getString(R.string.order_user_prefix) + user.getFullName());
+                                } else {
+                                    holder.orderUserName.setText(context.getString(R.string.order_user_prefix) + context.getString(R.string.not_available_short));
+                                }
+                            } else {
+                                holder.orderUserName.setText(context.getString(R.string.order_user_prefix) + context.getString(R.string.user_not_found_short));
+                            }
+                        } else {
+                            Log.e("CompanyOrderAdapter", "Error fetching user: ", task.getException());
+                            holder.orderUserName.setText(context.getString(R.string.order_user_prefix) + context.getString(R.string.error_loading_user_short));
+                        }
+                    });
+        } else {
+            holder.orderUserName.setText(context.getString(R.string.order_user_prefix) + context.getString(R.string.not_available_short));
+        }
+
+
+        Integer status = order.getStatus();
+        holder.orderStatus.setText(getStatusString(status));
+
+        if (status != null) {
+            switch (status) {
+                case 1:
+                    holder.orderStatus.setTextColor(ContextCompat.getColor(context, R.color.orange));
+                    break;
+                case 2:
+                    holder.orderStatus.setTextColor(ContextCompat.getColor(context, R.color.leaf_green));
+                    break;
+                case 0:
+                default:
+                    holder.orderStatus.setTextColor(ContextCompat.getColor(context, R.color.text_secondary_on_background));
+                    break;
+            }
+        } else {
+            holder.orderStatus.setTextColor(ContextCompat.getColor(context, R.color.text_secondary_on_background));
+        }
 
         holder.viewDetailsButton.setOnClickListener(v -> {
             if (listener != null) {
@@ -78,6 +131,23 @@ public class CompanyOrderAdapter extends RecyclerView.Adapter<CompanyOrderAdapte
         });
     }
 
+    private String getStatusString(Integer status) {
+        if (status == null) {
+            return context.getString(R.string.status_not_available);
+        }
+        switch (status) {
+            case 0:
+                return context.getString(R.string.status_in_warehouse);
+            case 1:
+                return context.getString(R.string.status_on_the_way);
+            case 2:
+                return context.getString(R.string.status_delivered);
+            default:
+                return context.getString(R.string.status_not_available);
+        }
+    }
+
+
     @Override
     public int getItemCount() {
         return orderList.size();
@@ -90,14 +160,15 @@ public class CompanyOrderAdapter extends RecyclerView.Adapter<CompanyOrderAdapte
     }
 
     static class OrderViewHolder extends RecyclerView.ViewHolder {
-        TextView orderDate, orderName, orderUserName;
+        TextView orderDate, orderName, orderUserName, orderStatus;
         Button viewDetailsButton;
 
         public OrderViewHolder(@NonNull View itemView) {
             super(itemView);
             orderDate = itemView.findViewById(R.id.orderDate);
-            orderName = itemView.findViewById(R.id.orderName); // Mostrará ID del Documento de la Orden
-            orderUserName = itemView.findViewById(R.id.orderUserName); // Mostrará ID del Usuario
+            orderName = itemView.findViewById(R.id.orderName);
+            orderUserName = itemView.findViewById(R.id.orderUserName);
+            orderStatus = itemView.findViewById(R.id.orderStatus);
             viewDetailsButton = itemView.findViewById(R.id.viewDetailsButton);
         }
     }
