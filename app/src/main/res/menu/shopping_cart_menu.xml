@@ -5,4 +5,9 @@
         android:id="@+id/shopping_cart_menu_clear_item"
         android:icon="@drawable/baseline_clear_all_24"
         android:title="@string/title_shopping_cart_clear" />
+
+    <item
+        android:id="@+id/shopping_cart_past_orders"
+        android:icon="@drawable/baseline_clear_all_24"
+        android:title="@string/title_shopping_cart_past_orders" />
 </menu>

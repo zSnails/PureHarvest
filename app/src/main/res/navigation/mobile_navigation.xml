@@ -56,16 +56,10 @@
         android:id="@+id/navigation_shopping_cart"
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.cart.ShoppingCartFragment"
         android:label="@string/title_shopping_cart"
-        tools:layout="@layout/fragment_account"> <!-- Probablemente quisiste fragment_shopping_cart aquí -->
+        tools:layout="@layout/fragment_shopping_cart"> <!-- Probablemente quisiste fragment_shopping_cart aquí -->
         <action
-            android:id="@+id/action_navigation_account_to_profileFragment"
-            app:destination="@id/profileFragment" />
-        <action
-            android:id="@+id/action_navigation_account_to_productsOptionsFragment"
-            app:destination="@id/productsOptionsFragment" />
-        <action
-            android:id="@+id/action_navigation_account_to_companyOrderListFragment"
-            app:destination="@id/companyOrderListFragment" />
+            android:id="@+id/action_navigation_shopping_cart_to_clientOrdersFragment2"
+            app:destination="@id/clientOrdersFragment2" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -193,4 +187,9 @@
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.coupons.ManageCouponsFragment"
         android:label="Manage Coupons"
         tools:layout="@layout/fragment_manage_coupons" />
+    <fragment
+        android:id="@+id/clientOrdersFragment2"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.orders.client.ClientOrdersFragment"
+        android:label="fragment_client_orders"
+        tools:layout="@layout/fragment_client_orders" />
 </navigation>

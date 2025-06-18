@@ -18,6 +18,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -144,6 +147,9 @@ public final class ShoppingCartFragment extends Fragment
     public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
         if (menuItem.getItemId() == R.id.shopping_cart_menu_clear_item) {
             if (!deletionDialog.isShowing()) deletionDialog.show();
+            return true;
+        } else if (menuItem.getItemId() == R.id.shopping_cart_past_orders) {
+            Navigation.findNavController(requireView()).navigate(R.id.action_navigation_shopping_cart_to_clientOrdersFragment2);
             return true;
         }
         return false;
