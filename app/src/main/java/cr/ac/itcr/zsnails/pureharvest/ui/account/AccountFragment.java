@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,13 +36,13 @@ public class AccountFragment extends Fragment {
         Button btnLogin = view.findViewById(R.id.btn_login);
         Button btnLogout = view.findViewById(R.id.btn_logout);
         Button btnEditInfo = view.findViewById(R.id.btn_edit_user_info);
-        Button btnViewOrders = view.findViewById(R.id.btn_view_orders);
+        Button btnViewFavoriteItems = view.findViewById(R.id.btn_view_favorite_items);
 
         if (user != null) {
             btnLogin.setVisibility(View.GONE);
             btnLogout.setVisibility(View.VISIBLE);
             btnEditInfo.setVisibility(View.VISIBLE);
-            btnViewOrders.setVisibility(View.VISIBLE);
+            btnViewFavoriteItems.setVisibility(View.VISIBLE);
 
             btnLogout.setOnClickListener(v -> {
                 FirebaseAuth.getInstance().signOut();
@@ -81,13 +82,14 @@ public class AccountFragment extends Fragment {
                 }
             });
 
-            btnViewOrders.setOnClickListener(v -> {
+            btnViewFavoriteItems.setOnClickListener(v -> {
+                Navigation.findNavController(v).navigate(R.id.action_navigation_account_to_favoriteItemsFragment);
             });
         } else {
             btnLogin.setVisibility(View.VISIBLE);
             btnLogout.setVisibility(View.GONE);
             btnEditInfo.setVisibility(View.GONE);
-            btnViewOrders.setVisibility(View.GONE);
+            btnViewFavoriteItems.setVisibility(View.GONE);
 
             btnLogin.setOnClickListener(v -> {
                 Intent intent = new Intent(requireActivity(), LoginActivity.class);

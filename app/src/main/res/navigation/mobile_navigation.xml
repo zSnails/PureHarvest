@@ -44,6 +44,9 @@
         <action
             android:id="@+id/action_navigation_account_to_settingsFragment"
             app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_navigation_account_to_favoriteItemsFragment"
+            app:destination="@id/favoriteItemsFragment" />
     </fragment>
 
     <fragment
@@ -204,4 +207,9 @@
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.orders.client.ClientOrderDetailsFragment"
         android:label="@string/order_details_title"
         tools:layout="@layout/fragment_client_order_details" />
+    <fragment
+        android:id="@+id/favoriteItemsFragment"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.favorites.FavoriteItemsFragment"
+        android:label="fragment_favorite_items"
+        tools:layout="@layout/fragment_favorite_items" />
 </navigation>
