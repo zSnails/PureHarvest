@@ -67,7 +67,9 @@ public final class ShoppingCartFragment extends Fragment
                 .create();
         shoppingCart.items.observe(getViewLifecycleOwner(), it -> {
             adapter.setItems(it);
+            this.binding.shoppingCartCheckoutButton.setEnabled(!it.isEmpty());
         });
+        this.binding.shoppingCartCheckoutButton.setOnClickListener(this::onCheckout);
         //this.binding.shoppingCartCheckoutButton.setText(getString(R.string.checkout_total, shoppingCart.subtotal.getValue()));
         shoppingCart.subtotal.observe(getViewLifecycleOwner(), total -> {
             Log.d("computing:subtotal", String.format("value of total: %f", total));
