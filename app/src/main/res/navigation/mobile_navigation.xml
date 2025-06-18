@@ -60,6 +60,9 @@
         <action
             android:id="@+id/action_navigation_shopping_cart_to_clientOrdersFragment2"
             app:destination="@id/clientOrdersFragment2" />
+        <action
+            android:id="@+id/action_navigation_shopping_cart_to_clientOrderDetailsFragment"
+            app:destination="@id/clientOrderDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"

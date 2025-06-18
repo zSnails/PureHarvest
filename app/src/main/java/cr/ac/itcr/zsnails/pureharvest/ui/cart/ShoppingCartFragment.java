@@ -119,8 +119,11 @@ public final class ShoppingCartFragment extends Fragment
     }
 
     public void onOrderCreated(Order order) {
-        Toast.makeText(requireContext(), "The order has been created (thank mathew for me not being able to show you the order)", Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireContext(), "The order has been created", Toast.LENGTH_SHORT).show();
         shoppingCart.removeAllItems();
+        Bundle b = new Bundle();
+        b.putSerializable("order", order);
+        Navigation.findNavController(requireView()).navigate(R.id.action_navigation_shopping_cart_to_clientOrderDetailsFragment, b);
     }
 
     private void setupSwipeHandler() {
