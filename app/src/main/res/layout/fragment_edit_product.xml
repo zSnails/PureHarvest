@@ -308,10 +308,6 @@
                 android:gravity="top|start"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-<<<<<<< HEAD
-=======
-        <!-- Delete button: top constraint should be to the last field that could be visible -->
->>>>>>> testing
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_delete_product"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
