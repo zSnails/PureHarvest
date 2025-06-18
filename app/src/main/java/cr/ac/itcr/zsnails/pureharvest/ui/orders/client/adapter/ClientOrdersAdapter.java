@@ -1,5 +1,6 @@
 package cr.ac.itcr.zsnails.pureharvest.ui.orders.client.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -12,8 +13,10 @@ import cr.ac.itcr.zsnails.pureharvest.ui.orders.Order;
 public class ClientOrdersAdapter extends RecyclerView.Adapter<OrderViewHolder>{
     private List<Order> orders;
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setOrders(List<Order> orders) {
         this.orders = orders;
+        notifyDataSetChanged();
     }
     @NonNull
     @Override
