@@ -2,6 +2,7 @@ package cr.ac.itcr.zsnails.pureharvest.ui.cart;
 
 import static androidx.lifecycle.Lifecycle.State.RESUMED;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,12 +28,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import cr.ac.itcr.zsnails.pureharvest.LoginActivity;
 import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentShoppingCartBinding;
 import cr.ac.itcr.zsnails.pureharvest.decoration.MarginItemDecoration;
