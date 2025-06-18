@@ -11,16 +11,19 @@ import java.util.List;
 
 import cr.ac.itcr.zsnails.pureharvest.entities.CartDisplayItem;
 import cr.ac.itcr.zsnails.pureharvest.ui.cart.Item;
+import cr.ac.itcr.zsnails.pureharvest.ui.cart.ShoppingCartFragment;
 import cr.ac.itcr.zsnails.pureharvest.ui.cart.ShoppingCartViewModel;
 
 
 public final class ShoppingCartAdapter extends Adapter<Card> implements ShoppingCartViewModel.ItemOperationEventListener {
     private final Card.AmountTapListener amountTapListener;
+    private final Card.CouponApplyListener couponApplyListener;
     private List<CartDisplayItem> items = new ArrayList<>();
 
-    public ShoppingCartAdapter(Card.AmountTapListener listener) {
+    public ShoppingCartAdapter(Card.AmountTapListener amountListener, ShoppingCartFragment couponListener) {
         setHasStableIds(true);
-        this.amountTapListener = listener;
+        this.amountTapListener = amountListener;
+        this.couponApplyListener = couponListener;
     }
 
     @Override
@@ -39,6 +42,7 @@ public final class ShoppingCartAdapter extends Adapter<Card> implements Shopping
     public Card onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Card card = Card.from(parent);
         card.setAmountTapListener(amountTapListener);
+        card.setCouponApplyListener(couponApplyListener);
         return card;
     }
 
@@ -66,8 +70,7 @@ public final class ShoppingCartAdapter extends Adapter<Card> implements Shopping
     }
 
     @Override
-    public void onItemCreated(Item item) {
-    }
+    public void onItemCreated(Item item) {}
 
     @Override
     public void onItemRemoved(Item item, int position) {

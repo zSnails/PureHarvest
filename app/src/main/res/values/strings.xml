@@ -583,5 +583,7 @@
     <string name="order_total_price_format">₡%.2f</string>
     <string name="title_shopping_cart_past_orders">Past Orders</string>
     <string name="order_id_template">ID: %1$s</string>
+    <string name="coupon_code_hint">Coupon code</string>
+    <string name="redeem_button">REDEEM</string>
     <string name="show_my_favorites_label">My Favorite Products</string>
 </resources>
