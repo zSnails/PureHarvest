@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 import javax.inject.Singleton;
 
 import cr.ac.itcr.zsnails.pureharvest.domain.LocalCartDatabase;
+import cr.ac.itcr.zsnails.pureharvest.domain.repository.ClientOrdersRepository;
 import cr.ac.itcr.zsnails.pureharvest.domain.repository.ShoppingCartRepository;
 import dagger.Module;
 import dagger.Provides;
@@ -51,5 +52,11 @@ public class AppModule {
     @Singleton
     public FirebaseAuth provideFirebaseAuth() {
         return FirebaseAuth.getInstance();
+    }
+
+    @Provides
+    @Singleton
+    public ClientOrdersRepository provideClientOrdersRepository(final FirebaseFirestore db) {
+        return new ClientOrdersRepository(db);
     }
 }
