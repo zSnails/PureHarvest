@@ -92,7 +92,7 @@ public class EditProductFragment extends Fragment {
             binding.buttonPayToStandOut.setEnabled(false);
             updateFieldVisibility(productTypesArray.length > 0 ? productTypesArray[0] : "");
         }
-
+        binding.buttonManageCoupons.setOnClickListener(v -> handleManageCoupons());
         binding.buttonChangeImage.setOnClickListener(v -> handleManageImages());
         binding.buttonSave.setOnClickListener(v -> handleSaveChanges());
         binding.buttonCancel.setOnClickListener(v -> handleCancel());
@@ -114,7 +114,6 @@ public class EditProductFragment extends Fragment {
         } else {
             Toast.makeText(getContext(), "Product ID is missing. Cannot proceed.", Toast.LENGTH_LONG).show();
         }
-        binding.buttonManageCoupons.setOnClickListener(v -> handleManageCoupons());
     }
 
     private void handleManageCoupons() {
