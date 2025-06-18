@@ -101,7 +101,7 @@ public class CompanyBuyersListFragment extends Fragment implements CompanyBuyers
                     return;
                 }
 
-                Map<String, Integer> userPurchaseCounts = new HashMap<>();
+                Map<String, Integer> userOrderCounts = new HashMap<>();
                 AtomicInteger ordersProcessed = new AtomicInteger(0);
                 int totalOrders = ordersSnapshot.size();
 
@@ -111,7 +111,7 @@ public class CompanyBuyersListFragment extends Fragment implements CompanyBuyers
 
                     if (userId == null || productsBought == null || productsBought.isEmpty()) {
                         if (ordersProcessed.incrementAndGet() == totalOrders) {
-                            fetchUserDetailsFromFirebase(userPurchaseCounts);
+                            fetchUserDetailsFromFirebase(userOrderCounts);
                         }
                         continue;
                     }
@@ -126,36 +126,31 @@ public class CompanyBuyersListFragment extends Fragment implements CompanyBuyers
 
                     if (productTasks.isEmpty()) {
                         if (ordersProcessed.incrementAndGet() == totalOrders) {
-                            fetchUserDetailsFromFirebase(userPurchaseCounts);
+                            fetchUserDetailsFromFirebase(userOrderCounts);
                         }
                         continue;
                     }
 
                     Tasks.whenAllSuccess(productTasks).addOnSuccessListener(results -> {
-                        int itemsFromThisSeller = 0;
-                        for (int i = 0; i < results.size(); i++) {
-                            DocumentSnapshot productDoc = (DocumentSnapshot) results.get(i);
+                        boolean orderIsRelevant = false;
+                        for (Object result : results) {
+                            DocumentSnapshot productDoc = (DocumentSnapshot) result;
                             if (productDoc.exists() && currentSellerId.equals(productDoc.getString("sellerId"))) {
-                                Map<String, Object> productRef = productsBought.get(i);
-                                Object amountObj = productRef.get("amount");
-                                if (amountObj instanceof Number) {
-                                    itemsFromThisSeller += ((Number) amountObj).intValue();
-                                } else {
-                                    itemsFromThisSeller += 1;
-                                }
+                                orderIsRelevant = true;
+                                break;
                             }
                         }
-                        if (itemsFromThisSeller > 0) {
-                            userPurchaseCounts.put(userId, userPurchaseCounts.getOrDefault(userId, 0) + itemsFromThisSeller);
+                        if (orderIsRelevant) {
+                            userOrderCounts.put(userId, userOrderCounts.getOrDefault(userId, 0) + 1);
                         }
 
                         if (ordersProcessed.incrementAndGet() == totalOrders) {
-                            fetchUserDetailsFromFirebase(userPurchaseCounts);
+                            fetchUserDetailsFromFirebase(userOrderCounts);
                         }
                     }).addOnFailureListener(e -> {
                         Log.e(TAG, "Error fetching product details for an order", e);
                         if (ordersProcessed.incrementAndGet() == totalOrders) {
-                            fetchUserDetailsFromFirebase(userPurchaseCounts);
+                            fetchUserDetailsFromFirebase(userOrderCounts);
                         }
                     });
                 }
