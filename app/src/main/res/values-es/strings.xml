@@ -519,5 +519,6 @@
 
     <string name="order_total_label">Total del Pedido:</string>
     <string name="order_total_price_format">₡%.2f</string>
-
+    <string name="coupon_code_hint">Código de cupón</string>
+    <string name="redeem_button">CANJEAR</string>
 </resources>
