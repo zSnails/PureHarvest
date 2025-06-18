@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,12 +22,21 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+
 import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentShoppingCartBinding;
 import cr.ac.itcr.zsnails.pureharvest.decoration.MarginItemDecoration;
 import cr.ac.itcr.zsnails.pureharvest.entities.CartDisplayItem;
 import cr.ac.itcr.zsnails.pureharvest.ui.cart.adapter.Card;
 import cr.ac.itcr.zsnails.pureharvest.ui.cart.adapter.ShoppingCartAdapter;
+import cr.ac.itcr.zsnails.pureharvest.ui.orders.Order;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
@@ -34,8 +44,9 @@ public final class ShoppingCartFragment extends Fragment
         implements MenuProvider, Card.AmountTapListener,
         UpdateItemAmountDialog.ItemAmountAcceptListener {
 
+    @Inject
+    public FirebaseAuth auth;
     private FragmentShoppingCartBinding binding;
-
     private ShoppingCartViewModel shoppingCart;
     private AlertDialog deletionDialog;
     private ShoppingCartAdapter adapter;
@@ -66,7 +77,9 @@ public final class ShoppingCartFragment extends Fragment
                 .create();
         shoppingCart.items.observe(getViewLifecycleOwner(), it -> {
             adapter.setItems(it);
+            this.binding.shoppingCartCheckoutButton.setEnabled(!it.isEmpty());
         });
+        this.binding.shoppingCartCheckoutButton.setOnClickListener(this::onCheckout);
         //this.binding.shoppingCartCheckoutButton.setText(getString(R.string.checkout_total, shoppingCart.subtotal.getValue()));
         shoppingCart.subtotal.observe(getViewLifecycleOwner(), total -> {
             Log.d("computing:subtotal", String.format("value of total: %f", total));
@@ -76,6 +89,28 @@ public final class ShoppingCartFragment extends Fragment
         setupSwipeHandler();
 
         return this.binding.getRoot();
+    }
+
+    private void onCheckout(View view) {
+        // STATUS: 0 = BODEGA, 1 = TRANSITO, 2 = ENTREGADO
+        List<Order.OrderItem> products = shoppingCart.items.getValue()
+                .stream()
+                .map(
+                        p -> new Order.OrderItem(p.productId, p.amount))
+                .collect(Collectors.toList());
+        Order order = new Order(
+                Timestamp.now(),
+                auth.getCurrentUser().getUid(),
+                "NO APLICABLE",
+                products,
+                0);
+        // TODO: poner un spinner de loaded order
+        shoppingCart.createOrder(order, this::onOrderCreated);
+    }
+
+    public void onOrderCreated(Order order) {
+        Toast.makeText(requireContext(), "The order has been created (thank mathew for me not being able to show you the order)", Toast.LENGTH_SHORT).show();
+        shoppingCart.removeAllItems();
     }
 
     private void setupSwipeHandler() {
