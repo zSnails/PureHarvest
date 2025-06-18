@@ -1,13 +1,17 @@
 package cr.ac.itcr.zsnails.pureharvest.ui.orders;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentId;
 
-import java.util.Formatter;
+import java.io.Serializable;
 import java.util.List;
-import java.util.Map; // Import Map
 
-public class Order {
+public class Order implements Serializable {
     @DocumentId
     private String documentId;
     private Timestamp date;
@@ -15,6 +19,7 @@ public class Order {
     private String sellerId;
     private Integer status;
     private List<OrderItem> productsBought;
+
     public Order() {
 
     }
@@ -78,9 +83,11 @@ public class Order {
     public static class OrderItem {
         public String id;
         public Integer amount;
+
         public OrderItem() {
 
         }
+
         public OrderItem(String id, int amount) {
             this.id = id;
             this.amount = amount;
