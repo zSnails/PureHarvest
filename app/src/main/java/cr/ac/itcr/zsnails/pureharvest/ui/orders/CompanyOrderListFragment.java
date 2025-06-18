@@ -130,13 +130,10 @@ public class CompanyOrderListFragment extends Fragment implements CompanyOrderAd
 
                     List<Task<DocumentSnapshot>> productTasks = new ArrayList<>();
                     if (order.getProductsBought() != null && !order.getProductsBought().isEmpty()) {
-                        for (Map<String, Object> productRef : order.getProductsBought()) {
-                            Object idObject = productRef.get("id");
-                            if (idObject instanceof String) {
-                                String productId = (String) idObject;
-                                if (!productId.isEmpty()) {
-                                    productTasks.add(db.collection("products").document(productId).get());
-                                }
+                        for (Order.OrderItem productRef : order.getProductsBought()) {
+                            String productId = productRef.id;
+                            if (!productId.isEmpty()) {
+                                productTasks.add(db.collection("products").document(productId).get());
                             }
                         }
                     }
