@@ -10,9 +10,9 @@ public class CartDisplayItem implements Item {
     public double price;
     public String type;
     public String imageUrl;
-
     public int amount;
 
+    public double discountPercentage = 0.0;
     @Override
     public Long getId() {
         return id;
@@ -30,7 +30,7 @@ public class CartDisplayItem implements Item {
 
     @Override
     public Double getPrice() {
-        return price * amount;
+        return price * (1 - discountPercentage / 100.0);
     }
 
     @Override
@@ -51,5 +51,13 @@ public class CartDisplayItem implements Item {
     @Override
     public String getImage() {
         return imageUrl;
+    }
+
+    public void setDiscountPercentage(double discountPercentage) {
+        this.discountPercentage = discountPercentage;
+    }
+
+    public double getTotalPrice() {
+        return getPrice() * amount;
     }
 }

@@ -45,10 +45,15 @@ import cr.ac.itcr.zsnails.pureharvest.ui.cart.adapter.ShoppingCartAdapter;
 import cr.ac.itcr.zsnails.pureharvest.ui.orders.Order;
 import dagger.hilt.android.AndroidEntryPoint;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.DocumentSnapshot;
+
 @AndroidEntryPoint
 public final class ShoppingCartFragment extends Fragment
-        implements MenuProvider, Card.AmountTapListener,
-        UpdateItemAmountDialog.ItemAmountAcceptListener {
+        implements MenuProvider,
+        Card.AmountTapListener,
+        UpdateItemAmountDialog.ItemAmountAcceptListener,
+        Card.CouponApplyListener {
 
     @Inject
     public FirebaseAuth auth;
@@ -56,6 +61,7 @@ public final class ShoppingCartFragment extends Fragment
     private ShoppingCartViewModel shoppingCart;
     private AlertDialog deletionDialog;
     private ShoppingCartAdapter adapter;
+    private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
     @Override
     public View onCreateView(
@@ -64,7 +70,7 @@ public final class ShoppingCartFragment extends Fragment
             @Nullable Bundle savedInstanceState) {
         this.shoppingCart = new ViewModelProvider(requireActivity()).get(ShoppingCartViewModel.class);
         this.binding = FragmentShoppingCartBinding.inflate(inflater, container, false);
-        this.adapter = new ShoppingCartAdapter(this);
+        this.adapter = new ShoppingCartAdapter(this, this);
         this.shoppingCart.addItemOperationEventListener(adapter);
         this.binding.shoppingCartRecyclerView.setAdapter(adapter);
         this.binding.shoppingCartRecyclerView.setLayoutManager(
@@ -184,5 +190,84 @@ public final class ShoppingCartFragment extends Fragment
         if (amount < 1) return;
         item.setAmount(amount);
         shoppingCart.updateItem(item);
+    }
+    @Override
+    public void onCouponApply(Item item, int position, String couponCode) {
+        firestore.collection("coupons")
+                .whereEqualTo("code", couponCode)
+                .get()
+                .addOnSuccessListener(query -> {
+                    if (query.isEmpty()) {
+                        Toast.makeText(requireContext(), "Cupón no encontrado", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    DocumentSnapshot doc = query.getDocuments().get(0);
+
+                    // Validaciones
+                    Long rawTs = doc.getLong("expirationTimestamp");
+                    if (rawTs == null) {
+                        Toast.makeText(requireContext(), "El cupón no tiene fecha de expiración válida", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    java.util.Date expirationDate = new java.util.Date(rawTs);
+                    boolean isExpired = expirationDate.before(new java.util.Date());
+                    Long maxUses = doc.getLong("maxUses");
+                    Long uses = doc.getLong("uses");
+                    List<String> applicableProducts = (List<String>) doc.get("applicableProductIds");
+
+                    if (isExpired) {
+                        Toast.makeText(requireContext(), "Cupón expirado", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if (uses != null && maxUses != null && uses >= maxUses) {
+                        Toast.makeText(requireContext(), "Este cupón ya fue utilizado muchas veces", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    Log.d("CouponDebug", "item.getProductId(): " + item.getProductId());
+                    Log.d("CouponDebug", "applicableProducts: " + applicableProducts);
+                    if (applicableProducts != null && !applicableProducts.contains(item.getProductId())) {
+                        Toast.makeText(requireContext(), "Este cupón no aplica a este producto", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    Double discountPercentage = doc.getDouble("discountPercentage");
+                    if (discountPercentage == null) {
+                        Toast.makeText(requireContext(), "Cupón inválido", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    // Aplicar descuento
+                    double price = item.getPrice();
+                    double discounted = price * (1 - discountPercentage / 100);
+                    if (item instanceof CartDisplayItem) {
+                        ((CartDisplayItem) item).setDiscountPercentage(discountPercentage);
+                    }
+
+                    int cantidad = item.getAmount();
+
+                    long usosDisponibles = maxUses - uses;
+                    int usosAplicables = (int) Math.min(usosDisponibles, cantidad);
+
+                    if (usosAplicables <= 0) {
+                        Toast.makeText(requireContext(), "Ya se usaron todos los usos disponibles del cupón", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                                        ((CartDisplayItem) item).setDiscountPercentage(discountPercentage);
+                                        doc.getReference().update("uses", uses + usosAplicables);
+
+                                        shoppingCart.updateItem((CartDisplayItem) item);
+                                        Toast.makeText(requireContext(), String.format("Cupón aplicado a %d unidad(es)", usosAplicables), Toast.LENGTH_SHORT).show();
+
+
+                    shoppingCart.updateItem((CartDisplayItem) item);
+                    Toast.makeText(requireContext(), "Cupón aplicado correctamente", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(requireContext(), "Error al validar cupón", Toast.LENGTH_SHORT).show();
+                    Log.e("CouponError", "Error al consultar cupón", e);
+                });
     }
 }

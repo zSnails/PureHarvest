@@ -25,6 +25,7 @@ public final class Card extends ViewHolder implements OnClickListener, Stateful<
     private final Context ctx;
     private CardState state;
     private AmountTapListener cb;
+    private CouponApplyListener couponApplyListener;
 
     private Card(final ShoppingCartExpandableElementBinding binding) {
         super(binding.getRoot());
@@ -48,15 +49,23 @@ public final class Card extends ViewHolder implements OnClickListener, Stateful<
         this.binding.cartItemAmount.setOnClickListener(
                 (View view) -> cb.onAmountTap(item, getAdapterPosition()));
         this.binding.productTypeDetail.setText(item.getType());
-        this.binding.productPriceDetail.setText(ctx.getString(R.string.colones, item.getPrice()));
+        this.binding.productPriceDetail.setText(ctx.getString(R.string.colones, item.getPrice() * item.getAmount()));
         Glide.with(ctx).load(item.getImage()).into(this.binding.productImageBig);
         Glide.with(ctx).load(item.getImage()).into(this.binding.productImageSmall);
+        this.binding.buttonApplyCoupon.setOnClickListener(view -> {
+            String couponCode = this.binding.editCouponCode.getText().toString().trim();
+            if (!couponCode.isEmpty() && couponApplyListener != null) {
+                couponApplyListener.onCouponApply(item, getAdapterPosition(), couponCode);
+            }
+        });
     }
 
     public void setAmountTapListener(AmountTapListener cb) {
         this.cb = cb;
     }
-
+    public void setCouponApplyListener(CouponApplyListener listener) {
+        this.couponApplyListener = listener;
+    }
     public CardState getState() {
         return this.state;
     }
@@ -72,5 +81,8 @@ public final class Card extends ViewHolder implements OnClickListener, Stateful<
 
     public interface AmountTapListener {
         void onAmountTap(Item item, int position);
+    }
+    public interface CouponApplyListener {
+        void onCouponApply(Item item, int position, String couponCode);
     }
 }
