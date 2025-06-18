@@ -12,16 +12,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import cr.ac.itcr.zsnails.pureharvest.MainActivity;
 import cr.ac.itcr.zsnails.pureharvest.R;
@@ -39,8 +45,6 @@ public class CompanyOrderListFragment extends Fragment implements CompanyOrderAd
 
     private ProgressBar progressBarOrders;
     private TextView textViewEmptyOrdersList;
-    private ImageButton backButtonOrdersList;
-    private TextView titleTextViewOrders;
 
     private NavController navController;
 
@@ -83,25 +87,6 @@ public class CompanyOrderListFragment extends Fragment implements CompanyOrderAd
     }
 
     private void setupUI() {
-        if (titleTextViewOrders != null) {
-            titleTextViewOrders.setText(getString(R.string.title_my_orders));
-        }
-
-        if (backButtonOrdersList != null) {
-            backButtonOrdersList.setContentDescription(getString(R.string.content_description_back_button));
-            backButtonOrdersList.setOnClickListener(v -> {
-                if (navController != null && navController.getCurrentDestination() != null &&
-                        navController.getGraph().findNode(navController.getCurrentDestination().getId()) != null) {
-                    navController.popBackStack();
-                } else {
-                    Log.w(TAG, "Cannot popBackStack, NavController issue or not on expected destination.");
-                    if (getActivity() != null && !getActivity().isFinishing()) {
-                        getActivity().onBackPressed();
-                    }
-                }
-            });
-        }
-
         if (recyclerViewOrders != null) {
             recyclerViewOrders.setLayoutManager(new LinearLayoutManager(getContext()));
             recyclerViewOrders.setAdapter(orderAdapter);
@@ -120,62 +105,111 @@ public class CompanyOrderListFragment extends Fragment implements CompanyOrderAd
         if (textViewEmptyOrdersList != null) textViewEmptyOrdersList.setVisibility(View.GONE);
         if (recyclerViewOrders != null) recyclerViewOrders.setVisibility(View.GONE);
 
-        db.collection("orders")
-                .whereEqualTo("sellerId", TARGET_SELLER_ID)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (!isAdded() || getContext() == null) {
-                        return;
-                    }
+        db.collection("orders").get().addOnCompleteListener(task -> {
+            if (!isAdded() || getContext() == null) {
+                return;
+            }
+
+            if (task.isSuccessful() && task.getResult() != null) {
+                QuerySnapshot result = task.getResult();
+                if (result.isEmpty()) {
                     showLoading(false);
-                    if (task.isSuccessful()) {
-                        if (task.getResult() != null) {
-                            List<Order> fetchedOrdersLocal = new ArrayList<>(); // Lista temporal local
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                try {
-                                    Order order = document.toObject(Order.class);
-                                    if (order.getDocumentId() == null || order.getDocumentId().isEmpty()) {
-                                        order.setDocumentId(document.getId());
-                                    }
+                    updateFinalOrderList(new ArrayList<>());
+                    return;
+                }
 
+                List<Order> validOrders = Collections.synchronizedList(new ArrayList<>());
+                AtomicInteger ordersProcessed = new AtomicInteger(0);
+                int totalOrders = result.size();
 
-                                    Log.d(TAG, "Order Fetched: ID=" + order.getDocumentId() +
-                                            ", UserID=" + order.getUserId() +
-                                            //", ProductIDs=" + (order.getProductIDs() != null ? order.getProductIDs().toString() : "null"));
-
-                                    fetchedOrdersLocal.add(order));
-                                } catch (Exception e) {
-                                    Log.e(TAG, "Error converting document to Order: ID=" + document.getId(), e);
-                                }
-                            }
-                            orderList.clear();
-                            orderList.addAll(fetchedOrdersLocal);
-                            orderAdapter.notifyDataSetChanged();
-
-
-                            if (orderList.isEmpty()) {
-                                if (textViewEmptyOrdersList != null) {
-                                    textViewEmptyOrdersList.setText(getString(R.string.no_orders_yet_company));
-                                    textViewEmptyOrdersList.setVisibility(View.VISIBLE);
-                                }
-                                if (recyclerViewOrders != null) recyclerViewOrders.setVisibility(View.GONE);
-                            } else {
-                                if (textViewEmptyOrdersList != null) textViewEmptyOrdersList.setVisibility(View.GONE);
-                                if (recyclerViewOrders != null) recyclerViewOrders.setVisibility(View.VISIBLE);
-                            }
-                        } else {
-                            handleFetchError(getString(R.string.error_null_result_orders));
-                        }
-                    } else {
-                        String errorMessage = getString(R.string.error_loading_orders);
-                        if (task.getException() != null) {
-                            errorMessage += "\nDetalle: " + task.getException().getMessage();
-                            Log.e(TAG, "Error getting documents: ", task.getException());
-                        }
-                        handleFetchError(errorMessage);
+                for (QueryDocumentSnapshot document : result) {
+                    Order order = document.toObject(Order.class);
+                    if (order.getDocumentId() == null || order.getDocumentId().isEmpty()) {
+                        order.setDocumentId(document.getId());
                     }
-                });
+
+                    List<Task<DocumentSnapshot>> productTasks = new ArrayList<>();
+                    if (order.getProductsBought() != null && !order.getProductsBought().isEmpty()) {
+                        for (Map<String, Object> productRef : order.getProductsBought()) {
+                            Object idObject = productRef.get("id");
+                            if (idObject instanceof String) {
+                                String productId = (String) idObject;
+                                if (!productId.isEmpty()) {
+                                    productTasks.add(db.collection("products").document(productId).get());
+                                }
+                            }
+                        }
+                    }
+
+                    if (productTasks.isEmpty()) {
+                        if (ordersProcessed.incrementAndGet() == totalOrders) {
+                            showLoading(false);
+                            updateFinalOrderList(validOrders);
+                        }
+                        continue;
+                    }
+
+                    Tasks.whenAllSuccess(productTasks).addOnSuccessListener(productSnapshots -> {
+                        boolean sellerHasProductInOrder = false;
+                        for (Object snapshot : productSnapshots) {
+                            DocumentSnapshot productDoc = (DocumentSnapshot) snapshot;
+                            if (productDoc.exists()) {
+                                String sellerId = productDoc.getString("sellerId");
+                                if (TARGET_SELLER_ID.equals(sellerId)) {
+                                    sellerHasProductInOrder = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (sellerHasProductInOrder) {
+                            validOrders.add(order);
+                        }
+
+                        if (ordersProcessed.incrementAndGet() == totalOrders) {
+                            showLoading(false);
+                            updateFinalOrderList(validOrders);
+                        }
+                    }).addOnFailureListener(e -> {
+                        Log.e(TAG, "Failed to fetch products for order " + order.getDocumentId(), e);
+                        if (ordersProcessed.incrementAndGet() == totalOrders) {
+                            showLoading(false);
+                            updateFinalOrderList(validOrders);
+                        }
+                    });
+                }
+            } else {
+                showLoading(false);
+                String errorMessage = getString(R.string.error_loading_orders);
+                if (task.getException() != null) {
+                    errorMessage += "\nDetalle: " + task.getException().getMessage();
+                    Log.e(TAG, "Error getting documents: ", task.getException());
+                }
+                handleFetchError(errorMessage);
+            }
+        });
     }
+
+    private void updateFinalOrderList(List<Order> finalOrders) {
+        if (!isAdded() || getContext() == null) {
+            return;
+        }
+        orderList.clear();
+        orderList.addAll(finalOrders);
+        orderAdapter.notifyDataSetChanged();
+
+        if (orderList.isEmpty()) {
+            if (textViewEmptyOrdersList != null) {
+                textViewEmptyOrdersList.setText(getString(R.string.no_orders_yet_company));
+                textViewEmptyOrdersList.setVisibility(View.VISIBLE);
+            }
+            if (recyclerViewOrders != null) recyclerViewOrders.setVisibility(View.GONE);
+        } else {
+            if (textViewEmptyOrdersList != null) textViewEmptyOrdersList.setVisibility(View.GONE);
+            if (recyclerViewOrders != null) recyclerViewOrders.setVisibility(View.VISIBLE);
+        }
+    }
+
 
     private void handleFetchError(String message) {
         if (getContext() == null || !isAdded()) return;
@@ -197,7 +231,6 @@ public class CompanyOrderListFragment extends Fragment implements CompanyOrderAd
     public void onOrderClick(Order order) {
         if (getContext() == null || !isAdded()) return;
         Log.d(TAG, "Order clicked: DocID=" + order.getDocumentId() + ", UserID: " + order.getUserId());
-
     }
 
     @Override
