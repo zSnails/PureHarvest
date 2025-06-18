@@ -30,6 +30,7 @@ public class ShoppingCartViewModel extends ViewModel {
     private final List<ItemOperationEventListener> operationListeners = new LinkedList<>();
     public MutableLiveData<List<CartDisplayItem>> items;
     public MutableLiveData<Double> subtotal = new MutableLiveData<>(0.0);
+    private OrderCreatedListener orderCreatedListener;
 
     @Inject
     public ShoppingCartViewModel(
@@ -52,6 +53,19 @@ public class ShoppingCartViewModel extends ViewModel {
 
     public void getCartDisplayItems() {
         if (this.items == null) this.items = repo.getCartDisplayItems();
+    }
+
+    public void createOrder(Order order, OrderCreatedListener listener) {
+        executor.execute(() -> {
+            this.db.collection("orders").add(order)
+                    .addOnSuccessListener(a -> {
+                                a.get().addOnSuccessListener(b -> {
+                                    Order _order = b.toObject(Order.class);
+                                    listener.onOrderCreated(_order);
+                                });
+                            }
+                    );
+        });
     }
 
     private void computeSubTotal() {
@@ -129,6 +143,10 @@ public class ShoppingCartViewModel extends ViewModel {
             operationListener.onItemRemoved(item, idx);
         }
         computeSubTotal();
+    }
+
+    public interface OrderCreatedListener {
+        void onOrderCreated(Order order);
     }
 
     public interface ItemOperationEventListener {
