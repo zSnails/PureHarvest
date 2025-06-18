@@ -34,6 +34,7 @@ public class DashboardFragment extends Fragment {
         binding.buttonCompanyProfile.setOnClickListener(v-> Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_profileFragment));
         binding.buttonCompanyProducts.setOnClickListener((v-> Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_productsOptionsFragment)));
         binding.buttonCompanyOrders.setOnClickListener((v-> Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_companyOrderListFragment)));
+        binding.buttonCompanyBuyers.setOnClickListener(v-> Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_companyBuyersListFragment));
 
         return root;
     }

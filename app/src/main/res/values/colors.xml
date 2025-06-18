@@ -19,4 +19,5 @@
     <color name="text_secondary_on_background">#8A000000</color>
     <color name="subtle_divider">#1F000000</color>
     <color name="link_blue">#FFBB86FC</color>
+    <color name="orange">#FFA500</color>
 </resources>

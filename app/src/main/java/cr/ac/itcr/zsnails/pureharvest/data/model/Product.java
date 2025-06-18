@@ -14,6 +14,7 @@ public class Product {
     private String sellerId;
     private int totalUnitsSold;
     private Double saleDiscount;
+    private List<Object> standOutPayment;
 
     // Optionals for coffee
     private String certifications;
@@ -26,6 +27,8 @@ public class Product {
 
     public Product() {
         // Required empty constructor for Firebase
+        this.imageUrls = new ArrayList<>();
+        this.standOutPayment = new ArrayList<>();
     }
 
     public Product(String name, String type, double rating, double price, String description,
@@ -48,6 +51,7 @@ public class Product {
         this.preparation = preparation;
         this.totalUnitsSold = 0;
         this.saleDiscount = 0.0;
+        this.standOutPayment = new ArrayList<>();
     }
 
     // --- Getters y Setters ---
@@ -132,4 +136,8 @@ public class Product {
     public String getFirstImageUrl() {
         return (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
     }
+
+    public List<Object> getStandOutPayment() { return standOutPayment; }
+
+    public void setStandOutPayment(List<Object> standOutPayment) { this.standOutPayment = standOutPayment; }
 }
