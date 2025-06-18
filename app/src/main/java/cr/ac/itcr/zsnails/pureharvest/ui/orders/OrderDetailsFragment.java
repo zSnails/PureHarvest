@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import cr.ac.itcr.zsnails.pureharvest.MainActivity;
 import cr.ac.itcr.zsnails.pureharvest.R;
 
 
@@ -45,6 +46,7 @@ public class OrderDetailsFragment extends Fragment {
     private static final String TAG = "OrderDetailsFragment";
 
     private String orderId;
+    private String sellerIdForFiltering;
     private FirebaseFirestore db;
     private Order currentOrder;
     private User currentUserDetails;
@@ -81,6 +83,7 @@ public class OrderDetailsFragment extends Fragment {
         }
         db = FirebaseFirestore.getInstance();
         productDisplayListWithQuantity = new ArrayList<>();
+        sellerIdForFiltering = MainActivity.idGlobalUser;
     }
 
     @Nullable
@@ -287,22 +290,25 @@ public class OrderDetailsFragment extends Fragment {
                 }
 
                 if (productDocument.exists()) {
-                    String name = productDocument.getString("name");
-                    Double priceDouble = productDocument.getDouble("price");
-                    double price = (priceDouble != null) ? priceDouble : 0.0;
-                    List<String> imageUrls = (List<String>) productDocument.get("imageUrls");
-                    String imageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
+                    String productSellerId = productDocument.getString("sellerId");
+                    if (sellerIdForFiltering != null && sellerIdForFiltering.equals(productSellerId)) {
+                        String name = productDocument.getString("name");
+                        Double priceDouble = productDocument.getDouble("price");
+                        double price = (priceDouble != null) ? priceDouble : 0.0;
+                        List<String> imageUrls = (List<String>) productDocument.get("imageUrls");
+                        String imageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
 
-                    orderTotal += (price * productQuantityForThisItem);
+                        orderTotal += (price * productQuantityForThisItem);
 
-                    PurchasedProductOrder product = new PurchasedProductOrder(
-                            productDocument.getId(),
-                            name != null ? name : getString(R.string.not_available_short),
-                            price,
-                            imageUrl,
-                            productQuantityForThisItem
-                    );
-                    fetchedProducts.add(product);
+                        PurchasedProductOrder product = new PurchasedProductOrder(
+                                productDocument.getId(),
+                                name != null ? name : getString(R.string.not_available_short),
+                                price,
+                                imageUrl,
+                                productQuantityForThisItem
+                        );
+                        fetchedProducts.add(product);
+                    }
                 }
             }
             updateProductDisplay(fetchedProducts);

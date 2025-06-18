@@ -8,8 +8,8 @@
     android:layout_marginVertical="6dp"
     app:cardCornerRadius="12dp"
     app:cardElevation="4dp"
-    app:strokeWidth="1dp"
-    app:strokeColor="#1F000000">
+    app:strokeColor="#1F000000"
+    app:strokeWidth="1dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -36,7 +36,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/accent_view"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Comprador Alfa" />
+            tools:text="Travis Barela" />
 
         <View
             android:id="@+id/divider"
@@ -60,6 +60,17 @@
             app:layout_constraintTop_toBottomOf="@+id/divider" />
 
         <TextView
+            android:id="@+id/textViewBuyerId"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            app:layout_constraintBaseline_toBaselineOf="@+id/textViewBuyerIdLabel"
+            app:layout_constraintEnd_toEndOf="@+id/textViewBuyerName"
+            app:layout_constraintStart_toEndOf="@+id/textViewBuyerIdLabel"
+            tools:text="DjVIVXnbAfMeoyZk5MQ7r8IFIkR2" />
+
+        <TextView
             android:id="@+id/textViewItemsBoughtLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -68,37 +79,17 @@
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/textViewBuyerIdLabel"
-            app:layout_constraintTop_toBottomOf="@+id/textViewBuyerIdLabel" />
-
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/label_barrier"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="end"
-            app:barrierMargin="8dp"
-            app:constraint_referenced_ids="textViewBuyerIdLabel,textViewItemsBoughtLabel" />
-
-        <TextView
-            android:id="@+id/textViewBuyerId"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-            app:layout_constraintBottom_toBottomOf="@+id/textViewBuyerIdLabel"
-            app:layout_constraintEnd_toEndOf="@+id/textViewBuyerName"
-            app:layout_constraintStart_toEndOf="@+id/label_barrier"
-            app:layout_constraintTop_toTopOf="@+id/textViewBuyerIdLabel"
-            tools:text="CB001" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewBuyerId" />
 
         <TextView
             android:id="@+id/textViewItemsBought"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-            app:layout_constraintBottom_toBottomOf="@+id/textViewItemsBoughtLabel"
-            app:layout_constraintEnd_toEndOf="@+id/textViewBuyerId"
-            app:layout_constraintStart_toStartOf="@+id/textViewBuyerId"
-            app:layout_constraintTop_toTopOf="@+id/textViewItemsBoughtLabel"
-            tools:text="15" />
+            app:layout_constraintBaseline_toBaselineOf="@+id/textViewItemsBoughtLabel"
+            app:layout_constraintStart_toEndOf="@+id/textViewItemsBoughtLabel"
+            tools:text="2" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonViewDetailsBuyer"
