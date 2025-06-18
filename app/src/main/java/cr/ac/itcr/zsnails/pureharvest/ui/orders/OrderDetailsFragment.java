@@ -230,7 +230,7 @@ public class OrderDetailsFragment extends Fragment {
                 });
     }
 
-    private void fetchProductsForDisplay(List<Map<String, Object>> productRefs) {
+    private void fetchProductsForDisplay(List<Order.OrderItem> productRefs) {
         if (productRefs == null || productRefs.isEmpty()) {
             updateProductDisplay(new ArrayList<>());
             displayOrderTotal(0.0);
@@ -241,44 +241,26 @@ public class OrderDetailsFragment extends Fragment {
         List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
         List<Integer> quantitiesAssociatedWithTasks = new ArrayList<>();
 
-        for (Map<String, Object> productRef : productRefs) {
-            Object idObject = productRef.get("id");
-            String productIdString = (idObject instanceof String) ? (String) idObject : null;
+        for (Order.OrderItem productRef : productRefs) {
+            // Object idObject = productRef.id;
+            // String productIdString = (idObject instanceof String) ? (String) idObject : null;
+            String productIdString = productRef.id;
 
-            Object amountObject = productRef.get("amount");
-            int currentProductQuantity = 1;
+            //Object amountObject = productRef.amount;
+            int currentProductQuantity = productRef.amount;
 
-            if (amountObject != null) {
-                if (amountObject instanceof String) {
-                    try {
-                        currentProductQuantity = Integer.parseInt((String) amountObject);
-                        if (currentProductQuantity <= 0) {
-                            currentProductQuantity = 1;
-                        }
-                    } catch (NumberFormatException e) {
-                        Log.w(TAG, "Product amount ('" + amountObject.toString() + "') is a String but not a valid integer. Defaulting to 1 for product ID: " + (productIdString != null ? productIdString : "UNKNOWN_ID"), e);
-                    }
-                } else if (amountObject instanceof Number) {
-                    currentProductQuantity = ((Number) amountObject).intValue();
-                    if (currentProductQuantity <= 0) {
-                        currentProductQuantity = 1;
-                    }
-                } else {
-                    Log.w(TAG, "Product amount ('" + amountObject.toString() + "') in productsBought is not a String or Number. Type: " + amountObject.getClass().getName() + ". Defaulting to 1 for product ID: " + (productIdString != null ? productIdString : "UNKNOWN_ID"));
-                }
-            } else {
-                Log.w(TAG, "Product amount is null in productsBought. Defaulting to 1 for product ID: " + (productIdString != null ? productIdString : "UNKNOWN_ID"));
+            if (currentProductQuantity <= 0) {
+                currentProductQuantity = 1;
             }
 
-
-            if (productIdString != null && !productIdString.isEmpty()) {
-                tasks.add(db.collection("products").document(productIdString).get());
-                quantitiesAssociatedWithTasks.add(currentProductQuantity);
-            } else if (idObject != null) {
-                Log.w(TAG, "Product ID in productsBought is not a String: " + idObject.getClass().getName());
-            } else {
-                Log.w(TAG, "Product ID is null in productsBought.");
-            }
+            //if (productIdString != null && !productIdString.isEmpty()) {
+            tasks.add(db.collection("products").document(productIdString).get());
+            quantitiesAssociatedWithTasks.add(currentProductQuantity);
+            //} else if (idObject != null) {
+            //    Log.w(TAG, "Product ID in productsBought is not a String: " + idObject.getClass().getName());
+            //} else {
+            //    Log.w(TAG, "Product ID is null in productsBought.");
+            //}
         }
 
         if (tasks.isEmpty()) {
