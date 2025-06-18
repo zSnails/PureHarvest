@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="8dp"
+    android:layout_marginVertical="6dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="#1F000000">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/accent_view"
+            android:layout_width="6dp"
+            android:layout_height="0dp"
+            android:background="@color/leaf_green"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textViewBuyerName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            android:textColor="?android:attr/textColorPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/accent_view"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Comprador Alfa" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintEnd_toEndOf="@+id/textViewBuyerName"
+            app:layout_constraintStart_toStartOf="@+id/textViewBuyerName"
+            app:layout_constraintTop_toBottomOf="@id/textViewBuyerName" />
+
+        <TextView
+            android:id="@+id/textViewBuyerIdLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/label_id"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/textViewBuyerName"
+            app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+        <TextView
+            android:id="@+id/textViewItemsBoughtLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/label_items_bought"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/textViewBuyerIdLabel"
+            app:layout_constraintTop_toBottomOf="@+id/textViewBuyerIdLabel" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/label_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="end"
+            app:barrierMargin="8dp"
+            app:constraint_referenced_ids="textViewBuyerIdLabel,textViewItemsBoughtLabel" />
+
+        <TextView
+            android:id="@+id/textViewBuyerId"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewBuyerIdLabel"
+            app:layout_constraintEnd_toEndOf="@+id/textViewBuyerName"
+            app:layout_constraintStart_toEndOf="@+id/label_barrier"
+            app:layout_constraintTop_toTopOf="@+id/textViewBuyerIdLabel"
+            tools:text="CB001" />
+
+        <TextView
+            android:id="@+id/textViewItemsBought"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewItemsBoughtLabel"
+            app:layout_constraintEnd_toEndOf="@+id/textViewBuyerId"
+            app:layout_constraintStart_toStartOf="@+id/textViewBuyerId"
+            app:layout_constraintTop_toTopOf="@+id/textViewItemsBoughtLabel"
+            tools:text="15" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonViewDetailsBuyer"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/leaf_green"
+            android:paddingHorizontal="16dp"
+            android:text="@string/button_view_details"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            app:cornerRadius="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewItemsBoughtLabel" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

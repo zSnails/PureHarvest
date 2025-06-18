@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
@@ -97,10 +98,58 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
 
         // Observe all products
         viewModel.getProducts().observe(getViewLifecycleOwner(), products -> {
-            adapter.updateData(products);
+            // Create a mutable copy of the products list for the random section, to sort it
+            // without affecting the original list used for other sections.
+            List<Product> productsForRandomList = new ArrayList<>(products);
+
+            // Sort the list for the random section based on standOutPayment.
+            // Products with standOutPayment true come first, ordered by timestamp.
+            Collections.sort(productsForRandomList, (p1, p2) -> {
+                boolean p1Paid = false;
+                com.google.firebase.Timestamp p1Timestamp = null;
+                List<Object> p1StandOut = p1.getStandOutPayment();
+                if (p1StandOut != null && p1StandOut.size() == 2 && p1StandOut.get(0) instanceof Boolean && (Boolean) p1StandOut.get(0)) {
+                    p1Paid = true;
+                    if (p1StandOut.get(1) instanceof com.google.firebase.Timestamp) {
+                        p1Timestamp = (com.google.firebase.Timestamp) p1StandOut.get(1);
+                    } else if (p1StandOut.get(1) instanceof java.util.Date) {
+                        p1Timestamp = new com.google.firebase.Timestamp((java.util.Date) p1StandOut.get(1));
+                    }
+                }
+
+                boolean p2Paid = false;
+                com.google.firebase.Timestamp p2Timestamp = null;
+                List<Object> p2StandOut = p2.getStandOutPayment();
+                if (p2StandOut != null && p2StandOut.size() == 2 && p2StandOut.get(0) instanceof Boolean && (Boolean) p2StandOut.get(0)) {
+                    p2Paid = true;
+                    if (p2StandOut.get(1) instanceof com.google.firebase.Timestamp) {
+                        p2Timestamp = (com.google.firebase.Timestamp) p2StandOut.get(1);
+                    } else if (p2StandOut.get(1) instanceof java.util.Date) {
+                        p2Timestamp = new com.google.firebase.Timestamp((java.util.Date) p2StandOut.get(1));
+                    }
+                }
+
+                if (p1Paid && !p2Paid) return -1;
+                if (!p1Paid && p2Paid) return 1;
+                if (p1Paid && p2Paid) {
+                    if (p1Timestamp != null && p2Timestamp != null) {
+                        return p1Timestamp.compareTo(p2Timestamp);
+                    } else if (p1Timestamp != null) {
+                        return -1;
+                    } else if (p2Timestamp != null) {
+                        return 1;
+                    }
+
+                    return 0;
+                }
+
+                return 0;
+            });
+
+            adapter.updateData(productsForRandomList); // Use the sorted list for the random products adapter
 
             // Obtain Top 10 Best Sellers
-            List<Product> topSold = products.stream()
+            List<Product> topSold = products.stream() // Use the original 'products' list here
                     .sorted((p1, p2) -> Integer.compare(p2.getTotalUnitsSold(), p1.getTotalUnitsSold()))
                     .limit(10)
                     .collect(Collectors.toList());

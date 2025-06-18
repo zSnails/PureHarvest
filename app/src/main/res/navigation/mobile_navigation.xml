@@ -31,6 +31,9 @@
         <action
             android:id="@+id/action_navigation_dashboard_to_settingsFragment"
             app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_navigation_dashboard_to_companyBuyersListFragment"
+            app:destination="@id/companyBuyersListFragment" />
     </fragment>
 
     <fragment
@@ -53,7 +56,7 @@
         android:id="@+id/navigation_shopping_cart"
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.cart.ShoppingCartFragment"
         android:label="@string/title_shopping_cart"
-        tools:layout="@layout/fragment_account">
+        tools:layout="@layout/fragment_account"> <!-- Probablemente quisiste fragment_shopping_cart aquí -->
         <action
             android:id="@+id/action_navigation_account_to_profileFragment"
             app:destination="@id/profileFragment" />
@@ -120,6 +123,9 @@
         <action
             android:id="@+id/action_editProductFragment_to_manageImagesFragment"
             app:destination="@id/manageImagesFragment" />
+        <action
+            android:id="@+id/action_editProductFragment_to_standOutPaymentFragment"
+            app:destination="@id/standOutPaymentFragment" />
     </fragment>
     <fragment
         android:id="@+id/manageImagesFragment"
@@ -128,7 +134,7 @@
         tools:layout="@layout/fragment_manage_images" />
     <fragment
         android:id="@+id/companyOrderListFragment"
-        android:name="cr.ac.itcr.zsnails.pureharvest.ui.orders.companyOrderListFragment"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.orders.CompanyOrderListFragment"
         android:label="@string/company_order_list"
         tools:layout="@layout/fragment_company_order_list">
         <action
@@ -145,6 +151,43 @@
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.companyContact.companyContactFragment"
         android:label="@string/company_contact"
         tools:layout="@layout/fragment_company_contact" />
+
+    <!-- INICIO DE CAMBIOS COMBINADOS -->
+    <fragment
+        android:id="@+id/companyBuyersListFragment"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.company_buyers.CompanyBuyersListFragment"
+        android:label="@string/fragment_title_company_buyers_list"
+        tools:layout="@layout/fragment_company_buyers_list" >
+        <action
+            android:id="@+id/action_companyBuyersListFragment_to_companyBuyerDetailsFragment"
+            app:destination="@id/companyBuyerDetailsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/standOutPaymentFragment"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.company_products.StandOutPaymentFragment"
+        android:label="@string/fragment_stand_out_payment"
+        tools:layout="@layout/fragment_stand_out_payment" >
+        <argument
+            android:name="productId"
+            app:argType="string" />
+    </fragment>
+
+    <activity
+        android:id="@+id/createProductActivity"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.seller.CreateProductActivity"
+        android:label="CreateProductActivity" />
+
+    <action
+        android:id="@+id/action_global_to_standOutPaymentFragment"
+        app:destination="@id/standOutPaymentFragment" />
+    <fragment
+        android:id="@+id/companyBuyerDetailsFragment"
+        android:name="cr.ac.itcr.zsnails.pureharvest.ui.company_buyers.CompanyBuyerDetailsFragment"
+        android:label="@string/fragment_company_buyer_details"
+
+        tools:layout="@layout/fragment_company_buyer_details" />
+
     <fragment
         android:id="@+id/manageCouponsFragment"
         android:name="cr.ac.itcr.zsnails.pureharvest.ui.coupons.ManageCouponsFragment"

@@ -1,9 +1,10 @@
-// File: cr.ac.itcr.zsnails.pureharvest.ui.orders.Order.java
 package cr.ac.itcr.zsnails.pureharvest.ui.orders;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentId;
-// Ya no necesitas java.util.List si solo tienes un String
+
+import java.util.List;
+import java.util.Map; // Import Map
 
 public class Order {
     @DocumentId
@@ -12,21 +13,21 @@ public class Order {
     private Timestamp date;
     private String userId;
     private String sellerId;
-    private String productId; // CAMBIO: De List<String> productIDs a String productId
+    private Integer status;
+    private List<Map<String, Object>> productsBought;
 
     public Order() {
-        // Constructor vacío requerido por Firestore
+
     }
 
-    // Constructor actualizado (opcional)
-    public Order(Timestamp date, String userId, String sellerId, String productId) {
+    public Order(Timestamp date, String userId, String sellerId, List<Map<String, Object>> productsBought, Integer status) {
         this.date = date;
         this.userId = userId;
         this.sellerId = sellerId;
-        this.productId = productId; // CAMBIO
+        this.productsBought = productsBought;
+        this.status = status;
     }
 
-    // Getters y Setters
     public String getDocumentId() {
         return documentId;
     }
@@ -59,12 +60,19 @@ public class Order {
         this.sellerId = sellerId;
     }
 
-    // CAMBIO: Getters y Setters para el String productId
-    public String getProductId() {
-        return productId;
+    public List<Map<String, Object>> getProductsBought() { // Getter updated
+        return productsBought;
     }
 
-    public void setProductId(String productId) {
-        this.productId = productId;
+    public void setProductsBought(List<Map<String, Object>> productsBought) { // Setter updated
+        this.productsBought = productsBought;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

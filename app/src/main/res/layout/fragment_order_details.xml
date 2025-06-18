@@ -99,20 +99,44 @@
                 android:layout_marginVertical="16dp"/>
 
             <TextView
-                android:id="@+id/tvLabelSellerId"
+                android:id="@+id/tvLabelOrderStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/sold_by"
+                android:text="@string/order_status_label"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                android:textColor="@color/text_secondary_on_background"/>
-            <TextView
-                android:id="@+id/tvSellerId"
-                android:layout_width="wrap_content"
+                android:textColor="@color/text_secondary_on_background"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="Tienda PureHarvest (ID: Seller789)"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                android:textColor="@color/text_primary_on_background"
-                android:layout_marginBottom="24dp"/>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="24dp">
+
+                <TextView
+                    android:id="@+id/tvOrderStatus"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    tools:text="Delivered"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    android:textStyle="bold"
+                    android:textColor="@color/leaf_green"
+                    />
+
+                <Button
+                    android:id="@+id/btnChangeStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:text="@string/change_status_button"
+                    android:textAllCaps="false"
+                    android:textSize="14sp"
+                    android:textColor="#FFFFFF"
+                    android:background="@drawable/rounded_button"
+                    android:paddingHorizontal="16dp"
+                    />
+            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -121,26 +145,116 @@
                 android:layout_marginVertical="16dp"/>
 
             <TextView
-                android:id="@+id/tvLabelUserId"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/customer"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                android:textColor="@color/text_secondary_on_background"/>
+                android:text="@string/customer_details_title"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                android:textColor="@color/leaf_green"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"/>
+
             <TextView
-                android:id="@+id/tvUserId"
+                android:id="@+id/tvLabelUserFullName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="Ana Gómez (ID: User456)"
+                android:text="@string/customer_name_label"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                android:textColor="@color/text_secondary_on_background"
+                android:visibility="gone"/>
+            <TextView
+                android:id="@+id/tvUserFullName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Ana Sofía Rodríguez Pérez"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:textColor="@color/text_primary_on_background"
-                android:layout_marginBottom="24dp"/>
+                android:layout_marginBottom="12dp"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/tvLabelUserEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/customer_email_label"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                android:textColor="@color/text_secondary_on_background"
+                android:visibility="gone"/>
+            <TextView
+                android:id="@+id/tvUserEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="ana.rodriguez@example.com"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:textColor="@color/text_primary_on_background"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/tvLabelUserPhone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/customer_phone_label"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                android:textColor="@color/text_secondary_on_background"
+                android:visibility="gone"/>
+            <TextView
+                android:id="@+id/tvUserPhone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="8888-8888"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:textColor="@color/text_primary_on_background"
+                android:layout_marginBottom="24dp"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/btnContactBuyer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/contact_buyer_button"
+                android:textAllCaps="false"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/rounded_button"
+                android:textColor="#FFFFFF"
+                android:visibility="gone"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/subtle_divider"
                 android:layout_marginVertical="16dp"/>
+
+            <LinearLayout
+                android:id="@+id/layoutOrderTotal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center_horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tvLabelOrderTotal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/order_total_label"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    android:textColor="@color/text_secondary_on_background"
+                    android:layout_marginEnd="8dp"/>
+
+                <TextView
+                    android:id="@+id/tvOrderTotalValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="₡12,345.00"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                    android:textColor="@color/leaf_green"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
 
             <TextView
                 android:layout_width="match_parent"
@@ -152,58 +266,16 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"/>
 
-            <TextView
-                android:id="@+id/tvLabelProductId"
-                android:layout_width="wrap_content"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewOrderProductsWithQuantity"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/product_id"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                android:textColor="@color/text_secondary_on_background"/>
-            <TextView
-                android:id="@+id/tvProductIds"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="PROD-FRUIT-APPLE-001"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                android:textColor="@color/text_primary_on_background"
-                android:layout_marginBottom="12dp"/>
-
-            <TextView
-                android:id="@+id/tvLabelProductName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/product_name"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                android:textColor="@color/text_secondary_on_background"
-                android:visibility="gone" />
-            <TextView
-                android:id="@+id/tvProductName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="Manzana Fuji Premium"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                android:textColor="@color/text_primary_on_background"
-                android:layout_marginBottom="12dp"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/tvLabelProductPrice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/product_price"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                android:textColor="@color/text_secondary_on_background"
-                android:visibility="gone" />
-            <TextView
-                android:id="@+id/tvProductPrice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="₡1,850.00"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                android:textStyle="bold"
-                android:textColor="@color/leaf_green"
                 android:layout_marginBottom="24dp"
-                android:visibility="gone" />
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                tools:listitem="@layout/item_purchased_product_order"
+                tools:itemCount="2"/>
+
         </LinearLayout>
     </ScrollView>
 
