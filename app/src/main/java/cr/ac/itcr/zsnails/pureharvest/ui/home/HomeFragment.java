@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.chip.Chip;
 import com.google.android.material.slider.Slider;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ import cr.ac.itcr.zsnails.pureharvest.domain.repository.ShoppingCartRepository;
 import cr.ac.itcr.zsnails.pureharvest.entities.CartItem;
 import cr.ac.itcr.zsnails.pureharvest.ui.cart.ShoppingCartViewModel;
 import cr.ac.itcr.zsnails.pureharvest.ui.client.ViewProductActivity;
+import cr.ac.itcr.zsnails.pureharvest.util.ProductFilterUtils;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
@@ -85,6 +87,18 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
         View filtersLayout = searchToolsSection.findViewById(R.id.advancedFiltersLayout);
         Slider priceSlider = searchToolsSection.findViewById(R.id.priceSlider);
         TextView priceValue = searchToolsSection.findViewById(R.id.priceValue);
+
+        Chip chipType = searchToolsSection.findViewById(R.id.chipFilterType);
+        Chip chipAcidity = searchToolsSection.findViewById(R.id.chipFilterAcidity);
+        Chip chipName = searchToolsSection.findViewById(R.id.chipFilterName);
+        // Set initial chip selection
+        chipName.setChecked(true);
+
+        // Set initial slider value to max
+        priceSlider.setValue(priceSlider.getValueTo()); // this is 20000f
+
+        // Update the price label accordingly
+        priceValue.setText("₡" + String.format("%,d", (int) priceSlider.getValue()));
 
         btnAdvanced.setOnClickListener(v -> {
             if (filtersLayout.getVisibility() == View.GONE) {
@@ -185,12 +199,24 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
                     binding.containerSections.removeView(specialOffersSection);
 
                     // Show only filtered products
-                    List<Product> filtered = allProducts.stream()
-                            .filter(p -> p.getName().toLowerCase().contains(query))
-                            .collect(Collectors.toList());
-                    adapter.updateData(filtered);
+                    float selectedPrice = priceSlider.getValue();
+                    applyFilters(query, allProducts, adapter, chipName, chipType, chipAcidity, selectedPrice);
                 }
             }
+        });
+
+        View.OnClickListener filterChangeListener = v -> {
+            String currentQuery = searchEditText.getText().toString().trim().toLowerCase();
+            float selectedPrice = priceSlider.getValue();
+            applyFilters(currentQuery, allProducts, adapter, chipName, chipType, chipAcidity, selectedPrice);
+        };
+
+        chipType.setOnClickListener(filterChangeListener);
+        chipAcidity.setOnClickListener(filterChangeListener);
+
+        priceSlider.addOnChangeListener((slider, value, fromUser) -> {
+            String currentQuery = searchEditText.getText().toString().trim().toLowerCase();
+            applyFilters(currentQuery, allProducts, adapter, chipName, chipType, chipAcidity, value);
         });
     }
 
@@ -214,5 +240,20 @@ public class HomeFragment extends Fragment implements ProductAdapter.AddToCartLi
         Intent intent = new Intent(requireContext(), ViewProductActivity.class);
         intent.putExtra("product_id", product.getId());
         startActivity(intent);
+    }
+
+    private void applyFilters(String searchQuery, List<Product> products, ProductAdapter adapter,
+                              Chip chipName, Chip chipType, Chip chipAcidity, float maxPrice) {
+
+        List<Product> filtered = ProductFilterUtils.filterProducts(
+                searchQuery,
+                products,
+                chipName.isChecked(),
+                chipType.isChecked(),
+                chipAcidity.isChecked(),
+                maxPrice
+        );
+
+        adapter.updateData(filtered);
     }
 }

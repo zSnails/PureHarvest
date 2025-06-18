@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/advancedFiltersLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -39,35 +40,36 @@
         android:text="@string/base_price_slider"
         android:layout_marginBottom="8dp"/>
 
-    <CheckBox
-        android:id="@+id/filterName"
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chipGroupFilters"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/filter_by_name"
-        android:paddingVertical="4dp"
-        android:textSize="14sp" />
+        android:layout_marginTop="8dp"
+        app:singleSelection="false"
+        app:chipSpacing="8dp">
 
-    <CheckBox
-        android:id="@+id/filterType"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/filter_by_type"
-        android:paddingVertical="4dp"
-        android:textSize="14sp" />
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipFilterName"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:text="@string/filter_by_name"
+            android:checkable="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
-    <CheckBox
-        android:id="@+id/filterLocation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/filter_by_business_location"
-        android:paddingVertical="4dp"
-        android:textSize="14sp" />
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipFilterType"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:text="@string/filter_by_type"
+            android:checkable="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
-    <CheckBox
-        android:id="@+id/filterAcidity"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/filter_by_coffee_acidity"
-        android:paddingVertical="4dp"
-        android:textSize="14sp" />
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipFilterAcidity"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:text="@string/filter_by_coffee_acidity"
+            android:checkable="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </com.google.android.material.chip.ChipGroup>
 </LinearLayout>
