@@ -34,8 +34,9 @@ public final class ShoppingCartFragment extends Fragment
         implements MenuProvider, Card.AmountTapListener,
         UpdateItemAmountDialog.ItemAmountAcceptListener {
 
+    @Inject
+    public FirebaseAuth auth;
     private FragmentShoppingCartBinding binding;
-
     private ShoppingCartViewModel shoppingCart;
     private AlertDialog deletionDialog;
     private ShoppingCartAdapter adapter;

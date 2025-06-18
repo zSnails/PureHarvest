@@ -4,6 +4,7 @@ import android.content.Context;
 
 import androidx.room.Room;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.concurrent.ExecutorService;
@@ -44,5 +45,11 @@ public class AppModule {
     @Singleton
     public FirebaseFirestore provideFirebaseFirestore() {
         return FirebaseFirestore.getInstance();
+    }
+
+    @Provides
+    @Singleton
+    public FirebaseAuth provideFirebaseAuth() {
+        return FirebaseAuth.getInstance();
     }
 }
