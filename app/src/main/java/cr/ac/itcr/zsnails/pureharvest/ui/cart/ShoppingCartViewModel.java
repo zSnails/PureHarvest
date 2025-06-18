@@ -18,6 +18,7 @@ import javax.inject.Inject;
 import cr.ac.itcr.zsnails.pureharvest.domain.repository.ShoppingCartRepository;
 import cr.ac.itcr.zsnails.pureharvest.entities.CartDisplayItem;
 import cr.ac.itcr.zsnails.pureharvest.entities.CartItem;
+import cr.ac.itcr.zsnails.pureharvest.ui.orders.Order;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
 @HiltViewModel
