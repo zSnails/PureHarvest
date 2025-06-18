@@ -79,6 +79,28 @@ public final class ShoppingCartFragment extends Fragment
         return this.binding.getRoot();
     }
 
+    private void onCheckout(View view) {
+        // STATUS: 0 = BODEGA, 1 = TRANSITO, 2 = ENTREGADO
+        List<Order.OrderItem> products = shoppingCart.items.getValue()
+                .stream()
+                .map(
+                        p -> new Order.OrderItem(p.productId, p.amount))
+                .collect(Collectors.toList());
+        Order order = new Order(
+                Timestamp.now(),
+                auth.getCurrentUser().getUid(),
+                "NO APLICABLE",
+                products,
+                0);
+        // TODO: poner un spinner de loaded order
+        shoppingCart.createOrder(order, this::onOrderCreated);
+    }
+
+    public void onOrderCreated(Order order) {
+        Toast.makeText(requireContext(), "The order has been created (thank mathew for me not being able to show you the order)", Toast.LENGTH_SHORT).show();
+        shoppingCart.removeAllItems();
+    }
+
     private void setupSwipeHandler() {
         ItemTouchHelper.SimpleCallback swipeHandler = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             @Override
