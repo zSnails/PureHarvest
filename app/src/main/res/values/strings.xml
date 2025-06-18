@@ -454,6 +454,14 @@
     <string name="error_aftertaste_required">Aftertaste is required for coffee</string>
     <string name="error_ingredients_required">Ingredients are required for coffee</string>
     <string name="error_preparation_required">Preparation is required for coffee</string>
+    <string name="searchbar_placeholder">Look for coffee, honey or vegetables...</string>
+    <string name="advanced_search_button_text">Filter by...</string>
+    <string name="price_range">Price Range</string>
+    <string name="filter_by_name">Filter by Name</string>
+    <string name="filter_by_type">Filter by Type</string>
+    <string name="filter_by_business_location">Filter by Business Location</string>
+    <string name="filter_by_coffee_acidity">Filter by Coffee Acidity</string>
+    <string name="base_price_slider">₡10,000</string>
 
     <string name="title_buyer_details">Buyer Details</string>
     <string name="button_contact_buyer">Contact Buyer</string>
