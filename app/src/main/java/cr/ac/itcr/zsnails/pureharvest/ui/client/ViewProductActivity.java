@@ -1,6 +1,7 @@
 package cr.ac.itcr.zsnails.pureharvest.ui.client;
 
 import android.os.Bundle;
+import android.security.keystore.UserNotAuthenticatedException;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
@@ -11,8 +12,6 @@ import android.content.Intent;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.List;
 
 import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.data.model.Product;
@@ -25,11 +24,11 @@ import cr.ac.itcr.zsnails.pureharvest.ui.client.ImageSliderAdapter;
 @AndroidEntryPoint
 public class ViewProductActivity extends AppCompatActivity {
 
+    private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+    private ImageView imageMain;
     private LinearLayout miniImagesContainer;
     private TextView productName, productDescription, productType, ratingCount, productPrice;
     private RatingBar productRating;
-
-    private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     private String productId;
     private Button btnIncrease, btnDecrease;
     private TextView tvQuantity;
@@ -40,6 +39,7 @@ public class ViewProductActivity extends AppCompatActivity {
     private boolean isFavorite = false;
     private LinearLayout optionalFieldsContainer;
     private ShoppingCartViewModel shoppingCartViewModel;
+    private ViewProductViewModel viewProductViewModel;
     private Button btnViewProfile;
     private Product currentProduct;
     private ViewPager2 imageSlider;
@@ -51,6 +51,7 @@ public class ViewProductActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_product);
         shoppingCartViewModel = new ViewModelProvider(this).get(ShoppingCartViewModel.class);
+        viewProductViewModel = new ViewModelProvider(this).get(ViewProductViewModel.class);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -63,7 +64,18 @@ public class ViewProductActivity extends AppCompatActivity {
             finish();
             return;
         }
-
+        viewProductViewModel.productId = productId;
+        viewProductViewModel.favorite.observe(this, (fav) -> {
+            btnFavorite.setImageResource(fav ? R.drawable.ic_favorite : R.drawable.ic_favorite_border);
+            btnFavorite.setColorFilter(
+                    ContextCompat.getColor(this, fav ? R.color.red : android.R.color.darker_gray)
+            );
+        });
+        try {
+            viewProductViewModel.loadFavoriteStatus();
+        } catch (UserNotAuthenticatedException e) {
+            throw new RuntimeException(e);
+        }
 
         initViews();
         loadProductFromFirestore();
@@ -221,6 +233,7 @@ public class ViewProductActivity extends AppCompatActivity {
 
         dialog.show();
     }
+
     private void addOptionalField(String label, String value) {
         if (value != null && !value.trim().isEmpty()) {
             TextView labelView = new TextView(this);
@@ -237,6 +250,7 @@ public class ViewProductActivity extends AppCompatActivity {
             optionalFieldsContainer.addView(valueView);
         }
     }
+
     private void updateQuantityAndPrice() {
         tvQuantity.setText(String.valueOf(quantity));
         double totalPrice = unitPrice * quantity;
@@ -245,12 +259,16 @@ public class ViewProductActivity extends AppCompatActivity {
     }
 
     private void toggleFavorite() {
-        isFavorite = !isFavorite;
-        btnFavorite.setImageResource(isFavorite ? R.drawable.ic_favorite : R.drawable.ic_favorite_border);
-        btnFavorite.setColorFilter(
-                ContextCompat.getColor(this, isFavorite ? R.color.red : android.R.color.darker_gray)
-        );
+        this.isFavorite = !isFavorite; // esto es un hack terrible, esto no debería estar aquí, isFavorite mínimo debería ser el mismo que en el view model
+                                       // (esto lo hizo fabs originalmente)
+        viewProductViewModel.favorite.setValue(this.isFavorite);
+        try {
+            viewProductViewModel.toggleFavorite();
+        } catch (UserNotAuthenticatedException e) {
+            throw new RuntimeException(e);
+        }
     }
+
     @Override
     public boolean onSupportNavigateUp() {
         finish();

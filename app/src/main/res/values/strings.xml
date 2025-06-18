@@ -391,6 +391,9 @@
     <string name="settings">Settings</string>
     <string name="company_products">Company Products</string>
     <string name="company_orders">Company Orders</string>
+    <string name="login_notice">To view your favorites list you must be logged in</string>
+    <string name="favorite_list_add_to_shopping_cart">Add to Cart</string>
+    <string name="favorite_card_item_name">[PRODUCT NAME]</string>
 
     <!-- Strings from feature/company-buyers-list -->
     <string name="company_buyers_list">See buyers list</string>
@@ -577,7 +580,4 @@
 
     <string name="order_total_label">Order Total:</string>
     <string name="order_total_price_format">₡%.2f</string>
-
-
-
 </resources>

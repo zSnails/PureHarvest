@@ -5,77 +5,65 @@
     android:id="@+id/account_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
-
-    android:padding="24dp">
-
-    <!-- Logo arriba -->
+    android:background="@android:color/white" >
 
     <!-- Texto Pure -->
 
-    <!-- Texto Harvest -->
-
-    <!-- Botón Log In -->
-
-    <ImageView
-        android:id="@+id/img_logo"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_marginTop="30dp"
-        android:contentDescription="@string/app_name"
-        android:scaleType="centerCrop"
-        android:src="@drawable/pessi"
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/login_notice_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:constraint_referenced_ids="linearLayout"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tv_pure"
-        android:layout_width="0dp"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/favorite_list_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:listitem="@layout/favorite_list_card_item"
+        tools:itemCount="2"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:text="@string/title_pure"
-        android:textAlignment="center"
-        android:textColor="#000"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/img_logo" />
-
-    <TextView
-        android:id="@+id/tv_harvest"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="@string/title_harvest"
-        android:textAlignment="center"
-        android:textColor="#000"
-        android:textSize="24sp"
-        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_pure" />
+        android:gravity="center_horizontal"
+        >
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_login"
-        style="@style/Widget.MaterialComponents.Button"
-        android:layout_width="150dp"
-        android:layout_height="56dp"
-        android:layout_marginTop="100dp"
-        android:backgroundTint="@android:color/white"
-        android:text="@string/login_button_text"
-        android:textAllCaps="false"
-        android:textColor="@color/black"
-        app:cornerRadius="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_harvest"
-        app:strokeColor="@color/leaf_green"
-        app:strokeWidth="1dp"
-        tools:ignore="MissingConstraints">
+        <TextView
+            android:id="@+id/loginNotice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login_notice" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_login"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="150dp"
+            android:layout_height="56dp"
+            android:backgroundTint="@android:color/white"
+            android:text="@string/login_button_text"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            app:cornerRadius="24dp"
+            app:strokeColor="@color/leaf_green"
+            app:strokeWidth="1dp"
+            tools:ignore="MissingConstraints">
 
-    </com.google.android.material.button.MaterialButton>
+        </com.google.android.material.button.MaterialButton>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
