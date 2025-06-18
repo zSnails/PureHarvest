@@ -114,7 +114,30 @@ public class EditProductFragment extends Fragment {
         } else {
             Toast.makeText(getContext(), "Product ID is missing. Cannot proceed.", Toast.LENGTH_LONG).show();
         }
+        binding.buttonManageCoupons.setOnClickListener(v -> handleManageCoupons());
     }
+
+    private void handleManageCoupons() {
+        if (getContext() != null && isAdded() && getView() != null) {
+            if (productId != null && !productId.isEmpty()) {
+                Log.d(TAG, "Navigating to Manage Coupons for product ID: " + productId);
+                Bundle args = new Bundle();
+                args.putString("productId", productId);
+                try {
+                    Navigation.findNavController(requireView()).navigate(
+                            R.id.action_editProductFragment_to_manageCouponsFragment, args);
+                } catch (IllegalArgumentException e) {
+                    Log.e(TAG, "Navigation action not found. Ensure it's defined in your nav graph.", e);
+                    showErrorState(getString(R.string.error_navigation_generic));
+                }
+            } else {
+                showErrorState("Product ID inválido para administrar cupones.");
+            }
+        } else {
+            Log.w(TAG, "No se puede navegar: estado del fragmento no válido.");
+        }
+    }
+
 
     private void updateFieldVisibility(String selectedLocalizedType) {
         if (binding == null || coffeeTypeString == null) return;
@@ -344,6 +367,14 @@ public class EditProductFragment extends Fragment {
         } else {
             binding.editProductPrice.setText("");
         }
+
+        Double discount = doc.getDouble("saleDiscount");
+        if (discount != null) {
+            binding.editProductDiscount.setText(String.format(java.util.Locale.US, "%.0f", discount * 100));
+        } else {
+            binding.editProductDiscount.setText("");
+        }
+
         Object imageUrlsObj = doc.get("imageUrls");
         String imageUrlToLoad = null;
         if (imageUrlsObj instanceof List) {
@@ -405,6 +436,7 @@ public class EditProductFragment extends Fragment {
         String ratingStr = Objects.requireNonNull(binding.editProductRating.getText()).toString().trim();
         String priceStr = Objects.requireNonNull(binding.editProductPrice.getText()).toString().trim();
         String description = Objects.requireNonNull(binding.editProductDescription.getText()).toString().trim();
+        String discountStr = Objects.requireNonNull(binding.editProductDiscount.getText()).toString().trim();
 
         boolean valid = true;
         if (name.isEmpty()) { binding.layoutProductName.setError(getString(R.string.error_name_required)); valid = false; } else { binding.layoutProductName.setError(null); }
@@ -435,6 +467,26 @@ public class EditProductFragment extends Fragment {
             }
         }
 
+        Double discount = null;
+        if (!discountStr.isEmpty()) {
+            try {
+                double parsedDiscount = Double.parseDouble(discountStr.replace(',', '.'));
+                if (parsedDiscount < 0 || parsedDiscount > 100) {
+                    binding.layoutProductDiscount.setError("El descuento debe estar entre 0% y 100%");
+                    valid = false;
+                } else {
+                    discount = parsedDiscount / 100.0;
+                    binding.layoutProductDiscount.setError(null);
+                }
+            } catch (NumberFormatException e) {
+                binding.layoutProductDiscount.setError("Formato de descuento inválido");
+                valid = false;
+            }
+        } else {
+            binding.layoutProductDiscount.setError(null);
+        }
+
+
         String canonicalTypeToSave = null;
         int selectedIndex = -1;
         for(int i=0; i < productTypesArray.length; i++){
@@ -461,6 +513,10 @@ public class EditProductFragment extends Fragment {
         productUpdates.put("rating", rating);
         productUpdates.put("price", price);
         productUpdates.put("description", description);
+
+        if (discount != null) {
+            productUpdates.put("saleDiscount", discount);
+        }
 
         if (coffeeTypeString != null && selectedLocalizedType.equalsIgnoreCase(coffeeTypeString)) {
             String acidity = Objects.requireNonNull(binding.editProductAcidity.getText()).toString().trim();
