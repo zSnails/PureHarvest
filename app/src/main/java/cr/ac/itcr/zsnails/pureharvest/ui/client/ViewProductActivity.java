@@ -13,6 +13,8 @@ import android.content.Intent;
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.List;
+
 import cr.ac.itcr.zsnails.pureharvest.R;
 import cr.ac.itcr.zsnails.pureharvest.data.model.Product;
 import cr.ac.itcr.zsnails.pureharvest.entities.CartItem;
