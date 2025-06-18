@@ -1,92 +1,98 @@
 package cr.ac.itcr.zsnails.pureharvest.ui.account;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.GridLayoutManager;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import cr.ac.itcr.zsnails.pureharvest.LoginActivity;
-import cr.ac.itcr.zsnails.pureharvest.databinding.FragmentAccountBinding;
-import cr.ac.itcr.zsnails.pureharvest.decoration.MarginItemDecoration;
-import cr.ac.itcr.zsnails.pureharvest.entities.CartItem;
-import cr.ac.itcr.zsnails.pureharvest.entities.FavoriteDisplayProduct;
-import cr.ac.itcr.zsnails.pureharvest.ui.account.adapter.Card;
-import cr.ac.itcr.zsnails.pureharvest.ui.account.adapter.FavoriteItemsAdapter;
-import cr.ac.itcr.zsnails.pureharvest.ui.cart.ShoppingCartViewModel;
-import cr.ac.itcr.zsnails.pureharvest.ui.client.ViewProductActivity;
+import cr.ac.itcr.zsnails.pureharvest.R;
 
-public class AccountFragment extends Fragment implements Card.AddToCartListener, Card.ItemClickListener {
-
-    private FragmentAccountBinding binding;
-    private FavoritesViewModel favoritesViewModel;
-    private ShoppingCartViewModel shoppingCart;
-    private ActivityResultLauncher<Intent> activityLauncher;
-
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentAccountBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-        ViewModelProvider provider = new ViewModelProvider(requireActivity());
-        this.favoritesViewModel = provider.get(FavoritesViewModel.class);
-        this.shoppingCart = provider.get(ShoppingCartViewModel.class);
-
-        this.activityLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), a -> {
-            favoritesViewModel.loadFavorites();
-        });
-
-        this.favoritesViewModel.loggedIn.observe(getViewLifecycleOwner(), loggedIn -> {
-            if (loggedIn) {
-                binding.loginNoticeGroup.setVisibility(View.GONE);
-                binding.favoriteListRecyclerView.setVisibility(View.VISIBLE);
-                this.favoritesViewModel.loadFavorites();
-            } else {
-                binding.loginNoticeGroup.setVisibility(View.VISIBLE);
-                binding.favoriteListRecyclerView.setVisibility(View.GONE);
-            }
-        });
-        this.favoritesViewModel.checkLoggedIn();
-        this.binding.favoriteListRecyclerView.addItemDecoration(new MarginItemDecoration(20));
-
-        FavoriteItemsAdapter adapter = new FavoriteItemsAdapter(this, this);
-        this.binding.favoriteListRecyclerView.setAdapter(adapter);
-        this.binding.favoriteListRecyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
-        this.favoritesViewModel.displayProducts.observe(getViewLifecycleOwner(), adapter::setItems);
-        return root;
+public class AccountFragment extends Fragment {
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_account, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // Set up the Log In button to navigate to LoginActivity
-        binding.btnLogin.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), LoginActivity.class);
-            startActivity(intent);
-        });
-    }
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        Button btnLogin = view.findViewById(R.id.btn_login);
+        Button btnLogout = view.findViewById(R.id.btn_logout);
+        Button btnEditInfo = view.findViewById(R.id.btn_edit_user_info);
+        Button btnViewOrders = view.findViewById(R.id.btn_view_orders);
 
-    @Override
-    public void onAddToCart(FavoriteDisplayProduct product, int position) {
-        var item = new CartItem();
-        item.productId = product.productId;
-        item.amount = 1;
-        shoppingCart.insertItem(item);
-        Toast.makeText(requireContext(), "Se ha agregado el producto al carrito de compras", Toast.LENGTH_SHORT).show();
-    }
+        if (user != null) {
+            btnLogin.setVisibility(View.GONE);
+            btnLogout.setVisibility(View.VISIBLE);
+            btnEditInfo.setVisibility(View.VISIBLE);
+            btnViewOrders.setVisibility(View.VISIBLE);
 
-    @Override
-    public void onItemClick(FavoriteDisplayProduct product, int position) {
-        Intent intent = new Intent(requireContext(), ViewProductActivity.class);
-        intent.putExtra("product_id", product.productId);
-        activityLauncher.launch(intent);
+            btnLogout.setOnClickListener(v -> {
+                FirebaseAuth.getInstance().signOut();
+                requireActivity().recreate();
+            });
+
+            btnEditInfo.setOnClickListener(v -> {
+                if (user != null) {
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    db.collection("users").document(user.getUid()).get().addOnSuccessListener(documentSnapshot -> {
+                        String name = documentSnapshot.getString("fullName");
+                        String email = documentSnapshot.getString("email");
+                        String phone = documentSnapshot.getString("phone");
+                        // Show a simple dialog to edit info (name, email, phone)
+                        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+                        builder.setTitle("Editar información");
+                        View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_user_info, null);
+                        EditText etName = dialogView.findViewById(R.id.et_edit_name);
+                        EditText etEmail = dialogView.findViewById(R.id.et_edit_email);
+                        EditText etPhone = dialogView.findViewById(R.id.et_edit_phone);
+                        etName.setText(name != null ? name : "");
+                        etEmail.setText(email != null ? email : "");
+                        etPhone.setText(phone != null ? phone : "");
+                        builder.setView(dialogView);
+                        builder.setPositiveButton("Guardar", (dialog, which) -> {
+                            String newName = etName.getText().toString().trim();
+                            String newEmail = etEmail.getText().toString().trim();
+                            String newPhone = etPhone.getText().toString().trim();
+                            db.collection("users").document(user.getUid())
+                                    .update("fullName", newName, "email", newEmail, "phone", newPhone)
+                                    .addOnSuccessListener(aVoid -> Toast.makeText(getContext(), "Información actualizada", Toast.LENGTH_SHORT).show())
+                                    .addOnFailureListener(e -> Toast.makeText(getContext(), "Error al actualizar", Toast.LENGTH_SHORT).show());
+                        });
+                        builder.setNegativeButton("Cancelar", null);
+                        builder.show();
+                    });
+                }
+            });
+
+            btnViewOrders.setOnClickListener(v -> {
+            });
+        } else {
+            btnLogin.setVisibility(View.VISIBLE);
+            btnLogout.setVisibility(View.GONE);
+            btnEditInfo.setVisibility(View.GONE);
+            btnViewOrders.setVisibility(View.GONE);
+
+            btnLogin.setOnClickListener(v -> {
+                Intent intent = new Intent(requireActivity(), LoginActivity.class);
+                startActivity(intent);
+            });
+        }
     }
 }
